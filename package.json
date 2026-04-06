@@ -1,0 +1,8 @@
+{
+  "name": "propath-football",
+  "version": "1.0.0",
+  "description": "ProPath Football - AI Voetbalcoach app",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.24.0"
+  }
+}
