@@ -1,24 +1,22 @@
-const Anthropic = require("@anthropic-ai/sdk");
+const https = require("https");
 
 const PLAYER_PROMPTS = {
-  Griezmann: `Je bent een AI-voetbalcoach geïnspireerd op de mindset en loopbaan van Antoine Griezmann. 
+  Griezmann: `Je bent een AI-voetbalcoach geïnspireerd op de mindset en loopbaan van Antoine Griezmann.
 Je bent NIET de echte Antoine Griezmann. Je bent een AI-assistent die jongeren coacht op basis van zijn aanpak.
-Griezmann werd als tiener afgewezen door grote clubs wegens zijn postuur, maar gaf nooit op. 
+Griezmann werd als tiener afgewezen door grote clubs wegens zijn postuur, maar gaf nooit op.
 Zijn kracht: techniek, slimheid, discipline, en een onbreekbare mentaliteit.
 Spreek altijd motiverend, praktisch en begrijpelijk voor jongeren (14-22 jaar).
 Geef nooit medisch, gevaarlijk of ongepast advies.
-Antwoord altijd in het Nederlands. Wees concreet: geef echte tips, geen vage uitspraken.
-Begin je eerste bericht altijd met: "Ik ben een AI-coach geïnspireerd op de mentaliteit van Griezmann."`,
+Antwoord altijd in het Nederlands. Wees concreet: geef echte tips, geen vage uitspraken.`,
 
   Mendy: `Je bent een AI-voetbalcoach geïnspireerd op de mindset en loopbaan van Édouard Mendy.
 Je bent NIET de echte Édouard Mendy. Je bent een AI-assistent die jongeren coacht op basis van zijn aanpak.
-Mendy's verhaal: op zijn 23e was hij werkloos en stond hij in de rij bij het arbeidsbureau. Hij overwoog te stoppen met voetbal. 
+Mendy's verhaal: op zijn 23e was hij werkloos en stond hij in de rij bij het arbeidsbureau. Hij overwoog te stoppen met voetbal.
 Maar hij gaf niet op, werkte keihard, en werd op zijn 29e Champions League-winnaar met Chelsea.
 Zijn kracht: doorzettingsvermogen, mentale weerbaarheid, laat durven beginnen, fouten omzetten in motivatie.
 Spreek altijd motiverend, praktisch en begrijpelijk voor jongeren (14-22 jaar).
 Geef nooit medisch, gevaarlijk of ongepast advies.
-Antwoord altijd in het Nederlands. Wees concreet: geef echte tips, geen vage uitspraken.
-Begin je eerste bericht altijd met: "Ik ben een AI-coach geïnspireerd op de mentaliteit van Édouard Mendy."`,
+Antwoord altijd in het Nederlands. Wees concreet: geef echte tips, geen vage uitspraken.`,
 
   Vardy: `Je bent een AI-voetbalcoach geïnspireerd op de mindset en loopbaan van Jamie Vardy.
 Je bent NIET de echte Jamie Vardy. Je bent een AI-assistent die jongeren coacht op basis van zijn aanpak.
@@ -26,8 +24,7 @@ Vardy werkte in een fabriek op zijn 23e en speelde in de vijfde divisie op zijn 
 Zijn kracht: nooit opgeven, kansen grijpen wanneer ze komen, altijd harder rennen dan de rest, vechtersmentaliteit.
 Spreek altijd motiverend, praktisch en begrijpelijk voor jongeren (14-22 jaar).
 Geef nooit medisch, gevaarlijk of ongepast advies.
-Antwoord altijd in het Nederlands. Wees concreet: geef echte tips, geen vage uitspraken.
-Begin je eerste bericht altijd met: "Ik ben een AI-coach geïnspireerd op de mentaliteit van Jamie Vardy."`,
+Antwoord altijd in het Nederlands. Wees concreet: geef echte tips, geen vage uitspraken.`,
 
   Lukaku: `Je bent een AI-voetbalcoach geïnspireerd op de mindset en loopbaan van Romelu Lukaku.
 Je bent NIET de echte Romelu Lukaku. Je bent een AI-assistent die jongeren coacht op basis van zijn aanpak.
@@ -35,11 +32,51 @@ Lukaku is Belgisch recordscorer met 89 interlanddoelpunten en meer dan 400 carri
 Zijn kracht: fysieke dominantie, doorzetten na tegenslagen, professionele voorbereiding, trots op je roots.
 Spreek altijd motiverend, praktisch en begrijpelijk voor jongeren (14-22 jaar).
 Geef nooit medisch, gevaarlijk of ongepast advies.
-Antwoord altijd in het Nederlands. Wees concreet: geef echte tips, geen vage uitspraken.
-Begin je eerste bericht altijd met: "Ik ben een AI-coach geïnspireerd op de mentaliteit van Romelu Lukaku."`,
+Antwoord altijd in het Nederlands. Wees concreet: geef echte tips, geen vage uitspraken.`,
 };
 
-const VALID_PLAYERS = Object.keys(PLAYER_PROMPTS);
+function callGroq(apiKey, systemPrompt, messages) {
+  return new Promise((resolve, reject) => {
+    const groqMessages = [
+      { role: "system", content: systemPrompt },
+      ...messages
+    ];
+
+    const body = JSON.stringify({
+      model: "llama-3.1-8b-instant",
+      max_tokens: 600,
+      messages: groqMessages,
+    });
+
+    const options = {
+      hostname: "api.groq.com",
+      path: "/openai/v1/chat/completions",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Length": Buffer.byteLength(body),
+      },
+    };
+
+    const req = https.request(options, (res) => {
+      let data = "";
+      res.on("data", (chunk) => { data += chunk; });
+      res.on("end", () => {
+        try {
+          const parsed = JSON.parse(data);
+          resolve({ status: res.statusCode, body: parsed });
+        } catch (e) {
+          reject(new Error("Kon antwoord niet verwerken."));
+        }
+      });
+    });
+
+    req.on("error", (e) => reject(e));
+    req.write(body);
+    req.end();
+  });
+}
 
 exports.handler = async function (event) {
   const headers = {
@@ -61,14 +98,13 @@ exports.handler = async function (event) {
     };
   }
 
-  if (!process.env.ANTHROPIC_API_KEY) {
-    console.error("ANTHROPIC_API_KEY is niet ingesteld.");
+  const apiKey = process.env.GROQ_API_KEY;
+  if (!apiKey) {
+    console.error("GROQ_API_KEY ontbreekt");
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({
-        error: "Serverconfiguratie ontbreekt. Neem contact op met de beheerder.",
-      }),
+      body: JSON.stringify({ error: "Serverconfiguratie ontbreekt." }),
     };
   }
 
@@ -85,7 +121,7 @@ exports.handler = async function (event) {
 
   const { player, messages } = body;
 
-  if (!player || !VALID_PLAYERS.includes(player)) {
+  if (!player || !PLAYER_PROMPTS[player]) {
     return {
       statusCode: 400,
       headers,
@@ -101,17 +137,8 @@ exports.handler = async function (event) {
     };
   }
 
-  const lastMessage = messages[messages.length - 1];
-  if (!lastMessage?.content?.trim()) {
-    return {
-      statusCode: 400,
-      headers,
-      body: JSON.stringify({ error: "Stel een vraag voordat je verstuurt." }),
-    };
-  }
-
   const sanitizedMessages = messages
-    .filter((m) => m.role && m.content && m.content.trim())
+    .filter((m) => m.role && m.content && String(m.content).trim())
     .slice(-20)
     .map((m) => ({
       role: m.role === "user" ? "user" : "assistant",
@@ -119,18 +146,24 @@ exports.handler = async function (event) {
     }));
 
   try {
-    const client = new Anthropic.default({
-      apiKey: process.env.ANTHROPIC_API_KEY,
-    });
+    const result = await callGroq(apiKey, PLAYER_PROMPTS[player], sanitizedMessages);
 
-    const response = await client.messages.create({
-      model: "claude-opus-4-5",
-      max_tokens: 600,
-      system: PLAYER_PROMPTS[player],
-      messages: sanitizedMessages,
-    });
+    if (result.status !== 200) {
+      console.error("Groq fout:", JSON.stringify(result.body));
+      const msg =
+        result.status === 429
+          ? "De AI is momenteel druk bezet. Probeer het over een moment opnieuw."
+          : result.status === 401
+          ? "API-sleutel ongeldig."
+          : "Er is een fout opgetreden bij de AI.";
+      return {
+        statusCode: result.status,
+        headers,
+        body: JSON.stringify({ error: msg }),
+      };
+    }
 
-    const reply = response.content?.[0]?.text;
+    const reply = result.body?.choices?.[0]?.message?.content;
     if (!reply) {
       throw new Error("Leeg antwoord van AI.");
     }
@@ -141,19 +174,11 @@ exports.handler = async function (event) {
       body: JSON.stringify({ reply }),
     };
   } catch (err) {
-    console.error("Anthropic API fout:", err);
-
-    const userMessage =
-      err.status === 429
-        ? "De AI is momenteel druk bezet. Probeer het over een moment opnieuw."
-        : err.status === 401
-        ? "API-sleutel ongeldig. Neem contact op met de beheerder."
-        : "Er is een fout opgetreden bij de AI. Probeer het opnieuw.";
-
+    console.error("Fout:", err.message);
     return {
-      statusCode: err.status || 500,
+      statusCode: 500,
       headers,
-      body: JSON.stringify({ error: userMessage }),
+      body: JSON.stringify({ error: "Er is een fout opgetreden. Probeer het opnieuw." }),
     };
   }
 };
