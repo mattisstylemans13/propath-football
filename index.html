@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
@@ -8,181 +8,227 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --bg:#ffffff;--bg2:#f8f8f7;--bg3:#f2f2f0;
+  --bg:#fff;--bg2:#f8f8f7;--bg3:#f2f2f0;
   --txt:#0a0a0a;--txt2:#6b6b6b;--txt3:#a0a0a0;
   --border:#e5e5e3;--border2:#c8c8c5;
-  --success:#16a34a;--danger:#dc2626;--danger-bg:#fef2f2;
-  --r-sm:8px;--r-md:12px;--r-lg:16px;
-  --font:'Inter',sans-serif;
+  --green:#16a34a;--red:#dc2626;--red-bg:#fef2f2;
+  --blue-bg:#eff6ff;--blue-txt:#1d4ed8;--blue-border:#bfdbfe;
+  --green-bg:#f0fdf4;--green-txt:#15803d;--green-border:#bbf7d0;
+  --amber-bg:#fffbeb;--amber-txt:#92400e;--amber-border:#fde68a;
+  --r:8px;--rm:12px;--rl:16px;
+  --f:'Inter',sans-serif;
 }
-body{font-family:var(--font);background:#efefed;min-height:100vh;display:flex;justify-content:center;align-items:flex-start;padding:24px 16px 40px;}
-#app{width:100%;max-width:420px;background:var(--bg);border-radius:var(--r-lg);border:0.5px solid var(--border);overflow:hidden;display:flex;flex-direction:column;min-height:680px;}
+body{font-family:var(--f);background:#efefed;min-height:100vh;display:flex;justify-content:center;align-items:flex-start;padding:20px 12px 40px;}
+#app{width:100%;max-width:430px;background:var(--bg);border-radius:var(--rl);border:0.5px solid var(--border);overflow:hidden;display:flex;flex-direction:column;min-height:700px;}
 .sc{display:none;flex-direction:column;flex:1;}
 .sc.on{display:flex;}
-.scroll{overflow-y:auto;flex:1;padding-bottom:64px;}
+.scroll{overflow-y:auto;flex:1;padding-bottom:68px;}
 
-/* HEADER */
-.app-header{padding:18px 20px 16px;border-bottom:0.5px solid var(--border);display:flex;align-items:center;gap:12px;}
-.logo-mark{width:32px;height:32px;background:var(--txt);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--bg);font-size:16px;flex-shrink:0;}
-.logo-text{font-size:15px;font-weight:700;letter-spacing:-.2px;}
-.logo-sub{font-size:11px;color:var(--txt2);margin-top:1px;}
+/* APP HEADER */
+.app-hdr{padding:16px 18px 14px;border-bottom:0.5px solid var(--border);display:flex;align-items:center;gap:11px;flex-shrink:0;}
+.logo-box{width:30px;height:30px;background:var(--txt);border-radius:7px;display:flex;align-items:center;justify-content:center;color:var(--bg);font-size:15px;flex-shrink:0;}
+.logo-t{font-size:14px;font-weight:700;letter-spacing:-.2px;}
+.logo-s{font-size:10px;color:var(--txt2);margin-top:1px;}
 
-/* NAV */
-.nav{display:flex;background:var(--bg);border-top:0.5px solid var(--border);}
-.nb{flex:1;padding:10px 4px 10px;background:none;border:none;color:var(--txt3);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;font-family:var(--font);font-size:10px;font-weight:500;transition:color .15s;}
+/* BOTTOM NAV */
+.nav{display:flex;background:var(--bg);border-top:0.5px solid var(--border);flex-shrink:0;}
+.nb{flex:1;padding:10px 3px 9px;background:none;border:none;color:var(--txt3);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;font-family:var(--f);font-size:9px;font-weight:500;transition:color .15s;}
 .nb.on{color:var(--txt);}
-.nb svg{width:20px;height:20px;stroke-width:1.6;}
+.nb svg{width:19px;height:19px;stroke-width:1.6;}
 
 /* FORMS */
-.inp{width:100%;padding:11px 14px;background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--r-sm);color:var(--txt);font-family:var(--font);font-size:14px;outline:none;margin-bottom:12px;-webkit-appearance:none;}
+.inp{width:100%;padding:10px 13px;background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--r);color:var(--txt);font-family:var(--f);font-size:13px;outline:none;margin-bottom:11px;-webkit-appearance:none;}
 .inp:focus{border-color:var(--border2);}
 .inp::placeholder{color:var(--txt3);}
-.lbl{font-size:12px;font-weight:500;color:var(--txt2);margin-bottom:6px;}
-.btn-p{width:100%;padding:13px;background:var(--txt);color:var(--bg);border:none;border-radius:var(--r-sm);font-family:var(--font);font-size:14px;font-weight:600;cursor:pointer;transition:opacity .15s;}
-.btn-p:hover{opacity:.84;}
-.chip{padding:7px 14px;background:var(--bg2);border:0.5px solid var(--border);border-radius:20px;font-size:13px;cursor:pointer;color:var(--txt2);font-family:var(--font);transition:all .15s;display:inline-block;}
+.lbl{font-size:11px;font-weight:500;color:var(--txt2);margin-bottom:5px;}
+.btn{width:100%;padding:12px;background:var(--txt);color:var(--bg);border:none;border-radius:var(--r);font-family:var(--f);font-size:14px;font-weight:600;cursor:pointer;transition:opacity .15s;}
+.btn:hover{opacity:.83;}
+.chip{padding:6px 13px;background:var(--bg2);border:0.5px solid var(--border);border-radius:20px;font-size:12px;cursor:pointer;color:var(--txt2);font-family:var(--f);transition:all .15s;display:inline-block;}
 .chip.on{background:var(--txt);color:var(--bg);border-color:var(--txt);}
-.sbar{display:flex;gap:5px;margin-bottom:28px;}
+.sbar{display:flex;gap:4px;margin-bottom:26px;}
 .seg{height:3px;flex:1;border-radius:2px;background:var(--border);}
 .seg.d{background:var(--txt);}.seg.a{background:var(--txt3);}
 
 /* CARDS */
-.card{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--r-md);padding:14px 16px;margin:0 16px 8px;}
+.card{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--rm);padding:13px 15px;margin:0 15px 8px;}
 .card.click{cursor:pointer;transition:border-color .15s;}
 .card.click:hover{border-color:var(--border2);}
-.mg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;}
-.metric{background:var(--bg2);border-radius:var(--r-sm);padding:13px 12px;}
-.mv{font-size:22px;font-weight:700;letter-spacing:-.5px;}
-.ml{font-size:11px;color:var(--txt2);margin-top:3px;}
-.slbl{font-size:11px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:var(--txt2);padding:0 20px;margin-bottom:10px;}
-.pro-badge{font-size:11px;padding:2px 8px;background:var(--bg2);border:0.5px solid var(--border);color:var(--txt2);border-radius:4px;margin-left:6px;}
+.mg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;}
+.met{background:var(--bg2);border-radius:var(--r);padding:12px 10px;}
+.mv{font-size:20px;font-weight:700;letter-spacing:-.5px;}
+.ml{font-size:10px;color:var(--txt2);margin-top:2px;}
+.slbl{font-size:10px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:var(--txt2);padding:0 18px;margin-bottom:9px;}
+.pro-b{font-size:10px;padding:2px 7px;background:var(--bg2);border:0.5px solid var(--border);color:var(--txt2);border-radius:4px;margin-left:5px;}
 
 /* PLAYER OPTIONS */
-.popt{display:flex;align-items:center;gap:14px;padding:14px;border:0.5px solid var(--border);border-radius:var(--r-md);margin-bottom:8px;cursor:pointer;background:var(--bg);transition:all .15s;}
+.popt{display:flex;align-items:center;gap:13px;padding:13px;border:0.5px solid var(--border);border-radius:var(--rm);margin-bottom:8px;cursor:pointer;background:var(--bg);transition:all .15s;}
 .popt:hover{border-color:var(--border2);}
 .popt.on{border-color:var(--txt);background:var(--bg2);}
-.pava{width:46px;height:46px;border-radius:50%;background:var(--bg2);border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
-.pbadge{margin-left:auto;font-size:11px;padding:3px 9px;border-radius:20px;background:var(--bg2);color:var(--txt2);border:0.5px solid var(--border);flex-shrink:0;}
+.pava{width:44px;height:44px;border-radius:50%;background:var(--bg2);border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0;}
+.pb{margin-left:auto;font-size:10px;padding:3px 8px;border-radius:20px;background:var(--bg2);color:var(--txt2);border:0.5px solid var(--border);flex-shrink:0;}
+
+/* TABS */
+.tab-row{display:flex;border-bottom:0.5px solid var(--border);overflow-x:auto;-ms-overflow-style:none;scrollbar-width:none;flex-shrink:0;}
+.tab-row::-webkit-scrollbar{display:none;}
+.tabb{padding:11px 13px;background:none;border:none;border-bottom:2px solid transparent;color:var(--txt2);font-family:var(--f);font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap;transition:all .15s;flex-shrink:0;}
+.tabb.on{color:var(--txt);border-bottom-color:var(--txt);}
 
 /* TIMELINE */
-.ptab-row{display:flex;gap:6px;padding:12px 16px;overflow-x:auto;-ms-overflow-style:none;scrollbar-width:none;}
+.ptab-row{display:flex;gap:6px;padding:11px 15px;overflow-x:auto;-ms-overflow-style:none;scrollbar-width:none;}
 .ptab-row::-webkit-scrollbar{display:none;}
-.ptab{padding:7px 16px;border:0.5px solid var(--border);border-radius:20px;background:none;color:var(--txt2);font-family:var(--font);font-size:13px;cursor:pointer;white-space:nowrap;transition:all .15s;flex-shrink:0;}
+.ptab{padding:6px 14px;border:0.5px solid var(--border);border-radius:20px;background:none;color:var(--txt2);font-family:var(--f);font-size:12px;cursor:pointer;white-space:nowrap;transition:all .15s;flex-shrink:0;}
 .ptab.on{background:var(--txt);color:var(--bg);border-color:var(--txt);}
-.tl-item{display:flex;gap:10px;padding:0 16px;margin-bottom:4px;}
-.tl-l{display:flex;flex-direction:column;align-items:center;width:44px;flex-shrink:0;}
-.tl-age{font-size:11px;font-weight:500;background:var(--bg2);border:0.5px solid var(--border);border-radius:5px;padding:2px 6px;color:var(--txt2);white-space:nowrap;text-align:center;}
-.tl-line{width:1px;flex:1;min-height:14px;background:var(--border);margin-top:4px;}
-.tl-b{flex:1;padding:10px 13px;border:0.5px solid var(--border);border-radius:10px;margin-bottom:10px;background:var(--bg);}
+.tl-item{display:flex;gap:9px;padding:0 15px;margin-bottom:3px;}
+.tl-l{display:flex;flex-direction:column;align-items:center;width:40px;flex-shrink:0;}
+.tl-age{font-size:10px;font-weight:500;background:var(--bg2);border:0.5px solid var(--border);border-radius:4px;padding:2px 5px;color:var(--txt2);white-space:nowrap;text-align:center;}
+.tl-line{width:1px;flex:1;min-height:12px;background:var(--border);margin-top:4px;}
+.tl-b{flex:1;padding:9px 12px;border:0.5px solid var(--border);border-radius:9px;margin-bottom:9px;background:var(--bg);}
 .tl-b.key{border-color:var(--txt);}
-.tl-t{font-size:13px;font-weight:600;margin-bottom:3px;}
-.tl-d{font-size:12px;color:var(--txt2);line-height:1.6;}
-.tl-tag{display:inline-block;margin-top:6px;font-size:11px;padding:2px 8px;border-radius:4px;font-weight:500;}
+.tl-t{font-size:12px;font-weight:600;margin-bottom:2px;}
+.tl-d{font-size:11px;color:var(--txt2);line-height:1.55;}
+.tl-tag{display:inline-block;margin-top:5px;font-size:10px;padding:2px 7px;border-radius:4px;font-weight:500;}
 .tl-tag.w{background:#dcfce7;color:#15803d;}
 .tl-tag.r{background:#fee2e2;color:#b91c1c;}
 .tl-tag.n{background:var(--bg2);color:var(--txt2);border:0.5px solid var(--border);}
 
-/* MEALS */
-.meal{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:0.5px solid var(--border);}
-.meal:last-child{border-bottom:none;}
-.micon{width:38px;height:38px;border-radius:9px;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+/* DIEET */
+.train-scroll{display:flex;gap:7px;padding:10px 15px;overflow-x:auto;-ms-overflow-style:none;scrollbar-width:none;flex-shrink:0;}
+.train-scroll::-webkit-scrollbar{display:none;}
+.train-btn{flex-shrink:0;padding:7px 13px;border:0.5px solid var(--border);border-radius:20px;background:var(--bg);color:var(--txt2);font-family:var(--f);font-size:11px;font-weight:500;cursor:pointer;transition:all .15s;}
+.train-btn.on{background:var(--txt);color:var(--bg);border-color:var(--txt);}
+.meal-card{margin:0 15px 8px;border:0.5px solid var(--border);border-radius:var(--rm);overflow:hidden;cursor:pointer;transition:border-color .15s;}
+.meal-card:hover{border-color:var(--border2);}
+.meal-card.open{border-color:var(--txt);}
+.meal-hdr{display:flex;align-items:center;gap:11px;padding:11px 13px;}
+.meal-ico{width:36px;height:36px;border-radius:8px;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.meal-nm{font-size:12px;font-weight:600;}
+.meal-sub{font-size:10px;color:var(--txt2);margin-top:2px;}
+.meal-time{margin-left:auto;font-size:11px;color:var(--txt2);flex-shrink:0;}
+.meal-det{display:none;padding:0 13px 13px;border-top:0.5px solid var(--border);}
+.meal-det.open{display:block;}
+.mpills{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;padding-top:9px;}
+.pill{font-size:10px;padding:2px 8px;border-radius:20px;font-weight:500;}
+.pill.c{background:#fef9c3;color:#854d0e;}
+.pill.p{background:#dcfce7;color:#166534;}
+.pill.f{background:#fce7f3;color:#9d174d;}
+.pill.k{background:var(--bg2);color:var(--txt2);border:0.5px solid var(--border);}
+.det-lbl{font-size:10px;font-weight:600;color:var(--txt2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;margin-top:8px;}
+.why-box{background:var(--bg2);border-radius:7px;padding:9px 11px;font-size:11px;color:var(--txt2);line-height:1.6;margin-top:7px;}
+.sci-box{margin:0 15px 9px;background:var(--blue-bg);border:0.5px solid var(--blue-border);border-radius:9px;padding:10px 13px;}
+.sci-lbl{font-size:9px;font-weight:600;color:var(--blue-txt);letter-spacing:.5px;text-transform:uppercase;margin-bottom:3px;}
+.sci-txt{font-size:11px;color:var(--txt);line-height:1.6;}
+.warn-box{margin:0 15px 9px;background:#fffbeb;border:0.5px solid #fde68a;border-radius:9px;padding:10px 13px;font-size:11px;color:#92400e;line-height:1.6;}
+.tip-box{margin:0 15px 9px;background:var(--green-bg);border:0.5px solid var(--green-border);border-radius:9px;padding:10px 13px;font-size:11px;color:var(--green-txt);line-height:1.6;}
+.body-row{display:flex;align-items:center;gap:9px;padding:0 15px;margin-bottom:7px;}
+.body-row label{font-size:11px;color:var(--txt2);width:85px;flex-shrink:0;}
+.body-row input,.body-row select{flex:1;padding:8px 11px;background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--r);font-family:var(--f);font-size:12px;color:var(--txt);outline:none;}
+.diff-b{font-size:10px;padding:2px 7px;border-radius:4px;font-weight:600;margin-left:auto;flex-shrink:0;}
+.d-easy{background:#dcfce7;color:#166534;}
+.d-med{background:#fef9c3;color:#854d0e;}
+.d-hard{background:#fee2e2;color:#991b1b;}
+.step{display:flex;gap:9px;align-items:flex-start;margin-bottom:7px;}
+.snum{width:18px;height:18px;border-radius:50%;background:var(--txt);color:var(--bg);font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.stxt{font-size:11px;line-height:1.6;}
+.fbtn{padding:5px 11px;border:0.5px solid var(--border);border-radius:20px;background:var(--bg);color:var(--txt2);font-family:var(--f);font-size:11px;cursor:pointer;transition:all .15s;}
+.fbtn.on,.fbtn:hover{background:var(--txt);color:var(--bg);border-color:var(--txt);}
+.tg{display:flex;gap:0;margin:0 15px 9px;border:0.5px solid var(--border);border-radius:var(--rm);overflow:hidden;}
+.tbox{flex:1;padding:10px 5px;text-align:center;border-right:0.5px solid var(--border);}
+.tbox:last-child{border-right:none;}
+.tval{font-size:13px;font-weight:700;}
+.tlbl{font-size:9px;color:var(--txt2);margin-top:2px;line-height:1.3;}
 
 /* CHAT */
-.msg{display:flex;gap:8px;align-items:flex-start;margin-bottom:10px;}
+.msg{display:flex;gap:8px;align-items:flex-start;margin-bottom:9px;}
 .msg.u{flex-direction:row-reverse;}
-.mava{width:28px;height:28px;border-radius:50%;background:var(--bg2);border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;margin-top:2px;}
-.mbub{background:var(--bg2);border:0.5px solid var(--border);border-radius:12px;padding:10px 13px;font-size:13px;line-height:1.65;max-width:80%;color:var(--txt);word-break:break-word;}
+.mava{width:26px;height:26px;border-radius:50%;background:var(--bg2);border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;margin-top:2px;}
+.mbub{background:var(--bg2);border:0.5px solid var(--border);border-radius:11px;padding:9px 12px;font-size:12px;line-height:1.65;max-width:80%;color:var(--txt);word-break:break-word;}
 .msg.u .mbub{background:var(--txt);color:var(--bg);border-color:var(--txt);}
-.typing-bubble{background:var(--bg2);border:0.5px solid var(--border);border-radius:12px;padding:12px 16px;display:flex;gap:5px;align-items:center;}
-.typing-dot{width:7px;height:7px;border-radius:50%;background:var(--txt3);animation:bounce .9s infinite;}
-.typing-dot:nth-child(2){animation-delay:.15s;}
-.typing-dot:nth-child(3){animation-delay:.3s;}
+.tdot{width:6px;height:6px;border-radius:50%;background:var(--txt3);animation:bounce .9s infinite;}
+.tdot:nth-child(2){animation-delay:.15s;}
+.tdot:nth-child(3){animation-delay:.3s;}
 @keyframes bounce{0%,60%,100%{transform:translateY(0);}30%{transform:translateY(-5px);}}
-.error-banner{display:none;margin:0 16px 4px;padding:10px 14px;background:var(--danger-bg);border:0.5px solid #fecaca;border-radius:var(--r-sm);font-size:12px;color:var(--danger);line-height:1.5;}
-.chat-inp{flex:1;background:var(--bg2);border:0.5px solid var(--border);border-radius:22px;padding:10px 16px;color:var(--txt);font-family:var(--font);font-size:14px;outline:none;resize:none;line-height:1.5;max-height:120px;overflow-y:auto;transition:border-color .15s;}
+.err-b{display:none;margin:0 15px 4px;padding:9px 13px;background:var(--red-bg);border:0.5px solid #fecaca;border-radius:var(--r);font-size:11px;color:var(--red);line-height:1.5;}
+.chat-inp{flex:1;background:var(--bg2);border:0.5px solid var(--border);border-radius:20px;padding:9px 14px;color:var(--txt);font-family:var(--f);font-size:13px;outline:none;resize:none;line-height:1.5;max-height:110px;overflow-y:auto;transition:border-color .15s;}
 .chat-inp:focus{border-color:var(--border2);}
 .chat-inp::placeholder{color:var(--txt3);}
 .chat-inp:disabled{opacity:.5;cursor:not-allowed;}
-.send{width:38px;height:38px;border-radius:50%;background:var(--txt);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:opacity .15s;}
-.send:hover{opacity:.85;}
+.send{width:36px;height:36px;border-radius:50%;background:var(--txt);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:opacity .15s;}
+.send:hover{opacity:.84;}
 .send:disabled{opacity:.35;cursor:not-allowed;}
-.qb{padding:6px 12px;border:0.5px solid var(--border);border-radius:20px;background:var(--bg);color:var(--txt2);font-family:var(--font);font-size:12px;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.qb{padding:5px 11px;border:0.5px solid var(--border);border-radius:20px;background:var(--bg);color:var(--txt2);font-family:var(--f);font-size:11px;cursor:pointer;transition:all .15s;white-space:nowrap;}
 .qb:hover{border-color:var(--border2);color:var(--txt);}
 .qb:disabled{opacity:.4;cursor:not-allowed;}
-.quote-box{background:var(--bg2);border-radius:10px;padding:13px 14px;border:0.5px solid var(--border);}
-.qt{font-size:12px;font-style:italic;color:var(--txt2);line-height:1.65;margin-bottom:6px;}
-.qs{font-size:11px;color:var(--txt3);font-weight:500;}
+.qt-box{background:var(--bg2);border-radius:9px;padding:11px 13px;border:0.5px solid var(--border);}
+.qt-t{font-size:11px;font-style:italic;color:var(--txt2);line-height:1.65;margin-bottom:5px;}
+.qt-s{font-size:10px;color:var(--txt3);font-weight:500;}
 </style>
 </head>
 <body>
 <div id="app">
-<div class="app-header">
-  <div class="logo-mark">⚽</div>
-  <div>
-    <div class="logo-text">ProPath Football</div>
-    <div class="logo-sub">AI Carrièrecoach voor jonge voetballers</div>
-  </div>
+<div class="app-hdr">
+  <div class="logo-box">⚽</div>
+  <div><div class="logo-t">ProPath Football</div><div class="logo-s">AI Career Coach for Footballers</div></div>
 </div>
 
 <!-- ONBOARDING -->
 <div id="s-ob" class="sc on">
 <div class="scroll">
-<div id="ob1" style="padding:28px 24px 24px;display:flex;flex-direction:column;min-height:560px;">
+<div id="ob1" style="padding:26px 22px 22px;display:flex;flex-direction:column;min-height:580px;">
   <div class="sbar"><div class="seg a"></div><div class="seg"></div><div class="seg"></div><div class="seg"></div></div>
-  <div style="font-size:22px;font-weight:700;letter-spacing:-.3px;margin-bottom:6px;">Laten we beginnen</div>
-  <div style="font-size:13px;color:var(--txt2);margin-bottom:24px;line-height:1.55;">Enkele vragen zodat de AI jou persoonlijk kan coachen.</div>
-  <div class="lbl">Voornaam</div><input class="inp" id="i-naam" placeholder="Jouw naam..." />
-  <div class="lbl">Jouw positie</div>
-  <select class="inp" id="i-pos"><option value="">Kies positie...</option><option>Keeper</option><option>Centrale verdediger</option><option>Rechts/linksback</option><option>Defensieve middenvelder</option><option>Centrale middenvelder</option><option>Aanvallende middenvelder</option><option>Buitenspeler</option><option>Spits</option></select>
-  <div class="lbl">Leeftijd</div>
-  <select class="inp" id="i-age"><option value="">Leeftijd...</option><option>14–17</option><option>18–21</option><option>22–26</option><option>27–32</option><option>33+</option></select>
-  <div class="lbl">Jaren voetbalervaring</div>
-  <select class="inp" id="i-jaar"><option value="">Ervaring...</option><option>1–2 jaar</option><option>3–5 jaar</option><option>6–10 jaar</option><option>10+ jaar</option></select>
+  <div style="font-size:21px;font-weight:700;letter-spacing:-.3px;margin-bottom:5px;">Let's get started</div>
+  <div style="font-size:13px;color:var(--txt2);margin-bottom:22px;line-height:1.55;">A few questions so the AI can coach you personally and calculate your exact career match.</div>
+  <div class="lbl">First name</div><input class="inp" id="i-naam" placeholder="Your name..."/>
+  <div class="lbl">Your position</div>
+  <select class="inp" id="i-pos"><option value="">Choose position...</option><option>Goalkeeper</option><option>Centre back</option><option>Full back</option><option>Defensive midfielder</option><option>Central midfielder</option><option>Attacking midfielder</option><option>Winger</option><option>Striker</option></select>
+  <div class="lbl">Age</div>
+  <select class="inp" id="i-age"><option value="">Age...</option><option>14–17</option><option>18–21</option><option>22–26</option><option>27–32</option><option>33+</option></select>
+  <div class="lbl">Years of experience</div>
+  <select class="inp" id="i-jaar"><option value="">Experience...</option><option>1–2 years</option><option>3–5 years</option><option>6–10 years</option><option>10+ years</option></select>
   <div style="flex:1;"></div>
-  <button class="btn-p" onclick="ob(2)">Volgende →</button>
+  <button class="btn" onclick="ob(2)">Next →</button>
 </div>
-<div id="ob2" style="display:none;padding:28px 24px 24px;flex-direction:column;min-height:560px;">
+<div id="ob2" style="display:none;padding:26px 22px 22px;flex-direction:column;min-height:580px;">
   <div class="sbar"><div class="seg d"></div><div class="seg a"></div><div class="seg"></div><div class="seg"></div></div>
-  <div style="font-size:22px;font-weight:700;letter-spacing:-.3px;margin-bottom:6px;">Jouw niveau</div>
-  <div style="font-size:13px;color:var(--txt2);margin-bottom:24px;">Waar heb je gespeeld?</div>
-  <div class="lbl">Huidig niveau</div>
-  <select class="inp" id="i-niv"><option value="">Niveau...</option><option>Schoolvoetbal</option><option>Provinciaal</option><option>Nationaal amateur</option><option>Halfprofessioneel</option><option>Professioneel</option></select>
-  <div class="lbl">Clubs gespeeld</div>
-  <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:24px;">
-    <div class="chip" onclick="tog(this,'Jeugdclub')">Jeugdclub</div>
-    <div class="chip" onclick="tog(this,'Amateur 1e klas')">Amateur 1e klas</div>
-    <div class="chip" onclick="tog(this,'2e/3e nationale')">2e/3e nationale</div>
-    <div class="chip" onclick="tog(this,'Regionale top')">Regionale top</div>
-    <div class="chip" onclick="tog(this,'Halfpro club')">Halfpro club</div>
-    <div class="chip" onclick="tog(this,'Profclub jeugd')">Profclub jeugd</div>
+  <div style="font-size:21px;font-weight:700;letter-spacing:-.3px;margin-bottom:5px;">Your level</div>
+  <div style="font-size:13px;color:var(--txt2);margin-bottom:22px;">Where have you played? This determines your match percentage.</div>
+  <div class="lbl">Current level</div>
+  <select class="inp" id="i-niv"><option value="">Level...</option><option>School / recreational</option><option>Regional amateur</option><option>National amateur</option><option>Semi-professional</option><option>Professional</option></select>
+  <div class="lbl">Clubs played for</div>
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:22px;">
+    <div class="chip" onclick="tog(this,'Youth club')">Youth club</div>
+    <div class="chip" onclick="tog(this,'Amateur 1st class')">Amateur 1st class</div>
+    <div class="chip" onclick="tog(this,'2nd/3rd national')">2nd/3rd national</div>
+    <div class="chip" onclick="tog(this,'Regional top club')">Regional top club</div>
+    <div class="chip" onclick="tog(this,'Semi-pro club')">Semi-pro club</div>
+    <div class="chip" onclick="tog(this,'Pro club academy')">Pro club academy</div>
   </div>
   <div style="flex:1;"></div>
-  <button class="btn-p" onclick="ob(3)">Volgende →</button>
+  <button class="btn" onclick="ob(3)">Next →</button>
 </div>
-<div id="ob3" style="display:none;padding:28px 24px 24px;flex-direction:column;min-height:560px;">
+<div id="ob3" style="display:none;padding:26px 22px 22px;flex-direction:column;min-height:580px;">
   <div class="sbar"><div class="seg d"></div><div class="seg d"></div><div class="seg a"></div><div class="seg"></div></div>
-  <div style="font-size:22px;font-weight:700;letter-spacing:-.3px;margin-bottom:6px;">Kies jouw idool</div>
-  <div style="font-size:13px;color:var(--txt2);margin-bottom:20px;line-height:1.55;">De speler met het meest vergelijkbare traject wordt jouw AI-coach.</div>
-  <div class="popt" onclick="sP(this,'Griezmann','🇫🇷','Afgewezen door Lyon op 14. Vader reed 1400km. Wereldkampioen op 27.')">
-    <div class="pava">🇫🇷</div><div><div style="font-size:14px;font-weight:600;">Antoine Griezmann</div><div style="font-size:12px;color:var(--txt2);margin-top:2px;">Afgewezen → Wereldkampioen 2018</div></div><div class="pbadge">Late bloomer</div>
+  <div style="font-size:21px;font-weight:700;letter-spacing:-.3px;margin-bottom:5px;">Choose your idol</div>
+  <div style="font-size:13px;color:var(--txt2);margin-bottom:18px;line-height:1.55;">The player with the most similar career path becomes your personal AI coach.</div>
+  <div class="popt" onclick="sP(this,'Griezmann','🇫🇷','Rejected by Lyon aged 14. Father drove 1400km to Spain. World Champion at 27.')">
+    <div class="pava">🇫🇷</div><div><div style="font-size:13px;font-weight:600;">Antoine Griezmann</div><div style="font-size:11px;color:var(--txt2);margin-top:2px;">Rejected → World Champion 2018</div></div><div class="pb">Late bloomer</div>
   </div>
-  <div class="popt" onclick="sP(this,'Mendy','🧤','Werkloos op 23, rij bij jobcentrum. Champions League winnaar op 29.')">
-    <div class="pava">🧤</div><div><div style="font-size:14px;font-weight:600;">Édouard Mendy</div><div style="font-size:12px;color:var(--txt2);margin-top:2px;">Jobcentrum op 23 → Champions League op 29</div></div><div class="pbadge">Nooit opgeven</div>
+  <div class="popt" onclick="sP(this,'Mendy','🧤','Unemployed at 23, queuing at job centre. Champions League winner at 29.')">
+    <div class="pava">🧤</div><div><div style="font-size:13px;font-weight:600;">Édouard Mendy</div><div style="font-size:11px;color:var(--txt2);margin-top:2px;">Job centre at 23 → Champions League at 29</div></div><div class="pb">Never give up</div>
   </div>
-  <div class="popt" onclick="sP(this,'Vardy','🏴󠁧󠁢󠁥󠁮󠁧󠁿','Fabriekarbeider op 23, 5e divisie op 25. Premier League kampioen op 29.')">
-    <div class="pava">🏴󠁧󠁢󠁥󠁮󠁧󠁿</div><div><div style="font-size:14px;font-weight:600;">Jamie Vardy</div><div style="font-size:12px;color:var(--txt2);margin-top:2px;">Fabriek op 23 → PL kampioen op 29</div></div><div class="pbadge">Non-league → top</div>
+  <div class="popt" onclick="sP(this,'Vardy','🏴󠁧󠁢󠁥󠁮󠁧󠁿','Factory worker at 23, 5th division at 25. Premier League champion at 29.')">
+    <div class="pava">🏴󠁧󠁢󠁥󠁮󠁧󠁿</div><div><div style="font-size:13px;font-weight:600;">Jamie Vardy</div><div style="font-size:11px;color:var(--txt2);margin-top:2px;">Factory → PL top scorer & champion</div></div><div class="pb">Non-league → top</div>
   </div>
-  <div class="popt" onclick="sP(this,'Lukaku','🇧🇪','Belgisch recordscorer 89 goals. 400+ carrièredoelpunten.')">
-    <div class="pava">🇧🇪</div><div><div style="font-size:14px;font-weight:600;">Romelu Lukaku</div><div style="font-size:12px;color:var(--txt2);margin-top:2px;">Belgisch recordscorer · 400+ goals</div></div><div class="pbadge">Vroeg talent</div>
+  <div class="popt" onclick="sP(this,'Lukaku','🇧🇪','Belgian all-time top scorer. 89 goals. 400+ career goals. Complex journey.')">
+    <div class="pava">🇧🇪</div><div><div style="font-size:13px;font-weight:600;">Romelu Lukaku</div><div style="font-size:11px;color:var(--txt2);margin-top:2px;">Belgian record scorer · 400+ goals</div></div><div class="pb">Early talent</div>
   </div>
 </div>
-<div id="ob4" style="display:none;padding:28px 24px 24px;flex-direction:column;min-height:560px;">
+<div id="ob4" style="display:none;padding:26px 22px 22px;flex-direction:column;min-height:580px;">
   <div class="sbar"><div class="seg d"></div><div class="seg d"></div><div class="seg d"></div><div class="seg a"></div></div>
-  <div style="font-size:22px;font-weight:700;letter-spacing:-.3px;margin-bottom:6px;">Profiel klaar!</div>
-  <div style="font-size:13px;color:var(--txt2);margin-bottom:20px;">Jouw AI-coach en carrièreplan staan klaar.</div>
-  <div id="ob4-prev" style="background:var(--bg2);border-radius:var(--r-md);padding:16px;margin-bottom:24px;border:0.5px solid var(--border);"></div>
+  <div style="font-size:21px;font-weight:700;letter-spacing:-.3px;margin-bottom:5px;">Profile complete!</div>
+  <div style="font-size:13px;color:var(--txt2);margin-bottom:18px;">Your AI coach and personal career plan are ready.</div>
+  <div id="ob4-prev" style="background:var(--bg2);border-radius:var(--rm);padding:15px;margin-bottom:22px;border:0.5px solid var(--border);"></div>
   <div style="flex:1;"></div>
-  <button class="btn-p" onclick="finish()">Open mijn app →</button>
+  <button class="btn" onclick="finish()">Open my app →</button>
 </div>
 </div>
 </div>
@@ -190,146 +236,239 @@ body{font-family:var(--font);background:#efefed;min-height:100vh;display:flex;ju
 <!-- HOME -->
 <div id="s-home" class="sc">
 <div class="scroll">
-  <div style="padding:24px 20px 0;">
-    <div style="font-size:11px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:var(--txt2);margin-bottom:4px;">Dashboard</div>
-    <div style="font-size:26px;font-weight:700;letter-spacing:-.4px;margin-bottom:3px;" id="hg">Goedemiddag</div>
-    <div style="font-size:13px;color:var(--txt2);margin-bottom:20px;">Jouw plan staat klaar voor vandaag.</div>
-    <div class="mg" style="margin-bottom:24px;">
-      <div class="metric"><div class="mv">12</div><div class="ml">trainingen</div></div>
-      <div class="metric"><div class="mv">84%</div><div class="ml">consistentie</div></div>
-      <div class="metric"><div class="mv" id="hm">—</div><div class="ml">match %</div></div>
+  <div style="padding:22px 18px 0;">
+    <div style="font-size:10px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:var(--txt2);margin-bottom:4px;">Dashboard</div>
+    <div style="font-size:24px;font-weight:700;letter-spacing:-.4px;margin-bottom:2px;" id="hg">Good afternoon</div>
+    <div style="font-size:12px;color:var(--txt2);margin-bottom:18px;">Your plan is ready for today.</div>
+    <div class="mg" style="margin-bottom:20px;">
+      <div class="met"><div class="mv">12</div><div class="ml">trainings</div></div>
+      <div class="met"><div class="mv">84%</div><div class="ml">consistency</div></div>
+      <div class="met"><div class="mv" id="hm">—</div><div class="ml">match %</div></div>
     </div>
   </div>
-  <div class="slbl">Vandaag</div>
+  <div class="slbl">Today</div>
   <div class="card click" onclick="goS('s-dieet')">
-    <div style="display:flex;align-items:center;gap:12px;">
-      <div style="width:40px;height:40px;border-radius:10px;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:19px;">⚡</div>
-      <div style="flex:1;"><div style="font-size:14px;font-weight:600;">Explosiviteit &amp; sprint</div><div style="font-size:12px;color:var(--txt2);margin-top:2px;">45 min · Dieetplan gegenereerd</div></div>
-      <svg style="color:var(--txt3);" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 18l6-6-6-6"/></svg>
+    <div style="display:flex;align-items:center;gap:11px;">
+      <div style="width:38px;height:38px;border-radius:9px;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:18px;">⚡</div>
+      <div style="flex:1;"><div style="font-size:13px;font-weight:600;">Explosivity & sprint</div><div style="font-size:11px;color:var(--txt2);margin-top:2px;">45 min · Nutrition plan ready</div></div>
+      <svg style="color:var(--txt3);" width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 18l6-6-6-6"/></svg>
     </div>
   </div>
-  <div class="slbl" style="margin-top:10px;">Coach-match</div>
+  <div class="slbl" style="margin-top:10px;">Your career match</div>
   <div class="card click" id="hmc" onclick="goS('s-karriere')">
-    <div style="font-size:13px;color:var(--txt2);">Vul profiel in om je match te zien.</div>
+    <div style="font-size:12px;color:var(--txt2);">Complete your profile to see your match.</div>
   </div>
-  <div class="slbl" style="margin-top:10px;">Snel naar</div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 16px 16px;">
+  <div class="slbl" style="margin-top:10px;">Quick access</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 15px 15px;">
     <div class="card click" style="margin:0;" onclick="goS('s-coach')">
-      <div style="font-size:22px;margin-bottom:8px;" id="hci">🤖</div>
-      <div style="font-size:13px;font-weight:600;" id="hcn">AI Coach</div>
-      <div style="font-size:11px;color:var(--txt2);margin-top:2px;">Stel een vraag</div>
+      <div style="font-size:20px;margin-bottom:7px;" id="hci">🤖</div>
+      <div style="font-size:12px;font-weight:600;" id="hcn">AI Coach</div>
+      <div style="font-size:10px;color:var(--txt2);margin-top:2px;">Ask a question</div>
     </div>
     <div class="card click" style="margin:0;" onclick="goS('s-karriere')">
-      <div style="font-size:22px;margin-bottom:8px;">📈</div>
-      <div style="font-size:13px;font-weight:600;">Carrièreplan</div>
-      <div style="font-size:11px;color:var(--txt2);margin-top:2px;">Jouw traject</div>
+      <div style="font-size:20px;margin-bottom:7px;">📈</div>
+      <div style="font-size:12px;font-weight:600;">Career plan</div>
+      <div style="font-size:10px;color:var(--txt2);margin-top:2px;">Your journey</div>
     </div>
   </div>
 </div>
 <div class="nav">
   <button class="nb on" id="nb-home" onclick="goS('s-home')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955a1.126 1.126 0 011.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75"/></svg>Home</button>
-  <button class="nb" id="nb-dieet" onclick="goS('s-dieet')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z"/></svg>Dieet</button>
-  <button class="nb" id="nb-karriere" onclick="goS('s-karriere')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941"/></svg>Carrière</button>
+  <button class="nb" id="nb-dieet" onclick="goS('s-dieet')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z"/></svg>Nutrition</button>
+  <button class="nb" id="nb-karriere" onclick="goS('s-karriere')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941"/></svg>Career</button>
   <button class="nb" id="nb-coach" onclick="goS('s-coach')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"/></svg>AI Coach</button>
 </div>
 </div>
 
-<!-- DIEET -->
+<!-- NUTRITION -->
 <div id="s-dieet" class="sc">
+<div class="tab-row">
+  <button class="tabb on" onclick="swDieet(this,'d-analysis')">Analysis</button>
+  <button class="tabb" onclick="swDieet(this,'d-meals')">Meal plan</button>
+  <button class="tabb" onclick="swDieet(this,'d-recipes')">Recipes</button>
+  <button class="tabb" onclick="swDieet(this,'d-timing')">Timing</button>
+</div>
 <div class="scroll">
-  <div style="padding:22px 20px 16px;border-bottom:0.5px solid var(--border);">
-    <div style="font-size:20px;font-weight:700;letter-spacing:-.3px;">Dieetplan</div>
-    <div style="font-size:13px;color:var(--txt2);margin-top:3px;" id="dsub">Explosiviteit &amp; sprint · vandaag</div>
+
+<!-- ANALYSIS -->
+<div id="d-analysis" class="dpanel on" style="padding-bottom:0;">
+  <div class="slbl" style="padding-top:14px;">Your daily fuel calculator</div>
+  <div class="body-row"><label>Weight (kg)</label><input type="number" id="dw" value="70" min="40" max="130" oninput="dcalc()"></div>
+  <div class="body-row"><label>Position</label>
+    <select id="dpos" oninput="dcalc()">
+      <option value="striker">Striker / Winger</option>
+      <option value="mid" selected>Midfielder</option>
+      <option value="defender">Defender</option>
+      <option value="keeper">Goalkeeper</option>
+    </select>
   </div>
-  <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding:16px;">
-    <div class="metric"><div class="mv" id="mkh">280g</div><div class="ml">Koolhydraten</div></div>
-    <div class="metric"><div class="mv" id="mpr">160g</div><div class="ml">Eiwitten</div></div>
-    <div class="metric"><div class="mv" id="mvet">60g</div><div class="ml">Vetten</div></div>
+  <div class="body-row"><label>Training type</label>
+    <select id="dtype" oninput="dcalc()">
+      <option value="match">Match day</option>
+      <option value="prematch">Match day −1</option>
+      <option value="strength">Strength training</option>
+      <option value="cardio">Cardio / endurance</option>
+      <option value="technical" selected>Technical training</option>
+      <option value="easy">Easy training</option>
+      <option value="recovery">Active recovery</option>
+      <option value="rest">Rest day</option>
+    </select>
   </div>
-  <div class="slbl">Maaltijden</div>
-  <div class="card" style="margin:0 16px;">
-    <div class="meal"><div class="micon">🌅</div><div style="flex:1;"><div style="font-size:13px;font-weight:600;">Havermout, banaan &amp; honing</div><div style="font-size:12px;color:var(--txt2);">480 kcal · koolhydratenboost</div></div><div style="font-size:12px;color:var(--txt3);">7:00</div></div>
-    <div class="meal"><div class="micon">🥗</div><div style="flex:1;"><div style="font-size:13px;font-weight:600;">Kipfilet, rijst &amp; groenten</div><div style="font-size:12px;color:var(--txt2);">620 kcal · proteïnerijk</div></div><div style="font-size:12px;color:var(--txt3);">12:30</div></div>
-    <div class="meal"><div class="micon">⚡</div><div style="flex:1;"><div style="font-size:13px;font-weight:600;">Banaan &amp; energiereep pre-training</div><div style="font-size:12px;color:var(--txt2);">280 kcal · snelle energie</div></div><div style="font-size:12px;color:var(--txt3);">15:30</div></div>
-    <div class="meal"><div class="micon">💪</div><div style="flex:1;"><div style="font-size:13px;font-weight:600;">Proteïneshake &amp; walnoten</div><div style="font-size:12px;color:var(--txt2);">320 kcal · herstel</div></div><div style="font-size:12px;color:var(--txt3);">18:00</div></div>
-    <div class="meal"><div class="micon">🌙</div><div style="flex:1;"><div style="font-size:13px;font-weight:600;">Zalm, zoete aardappel &amp; broccoli</div><div style="font-size:12px;color:var(--txt2);">540 kcal · nacht herstel</div></div><div style="font-size:12px;color:var(--txt3);">20:00</div></div>
+  <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;padding:8px 15px;">
+    <div class="met"><div class="mv" id="d-kcal">—</div><div class="ml">Total kcal</div></div>
+    <div class="met"><div class="mv" id="d-carb">—</div><div class="ml">Carbs</div></div>
+    <div class="met"><div class="mv" id="d-prot">—</div><div class="ml">Protein</div></div>
   </div>
-  <div class="slbl" style="margin-top:14px;">Trainingstype</div>
-  <div style="display:flex;gap:7px;padding:0 16px 14px;flex-wrap:wrap;">
-    <button class="qb" id="dt-exp" onclick="setD(this,'Explosiviteit','280g','160g','60g')" style="border-color:var(--txt);color:var(--txt);">Explosief</button>
-    <button class="qb" onclick="setD(this,'Uithouding','320g','140g','55g')">Uithouding</button>
-    <button class="qb" onclick="setD(this,'Kracht','220g','200g','70g')">Kracht</button>
-    <button class="qb" onclick="setD(this,'Wedstrijd','360g','150g','50g')">Wedstrijd</button>
-    <button class="qb" onclick="setD(this,'Rust','160g','140g','65g')">Rust</button>
+  <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;padding:0 15px 4px;">
+    <div class="met"><div class="mv" id="d-fat">—</div><div class="ml">Fats</div></div>
+    <div class="met"><div class="mv" id="d-ckg">—</div><div class="ml">Carb/kg</div></div>
+    <div class="met"><div class="mv" id="d-pkg">—</div><div class="ml">Protein/kg</div></div>
   </div>
-  <div style="padding:0 16px 20px;">
-    <button class="btn-p" onclick="askAI()">Vraag AI om uitgebreider plan →</button>
+  <div class="sci-box"><div class="sci-lbl">Science — KNVB & Sports Medicine</div><div class="sci-txt" id="d-sci">Loading...</div></div>
+  <div id="d-warn" style="display:none;"></div>
+  <div id="d-tip" style="display:none;"></div>
+  <div class="slbl">Hydration</div>
+  <div class="card" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+    <div><div style="font-size:22px;font-weight:700;" id="d-water">—</div><div style="font-size:11px;color:var(--txt2);margin-top:2px;">Litres per day</div></div>
+    <div style="font-size:11px;color:var(--txt2);max-width:175px;text-align:right;line-height:1.6;">+500ml per hour of training. Urine should be pale yellow.</div>
   </div>
+</div>
+
+<!-- MEAL PLAN -->
+<div id="d-meals" class="dpanel" style="display:none;">
+  <div class="slbl" style="padding-top:14px;">Select training type</div>
+  <div class="train-scroll" id="meal-tbns">
+    <button class="train-btn on" onclick="setMP(this,'match')">Match day</button>
+    <button class="train-btn" onclick="setMP(this,'prematch')">Day before match</button>
+    <button class="train-btn" onclick="setMP(this,'strength')">Strength</button>
+    <button class="train-btn" onclick="setMP(this,'cardio')">Cardio</button>
+    <button class="train-btn" onclick="setMP(this,'technical')">Technical</button>
+    <button class="train-btn" onclick="setMP(this,'easy')">Easy</button>
+    <button class="train-btn" onclick="setMP(this,'recovery')">Recovery</button>
+    <button class="train-btn" onclick="setMP(this,'rest')">Rest day</button>
+  </div>
+  <div class="sci-box" id="mp-focus"><div class="sci-lbl" id="mp-lbl">Match day</div><div class="sci-txt" id="mp-txt">Loading...</div></div>
+  <div id="meal-list"></div>
+</div>
+
+<!-- RECIPES -->
+<div id="d-recipes" class="dpanel" style="display:none;">
+  <div class="slbl" style="padding-top:14px;">Filter by difficulty</div>
+  <div style="display:flex;gap:6px;padding:0 15px 10px;flex-wrap:wrap;">
+    <button class="fbtn on" onclick="filterRec(this,'all')">All</button>
+    <button class="fbtn" onclick="filterRec(this,'easy')">Easy (5–10 min)</button>
+    <button class="fbtn" onclick="filterRec(this,'medium')">Medium (15–25 min)</button>
+    <button class="fbtn" onclick="filterRec(this,'hard')">Advanced (30+ min)</button>
+  </div>
+  <div id="recipe-list"></div>
+</div>
+
+<!-- TIMING -->
+<div id="d-timing" class="dpanel" style="display:none;padding-bottom:16px;">
+  <div class="slbl" style="padding-top:14px;">Match day timing</div>
+  <div class="tg">
+    <div class="tbox"><div class="tval">−4h</div><div class="tlbl">Big meal pasta/rice</div></div>
+    <div class="tbox"><div class="tval">−2h</div><div class="tlbl">Light snack banana</div></div>
+    <div class="tbox"><div class="tval">−1h</div><div class="tlbl">Small carbs + hydrate</div></div>
+    <div class="tbox"><div class="tval">45'</div><div class="tlbl">30–60g carbs halftime</div></div>
+    <div class="tbox" style="border:none;"><div class="tval">+30m</div><div class="tlbl">Recovery meal</div></div>
+  </div>
+  <div class="sci-box"><div class="sci-lbl">KNVB Official Guidelines</div><div class="sci-txt">6–8g carbs/kg per day · 1–3g/kg pre-match · 30–60g/hour during match · protein + carbs within 30 min post-match. Correct carbohydrate intake improves performance by 2–6%.</div></div>
+  <div class="slbl">Strength training timing</div>
+  <div class="tg">
+    <div class="tbox"><div class="tval">−3h</div><div class="tlbl">High protein meal</div></div>
+    <div class="tbox"><div class="tval">−1h</div><div class="tlbl">Creatine + carbs</div></div>
+    <div class="tbox"><div class="tval">Train</div><div class="tlbl">Water every 15 min</div></div>
+    <div class="tbox"><div class="tval">+20m</div><div class="tlbl">Whey + fast carbs</div></div>
+    <div class="tbox" style="border:none;"><div class="tval">+2h</div><div class="tlbl">Full protein meal</div></div>
+  </div>
+  <div class="sci-box"><div class="sci-lbl">Strength Science</div><div class="sci-txt">Protein synthesis peaks 20–30 min post-training. Consume 25–40g whey protein immediately after. Combine with fast carbs at 4:1 ratio. Creatine increases power output by 5–15%.</div></div>
+  <div class="slbl">Cardio / endurance timing</div>
+  <div class="tg">
+    <div class="tbox"><div class="tval">−2h</div><div class="tlbl">High carb meal</div></div>
+    <div class="tbox"><div class="tval">−30m</div><div class="tlbl">Banana + water</div></div>
+    <div class="tbox"><div class="tval">Every 20m</div><div class="tlbl">30g carbs</div></div>
+    <div class="tbox"><div class="tval">+30m</div><div class="tlbl">Electrolytes</div></div>
+    <div class="tbox" style="border:none;"><div class="tval">+2h</div><div class="tlbl">Recovery dinner</div></div>
+  </div>
+  <div class="sci-box"><div class="sci-lbl">Endurance Science</div><div class="sci-txt">Footballers run 9–12km per match. Energy comes from glycogen. Without adequate carbs performance drops after 60 minutes. Electrolyte replacement essential — you lose 1–2L sweat per hour.</div></div>
+  <div class="slbl">Rest day strategy</div>
+  <div class="card" style="margin-bottom:4px;">
+    <div style="font-size:12px;font-weight:600;margin-bottom:6px;">Reduce carbs · Increase protein · Anti-inflammatory</div>
+    <div style="font-size:11px;color:var(--txt2);line-height:1.7;">Reduce carbs to 3–4g/kg, increase protein to 2.2g/kg. Focus on anti-inflammatory foods: salmon, spinach, blueberries, olive oil, turmeric.</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:10px;">
+      <div style="background:var(--bg2);border-radius:7px;padding:9px;text-align:center;"><div style="font-size:14px;font-weight:700;">↓40%</div><div style="font-size:9px;color:var(--txt2);margin-top:2px;">Less carbs</div></div>
+      <div style="background:var(--bg2);border-radius:7px;padding:9px;text-align:center;"><div style="font-size:14px;font-weight:700;">↑10%</div><div style="font-size:9px;color:var(--txt2);margin-top:2px;">More protein</div></div>
+      <div style="background:var(--bg2);border-radius:7px;padding:9px;text-align:center;"><div style="font-size:14px;font-weight:700;">3L+</div><div style="font-size:9px;color:var(--txt2);margin-top:2px;">Water still key</div></div>
+    </div>
+  </div>
+</div>
+
 </div>
 <div class="nav">
   <button class="nb" onclick="goS('s-home')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955a1.126 1.126 0 011.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75"/></svg>Home</button>
-  <button class="nb on"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z"/></svg>Dieet</button>
-  <button class="nb" onclick="goS('s-karriere')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941"/></svg>Carrière</button>
+  <button class="nb on"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z"/></svg>Nutrition</button>
+  <button class="nb" onclick="goS('s-karriere')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941"/></svg>Career</button>
   <button class="nb" onclick="goS('s-coach')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"/></svg>AI Coach</button>
 </div>
 </div>
 
-<!-- CARRIÈRE -->
+<!-- CAREER -->
 <div id="s-karriere" class="sc">
 <div class="scroll">
-  <div style="padding:22px 20px 16px;border-bottom:0.5px solid var(--border);">
-    <div style="font-size:20px;font-weight:700;letter-spacing:-.3px;">Carrièreplan</div>
-    <div style="font-size:13px;color:var(--txt2);margin-top:3px;" id="ksub">Kies een speler om te vergelijken</div>
+  <div style="padding:20px 18px 14px;border-bottom:0.5px solid var(--border);">
+    <div style="font-size:19px;font-weight:700;letter-spacing:-.3px;">Career plan</div>
+    <div style="font-size:12px;color:var(--txt2);margin-top:3px;" id="ksub">Choose a player to compare</div>
   </div>
-  <div id="kmc" style="padding:14px 16px 0;"></div>
+  <div id="kmc" style="padding:13px 15px 0;"></div>
   <div class="ptab-row">
     <button class="ptab on" onclick="sTL(this,'Griezmann')">Griezmann</button>
     <button class="ptab" onclick="sTL(this,'Mendy')">Mendy</button>
     <button class="ptab" onclick="sTL(this,'Vardy')">Vardy</button>
     <button class="ptab" onclick="sTL(this,'Lukaku')">Lukaku</button>
   </div>
-  <div id="phero" style="padding:0 16px 12px;"></div>
-  <div id="kquote" style="padding:0 16px 12px;"></div>
-  <div class="slbl">Tijdlijn</div>
+  <div id="phero" style="padding:0 15px 12px;"></div>
+  <div id="kquote" style="padding:0 15px 12px;"></div>
+  <div class="slbl">Timeline</div>
   <div id="tl" style="padding-bottom:8px;"></div>
-  <div class="slbl" style="margin-top:4px;">Jouw doelen <span class="pro-badge">Pro</span></div>
-  <div class="card" id="kgoals" style="margin-bottom:20px;"><div style="font-size:13px;color:var(--txt2);">Vul profiel in voor persoonlijk plan.</div></div>
+  <div class="slbl" style="margin-top:4px;">Your goals <span class="pro-b">Pro</span></div>
+  <div class="card" id="kgoals" style="margin-bottom:18px;"><div style="font-size:12px;color:var(--txt2);">Complete your profile for a personal plan.</div></div>
 </div>
 <div class="nav">
   <button class="nb" onclick="goS('s-home')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955a1.126 1.126 0 011.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75"/></svg>Home</button>
-  <button class="nb" onclick="goS('s-dieet')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z"/></svg>Dieet</button>
-  <button class="nb on"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941"/></svg>Carrière</button>
+  <button class="nb" onclick="goS('s-dieet')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z"/></svg>Nutrition</button>
+  <button class="nb on"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941"/></svg>Career</button>
   <button class="nb" onclick="goS('s-coach')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"/></svg>AI Coach</button>
 </div>
 </div>
 
 <!-- AI COACH -->
 <div id="s-coach" class="sc">
-  <div style="padding:14px 16px;border-bottom:0.5px solid var(--border);display:flex;align-items:center;gap:12px;">
-    <div id="cava" style="width:36px;height:36px;border-radius:50%;background:var(--bg2);border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:17px;">🤖</div>
-    <div><div style="font-size:14px;font-weight:600;" id="cname">AI Voetbalcoach</div><div style="font-size:11px;color:var(--success);font-weight:500;">● Online</div></div>
-    <button onclick="swC()" style="margin-left:auto;padding:5px 12px;background:var(--bg2);border:0.5px solid var(--border);border-radius:6px;color:var(--txt2);font-family:var(--font);font-size:12px;cursor:pointer;">Wissel coach</button>
+  <div style="padding:13px 15px;border-bottom:0.5px solid var(--border);display:flex;align-items:center;gap:11px;flex-shrink:0;">
+    <div id="cava" style="width:34px;height:34px;border-radius:50%;background:var(--bg2);border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:17px;">🤖</div>
+    <div><div style="font-size:13px;font-weight:600;" id="cname">AI Football Coach</div><div style="font-size:10px;color:var(--green);font-weight:500;">● Online</div></div>
+    <button onclick="swC()" style="margin-left:auto;padding:5px 11px;background:var(--bg2);border:0.5px solid var(--border);border-radius:6px;color:var(--txt2);font-family:var(--f);font-size:11px;cursor:pointer;">Switch coach</button>
   </div>
-  <div style="padding:8px 16px;display:flex;gap:7px;flex-wrap:wrap;border-bottom:0.5px solid var(--border);">
-    <button class="qb" onclick="sQ('Hoe omga ik met een slechte wedstrijd?')">Na slechte wedstrijd</button>
-    <button class="qb" onclick="sQ('Hoe bereid ik mij voor op een wedstrijd?')">Voorbereiding</button>
-    <button class="qb" onclick="sQ('Hoe blijf ik gemotiveerd als ik weinig speel?')">Weinig speeltijd</button>
-    <button class="qb" onclick="sQ('Wat kan ik extra doen buiten de training?')">Extra training</button>
+  <div style="padding:8px 15px;display:flex;gap:6px;flex-wrap:wrap;border-bottom:0.5px solid var(--border);flex-shrink:0;">
+    <button class="qb" onclick="sQ('How do I deal with a bad match?')">Bad match</button>
+    <button class="qb" onclick="sQ('How do I prepare for a match?')">Match prep</button>
+    <button class="qb" onclick="sQ('How do I stay motivated with little playing time?')">Motivation</button>
+    <button class="qb" onclick="sQ('What can I do extra outside of training?')">Extra training</button>
   </div>
-  <div id="cmsgs" style="padding:14px 16px;flex:1;overflow-y:auto;min-height:260px;max-height:320px;"></div>
-  <div id="think" style="display:none;font-size:12px;color:var(--txt3);font-style:italic;padding:4px 16px;">Aan het nadenken...</div>
-  <div class="error-banner" id="err"></div>
-  <div style="display:flex;gap:8px;padding:10px 16px 14px;border-top:0.5px solid var(--border);">
-    <textarea class="chat-inp" id="ci" placeholder="Stel een vraag..." rows="1" maxlength="500"></textarea>
+  <div id="cmsgs" style="padding:13px 15px;flex:1;overflow-y:auto;min-height:240px;max-height:300px;"></div>
+  <div id="think" style="display:none;font-size:11px;color:var(--txt3);font-style:italic;padding:3px 15px;">Thinking...</div>
+  <div class="err-b" id="err"></div>
+  <div style="display:flex;gap:8px;padding:10px 15px 13px;border-top:0.5px solid var(--border);flex-shrink:0;">
+    <textarea class="chat-inp" id="ci" placeholder="Ask your AI coach..." rows="1" maxlength="500"></textarea>
     <button class="send" id="sendbtn" onclick="sndMsg()">
-      <svg width="14" height="14" fill="none" viewBox="0 0 24 24"><path d="M22 2L11 13" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 2L15 22L11 13L2 9L22 2Z" fill="white"/></svg>
+      <svg width="13" height="13" fill="none" viewBox="0 0 24 24"><path d="M22 2L11 13" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 2L15 22L11 13L2 9L22 2Z" fill="white"/></svg>
     </button>
   </div>
-  <div style="text-align:center;font-size:11px;color:var(--txt3);padding:0 20px 12px;line-height:1.5;">AI-coach geïnspireerd op de gekozen speler — niet de echte persoon.</div>
+  <div style="text-align:center;font-size:10px;color:var(--txt3);padding:0 18px 11px;line-height:1.5;flex-shrink:0;">AI coach inspired by the mindset of the chosen player — not the real person.</div>
   <div class="nav">
     <button class="nb" onclick="goS('s-home')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955a1.126 1.126 0 011.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75"/></svg>Home</button>
-    <button class="nb" onclick="goS('s-dieet')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z"/></svg>Dieet</button>
-    <button class="nb" onclick="goS('s-karriere')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941"/></svg>Carrière</button>
+    <button class="nb" onclick="goS('s-dieet')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z"/></svg>Nutrition</button>
+    <button class="nb" onclick="goS('s-karriere')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941"/></svg>Career</button>
     <button class="nb on"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"/></svg>AI Coach</button>
   </div>
 </div>
@@ -337,185 +476,314 @@ body{font-family:var(--font);background:#efefed;min-height:100vh;display:flex;ju
 
 <script>
 var P={naam:'',pos:'',niv:'',jaar:'',clubs:[],idool:'',emoji:'🤖',story:''};
-var CM='default';
-var SC=[];
-var isLoading=false;
-var convHistory=[];
-
-var TL={
-  Griezmann:{e:'🇫🇷',s:'Aanvallende middenvelder · Spits',
-    q:'"Transitioning from being rejected by French academies for his size to becoming Atlético Madrid\'s all-time top scorer and a 2018 World Cup winner." — Google AI Overview',
-    items:[
-      {a:'14',t:'Afgewezen — Lyon & Mönchengladbach',d:'Te klein, te zwak. Alle Franse academies weigerden hem.',tag:'r',tl:'Laagste punt'},
-      {a:'14',t:'Vader rijdt 1.400 km naar Real Sociedad',d:'Één kans. Eén test. Sociedad zag wat anderen misten.',tag:'n',tl:'Keerpunt'},
-      {a:'18',t:'Profdebuut La Liga',d:'Begon als wisselspeler. Groeide stap voor stap.',tag:'n',tl:''},
-      {a:'23',t:'Transfer Atlético Madrid — €30M',d:'All-time topscorer van Atlético binnen 2 jaar.',tag:'w',tl:'Doorbraak'},
-      {a:'25',t:'Gouden Schoen EURO 2016',d:'Beste speler van het EK. Van onbekend naar Europese ster.',tag:'w',tl:''},
-      {a:'27',t:'Wereldkampioen WK 2018',d:'Scoorde in de finale. Van afgewezen tiener naar wereldtop.',tag:'w',tl:'Wereldtop'},
-    ]},
-  Mendy:{e:'🧤',s:'Keeper',
-    q:'"Five years ago, aged 23, he was unemployed, queuing at a local job centre and ready to quit football." — Geverifieerde bron',
-    items:[
-      {a:'20',t:'Contract verloren bij Cherbourg',d:'Geen club, geen inkomen.',tag:'r',tl:'Laagste punt'},
-      {a:'23',t:'Werkloos — rij bij jobcentrum',d:'Overwoog definitief te stoppen met voetbal.',tag:'r',tl:'Bijna gestopt'},
-      {a:'23',t:'Koos voor voetbal',d:'Begon opnieuw op amateursniveau.',tag:'n',tl:'Keerpunt'},
-      {a:'25',t:'Stade Laval — Ligue 2',d:'Eerste profcontract. 2 jaar na het jobcentrum.',tag:'w',tl:'Eerste stap'},
-      {a:'27',t:'Stade Rennais — Ligue 1',d:'Hoogste divisie. Scouts beginnen te kijken.',tag:'w',tl:'Doorbraak'},
-      {a:'28',t:'Chelsea — £22M',d:'Grootste transfer Afrikaanse keeper ooit.',tag:'w',tl:'Droom'},
-      {a:'29',t:'Champions League winnaar',d:'Van jobcentrum naar Europees kampioen.',tag:'w',tl:'Wereldtop'},
-    ]},
-  Vardy:{e:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',s:'Spits',
-    q:'"You can work on the factory floor when you\'re 23, and play in the fifth division when you\'re 25. If you are the one who chases the hopeless balls, you could still be top scorer." — Erik Niva',
-    items:[
-      {a:'16',t:'Afgewezen Sheffield Wednesday',d:'"Te klein." Stopte 8 maanden met voetbal.',tag:'r',tl:'Laagste punt'},
-      {a:'17-22',t:'Prothesefabriek + zondagsvoetbal',d:'Zwaar fabriekswerk. Voetbal als hobby.',tag:'n',tl:'Gewoon leven'},
-      {a:'21',t:'Enkelband na kroeggevecht',d:'Avondklok. Niet op uitwedstrijden.',tag:'r',tl:'Dieptepunt'},
-      {a:'25',t:'Leicester City — £1M',d:'Eerste profcontract op 25. Van 5e divisie naar prof.',tag:'w',tl:'Keerpunt'},
-      {a:'27',t:'PL goals vs Man United',d:'Mourinho: "Do you ever stop fucking running?"',tag:'w',tl:'Doorbraak'},
-      {a:'29',t:'Premier League kampioen',d:'Het grootste sprookje in voetbalgeschiedenis.',tag:'w',tl:'Legendarisch'},
-    ]},
-  Lukaku:{e:'🇧🇪',s:'Spits · Belgisch recordscorer',
-    q:'"A tale of early prodigious talent, immense goal-scoring figures, record-breaking transfers, and frequent controversies." — Geverifieerde bronanalyse',
-    items:[
-      {a:'16',t:'Anderlecht — jongste topscorer Pro League',d:'Won Belgische titel als tiener.',tag:'w',tl:'Vroege doorbraak'},
-      {a:'18',t:'Chelsea (1e) — bank',d:'Nauwelijks speeltijd. Harde les.',tag:'r',tl:'Frustratie'},
-      {a:'21',t:'Everton — 25 goals/seizoen',d:'Volle speeltijd. Erkend als topspits.',tag:'w',tl:'Beste periode'},
-      {a:'27',t:'Inter Milan onder Conte — Serie A MVP',d:'Absolute piek. Kampioen onder Conte.',tag:'w',tl:'Absolute top'},
-      {a:'28',t:'Chelsea return — interview-controverse',d:'Sky Italia interview ruineerde alles voor het begon.',tag:'r',tl:'Grote fout'},
-      {a:'32',t:'Napoli crisis — april 2026',d:'Keerde niet terug na verlof. Mentale uitputting.',tag:'r',tl:'Actueel 2026'},
-    ]},
-};
+var CM='default';var SC=[];var isLoad=false;var convH=[];
 
 var pEmoji={Griezmann:'🇫🇷',Mendy:'🧤',Vardy:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',Lukaku:'🇧🇪'};
 var openMsg={
-  Griezmann:'Ik ben een AI-coach geïnspireerd op de mentaliteit van Griezmann. Ik werd als tiener afgewezen door grote clubs, maar heb nooit opgegeven. Wat wil jij verbeteren?',
-  Mendy:'Ik ben een AI-coach geïnspireerd op de mentaliteit van Édouard Mendy. Werkloos op 23, Champions League winnaar op 29. Nooit te laat. Wat houdt jou bezig?',
-  Vardy:'Ik ben een AI-coach geïnspireerd op de mentaliteit van Jamie Vardy. Van fabriek naar Premier League-top. Als je nooit stopt met rennen, kom je er. Wat wil je weten?',
-  Lukaku:'Ik ben een AI-coach geïnspireerd op de mentaliteit van Romelu Lukaku. Meer dan 400 carrièredoelpunten — het begint bij discipline en geloof in jezelf. Wat is jouw vraag?'
+  Griezmann:"I'm an AI coach inspired by the mentality of Griezmann. I was rejected by big clubs as a teenager but never gave up. What do you want to improve in your game or career?",
+  Mendy:"I'm an AI coach inspired by the mentality of Édouard Mendy. Unemployed at 23, Champions League winner at 29. It's never too late. What's on your mind?",
+  Vardy:"I'm an AI coach inspired by the mentality of Jamie Vardy. From factory to Premier League top scorer. If you never stop running, you'll get there. What do you want to know?",
+  Lukaku:"I'm an AI coach inspired by the mentality of Romelu Lukaku. Over 400 career goals — it starts with discipline and belief in yourself. What's your question?"
 };
 
+var TL={
+  Griezmann:{e:'🇫🇷',s:'Attacking midfielder · Striker',
+    q:'"Transitioning from being rejected by French academies for his size to becoming Atlético Madrid\'s all-time top scorer and a 2018 World Cup winner." — Google AI Overview',
+    items:[
+      {a:'14',t:'Rejected by Lyon & Mönchengladbach',d:'Too small, too weak. Every French academy turned him down. His father refused to give up.',tag:'r',tl:'Lowest point'},
+      {a:'14',t:'Father drives 1,400km to Real Sociedad',d:'One chance. One test. Sociedad saw what others missed: technique, intelligence, character.',tag:'n',tl:'Turning point'},
+      {a:'18',t:'Professional debut La Liga',d:'Started as a substitute. Grew step by step. Nobody outside Spain knew him.',tag:'n',tl:''},
+      {a:'23',t:'Transfer Atlético Madrid — €30M',d:'All-time top scorer at Atlético within 2 years. First Champions League final.',tag:'w',tl:'Breakthrough'},
+      {a:'25',t:'Golden Boot EURO 2016',d:'Best player of the tournament. From unknown to European star.',tag:'w',tl:''},
+      {a:'27',t:'World Champion 2018',d:'Scored in the final. From rejected teenager to world champion.',tag:'w',tl:'World class'},
+    ]},
+  Mendy:{e:'🧤',s:'Goalkeeper',
+    q:'"Five years ago, aged 23, he was unemployed, queuing at a local job centre and ready to quit football." — Verified source',
+    items:[
+      {a:'20',t:'Contract lost at Cherbourg',d:'No club, no income. Standing on the street.',tag:'r',tl:'Lowest point'},
+      {a:'23',t:'Unemployed — job centre queue',d:'Considered quitting football for good. Almost gave up.',tag:'r',tl:'Nearly quit'},
+      {a:'23',t:'Chose football over security',d:'Started again at amateur level. Trained every day.',tag:'n',tl:'Turning point'},
+      {a:'25',t:'Stade Laval — Ligue 2',d:'First real professional contract. Two years after the job centre.',tag:'w',tl:'First step up'},
+      {a:'27',t:'Stade Rennais — Ligue 1',d:'Finally the top division. Scouts start watching.',tag:'w',tl:'Breakthrough'},
+      {a:'28',t:'Chelsea FC — £22M',d:'Biggest transfer for an African goalkeeper at the time.',tag:'w',tl:'Dream'},
+      {a:'29',t:'Champions League winner',d:'From job centre to European champion. It\'s never too late.',tag:'w',tl:'World class'},
+    ]},
+  Vardy:{e:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',s:'Striker',
+    q:'"You can work on the factory floor when you\'re 23, and play in the fifth division when you\'re 25. If you are the one who chases the hopeless balls, you could still be top scorer." — Erik Niva',
+    items:[
+      {a:'16',t:'Rejected by Sheffield Wednesday',d:'"Too small to succeed." Stopped playing for 8 months.',tag:'r',tl:'Lowest point'},
+      {a:'17–22',t:'Prosthetics factory + Sunday football',d:'Heavy factory work. Carbon fibre in ovens. Football as a hobby.',tag:'n',tl:'Real life'},
+      {a:'21',t:'Ankle tag after pub fight',d:'Evening curfew. Not allowed on away trips.',tag:'r',tl:'Low point'},
+      {a:'25',t:'Leicester City — £1M',d:'First real pro contract at 25. From 5th division to serious club.',tag:'w',tl:'Turning point'},
+      {a:'27',t:'PL goals vs Man United',d:'Mourinho in the tunnel: "Do you ever stop fucking running?"',tag:'w',tl:'Breakthrough'},
+      {a:'29',t:'Premier League champion',d:'The greatest fairytale in football history. Top scorer of England.',tag:'w',tl:'Legendary'},
+    ]},
+  Lukaku:{e:'🇧🇪',s:'Striker · Belgian all-time top scorer',
+    q:'"A tale of early prodigious talent, immense goal-scoring figures, record-breaking transfers, and frequent controversies." — Verified analysis',
+    items:[
+      {a:'16',t:'Anderlecht — youngest Pro League top scorer',d:'Won Belgian title as a teenager. All of Belgium talked about him.',tag:'w',tl:'Early breakthrough'},
+      {a:'18',t:'Chelsea (1st) — bench warmer',d:'Barely any playing time. Hard lesson at the top.',tag:'r',tl:'Frustration'},
+      {a:'21',t:'Everton — 25 goals/season',d:'Full playing time. Recognised as top striker.',tag:'w',tl:'Best period'},
+      {a:'27',t:'Inter Milan under Conte — Serie A MVP',d:'Absolute peak. Champion under Conte.',tag:'w',tl:'Absolute top'},
+      {a:'28',t:'Chelsea return — interview controversy',d:'Sky Italia interview about unhappiness ruined everything before it started.',tag:'r',tl:'Big mistake'},
+      {a:'32',t:'Napoli crisis — April 2026',d:'Did not return from leave in Belgium. "Professional misconduct" said Napoli.',tag:'r',tl:'Current 2026'},
+    ]},
+};
+
+var PLANS={
+  match:{focus:"Maximise glycogen stores. Every meal today is about carbohydrates. Research: 7–8g carbs/kg delays fatigue and keeps decision-making sharp after 60 minutes when most goals are scored.",label:"Match day focus",
+    meals:[
+      {e:"🌅",n:"Breakfast — High-carb oat bowl",t:"07:00",kc:520,c:88,p:18,f:11,ing:"80g rolled oats · 1 large banana · 1 tbsp honey · 200ml milk · handful berries · 1 tbsp peanut butter",why:"Maximum glycogen loading starts at breakfast. Oats + banana + honey = slow + fast release carbs to top up stores from overnight fast."},
+      {e:"🍝",n:"Lunch — Pasta with chicken",t:"12:30",kc:720,c:98,p:44,f:14,ing:"200g pasta · 150g chicken breast · tinned tomatoes · garlic · olive oil · parmesan",why:"Standard pre-match meal at every professional club. Pasta = highest glycogen yield. Eat 3–4 hours before kick-off."},
+      {e:"⚡",n:"Pre-match snack",t:"KO −90min",kc:240,c:48,p:6,f:4,ing:"1 banana · 2 rice cakes with jam · 400ml water",why:"Top up glycogen without feeling heavy. Fast-absorbing carbs only. No fat or fibre — slows absorption."},
+      {e:"🍊",n:"Half-time fuel",t:"Half-time",kc:120,c:30,p:2,f:1,ing:"1 banana · orange slices · sports drink or gel",why:"30–60g carbs per hour during match per KNVB guidelines. This is when most amateur players crash — don't skip."},
+      {e:"💪",n:"Post-match recovery",t:"KO +30min",kc:380,c:52,p:32,f:8,ing:"500ml chocolate milk · 1 banana · optional: whey protein",why:"4:1 carb:protein ratio scientifically proven to restore glycogen and repair muscle. Drink within 30 minutes."},
+    ]},
+  prematch:{focus:"Day before match: maximum glycogen loading. Eat more carbs than usual — especially at dinner. Your performance tomorrow depends on what you eat today.",label:"Day before match",
+    meals:[
+      {e:"🥞",n:"Breakfast — Pancakes with syrup",t:"07:00",kc:580,c:95,p:16,f:14,ing:"150g pancake mix · 2 eggs · 200ml milk · maple syrup · banana",why:"High-glycaemic breakfast to start loading. Rapidly tops up liver glycogen after overnight fast."},
+      {e:"🍗",n:"Lunch — Rice & chicken",t:"12:30",kc:640,c:78,p:50,f:12,ing:"180g basmati rice · 150g chicken breast · vegetables · olive oil",why:"Continue loading with basmati rice. Avoid high-fat meals today — fat slows glycogen uptake."},
+      {e:"🍌",n:"Afternoon snack",t:"15:30",kc:280,c:55,p:8,f:5,ing:"2 slices wholegrain toast · peanut butter · banana · orange juice",why:"Keep carb intake high throughout the day. This day is as important as match day itself."},
+      {e:"🍝",n:"Dinner — Pasta bolognese",t:"18:30",kc:780,c:105,p:45,f:18,ing:"220g spaghetti · 180g lean beef mince · tinned tomatoes · onion · garlic · parmesan",why:"Most important meal before match day. Used by Premier League, Bundesliga and Serie A clubs. Large portion = maximum overnight glycogen stores."},
+      {e:"🥛",n:"Evening snack",t:"21:00",kc:180,c:28,p:14,f:3,ing:"200g low-fat Greek yoghurt · honey · small banana",why:"Casein protein before sleep supports overnight muscle repair. Small carb prevents glycogen breakdown during sleep."},
+    ]},
+  strength:{focus:"Strength training: high protein to build muscle, moderate carbs for energy. Protein timing is critical — consume within 20 minutes post-training for maximum muscle protein synthesis.",label:"Strength training focus",
+    meals:[
+      {e:"🍳",n:"Breakfast — Eggs & avocado toast",t:"07:00",kc:480,c:42,p:32,f:18,ing:"3 whole eggs · 2 slices wholegrain toast · 1 avocado · cherry tomatoes",why:"Protein-forward breakfast. Eggs contain all essential amino acids. Leucine in eggs triggers muscle building."},
+      {e:"🥩",n:"Lunch — Beef & sweet potato",t:"12:30",kc:620,c:52,p:54,f:16,ing:"180g lean beef · 200g sweet potato · broccoli · olive oil · garlic",why:"Lean beef provides natural creatine and complete amino acids. Sweet potato = slow-release energy for afternoon session."},
+      {e:"💊",n:"Pre-strength snack",t:"−60min",kc:220,c:38,p:12,f:4,ing:"3–5g creatine monohydrate · banana · 400ml water · optional coffee",why:"Creatine before strength training increases power output by 5–15%. Combine with carbs for optimal uptake."},
+      {e:"💪",n:"Post-strength shake",t:"Within 20min",kc:340,c:42,p:36,f:5,ing:"30g whey protein · 300ml milk · 1 large banana — blend together",why:"20-minute anabolic window: muscle protein synthesis peaks post-training. 25–40g whey + fast carbs. Most important meal for muscle growth."},
+      {e:"🐟",n:"Dinner — Salmon & quinoa",t:"19:30",kc:580,c:48,p:46,f:19,ing:"180g salmon fillet · 150g quinoa · spinach · lemon · olive oil",why:"Salmon omega-3 reduces training inflammation. Quinoa is a complete protein. Together they maximise overnight muscle repair."},
+    ]},
+  cardio:{focus:"Cardio / endurance: highest carbohydrate intake. Footballers run 9–12km per match — all from glycogen. Electrolytes critical to replace sodium and potassium lost in sweat.",label:"Cardio training focus",
+    meals:[
+      {e:"🌅",n:"Breakfast — Carb power bowl",t:"07:00",kc:560,c:95,p:16,f:11,ing:"90g rolled oats · 2 bananas · 2 tbsp honey · 200ml milk · dried fruit",why:"Maximum carbohydrate loading. Low fat, low fibre for fast gastric emptying. Glycogen stores determine how long you can run at high intensity."},
+      {e:"🍚",n:"Lunch — White rice & tuna",t:"12:00",kc:580,c:82,p:42,f:8,ing:"180g white rice · 160g tuna in water · cucumber · soy sauce · edamame",why:"White rice before endurance = faster glycogen uptake than basmati. Tuna is low fat, high protein. Eat 2–3 hours before session."},
+      {e:"⚡",n:"Pre-cardio fuel",t:"−60min",kc:260,c:54,p:5,f:3,ing:"2 bananas · 500ml sports drink OR energy gel + water",why:"Pure carbohydrates only. Add electrolytes if session exceeds 60 minutes. No fat or protein — slows digestion."},
+      {e:"🧃",n:"During session",t:"Every 20min",kc:120,c:30,p:2,f:0,ing:"500ml sports drink OR banana + water · electrolyte tablet",why:"30–60g carbs per hour. Replace electrolytes: sodium, potassium, magnesium. 2% dehydration reduces performance by 10–20%."},
+      {e:"🌊",n:"Post-cardio recovery",t:"+30min",kc:400,c:68,p:24,f:6,ing:"500ml coconut water · banana · rice cakes with honey · optional whey",why:"After long cardio glycogen may be fully depleted. Prioritise carbs first (4:1 ratio). Electrolyte replacement essential."},
+    ]},
+  technical:{focus:"Technical training: moderate carbs for brain and muscle. Technical sessions demand mental sharpness — carbs fuel the brain as much as the muscles. The brain uses 120g glucose per day.",label:"Technical training focus",
+    meals:[
+      {e:"🌅",n:"Breakfast — Balanced start",t:"07:00",kc:480,c:62,p:24,f:14,ing:"2 eggs on toast · 1 banana · Greek yoghurt · coffee or green tea",why:"Balanced breakfast for a technical day. Enough carbs for mental focus during drills. Protein to maintain muscle."},
+      {e:"🥗",n:"Lunch — Chicken rice bowl",t:"12:30",kc:580,c:65,p:46,f:12,ing:"140g chicken breast · 140g basmati rice · mixed vegetables · olive oil",why:"Standard footballer lunch. Basmati rice for sustained energy. Chicken breast for lean protein without heaviness."},
+      {e:"🍌",n:"Pre-session snack",t:"−60min",kc:200,c:38,p:6,f:4,ing:"1 banana · 1 rice cake with peanut butter · 400ml water",why:"Light pre-session fuel. Enough to stay sharp and focused during technical drills."},
+      {e:"🥤",n:"Post-session recovery",t:"+30min",kc:280,c:34,p:26,f:5,ing:"200g Greek yoghurt · 40g granola · honey OR protein shake with milk",why:"Lighter recovery than match day. Focus on protein for muscle maintenance."},
+      {e:"🐟",n:"Dinner — Balanced recovery",t:"19:30",kc:520,c:50,p:40,f:16,ing:"160g salmon · 180g sweet potato · broccoli · spinach · olive oil · lemon",why:"Salmon omega-3 reduces inflammation. Sweet potato refills glycogen for next session."},
+    ]},
+  easy:{focus:"Easy training: reduced calorie intake vs heavy days. Focus on food quality. Perfect day to practice nutrition habits. Your body needs less fuel — don't overeat.",label:"Easy training focus",
+    meals:[
+      {e:"🥣",n:"Breakfast — Overnight oats",t:"07:00",kc:420,c:58,p:20,f:12,ing:"70g rolled oats · 180ml milk · 130g Greek yoghurt · chia seeds · honey · berries (prep night before)",why:"Slow-release carbs perfect for a lighter day. Prepare the night before — no morning stress."},
+      {e:"🥗",n:"Lunch — Protein salad",t:"12:30",kc:460,c:38,p:44,f:14,ing:"Mixed greens · 130g grilled chicken · chickpeas · cucumber · feta · olive oil · lemon",why:"Lighter carb load on easy day. High-protein salad keeps you full without heaviness."},
+      {e:"🍎",n:"Afternoon snack",t:"15:30",kc:160,c:28,p:8,f:3,ing:"1 apple · small handful almonds (20g) · water",why:"Light snack before easy session. Apple adds fructose for liver glycogen."},
+      {e:"🥤",n:"Post-session protein",t:"+30min",kc:220,c:22,p:26,f:4,ing:"150g Greek yoghurt · granola · honey",why:"Even after easy sessions consume protein to maintain muscle."},
+      {e:"🍲",n:"Dinner — Veggie power bowl",t:"19:30",kc:480,c:58,p:28,f:14,ing:"130g lentils · roasted vegetables · feta · olive oil · tahini dressing",why:"Plant-based recovery. Lentils are an underrated protein source. Anti-inflammatory vegetables support recovery."},
+    ]},
+  recovery:{focus:"Active recovery: anti-inflammatory nutrition is the priority. Light movement + right foods = faster recovery. Omega-3, antioxidants and hydration are your tools today.",label:"Active recovery focus",
+    meals:[
+      {e:"🫐",n:"Breakfast — Anti-inflammatory bowl",t:"08:00",kc:380,c:52,p:18,f:12,ing:"60g oats · 200ml almond milk · large handful blueberries · flaxseed · turmeric · honey · walnuts",why:"Blueberries reduce muscle soreness by 30% in athletes. Turmeric reduces inflammation markers. Start recovery from the first meal."},
+      {e:"🐟",n:"Lunch — Salmon & quinoa",t:"12:30",kc:540,c:44,p:46,f:18,ing:"170g salmon · 130g quinoa · spinach · avocado · lemon · olive oil",why:"Salmon omega-3 actively reduces muscle inflammation. Not just recovery food — it actively speeds up repair."},
+      {e:"🍵",n:"Recovery snack",t:"15:30",kc:180,c:24,p:10,f:6,ing:"200ml tart cherry juice · small handful walnuts · 1 banana",why:"Tart cherry juice reduces muscle soreness and recovery time by up to 24 hours in studies."},
+      {e:"💊",n:"Supplements if used",t:"Throughout",kc:0,c:0,p:0,f:0,ing:"Magnesium glycinate 300mg · omega-3 · vitamin D3 · 3L+ water",why:"Recovery day: ideal for magnesium (reduces cramps), vitamin D (muscle health), omega-3. Consult doctor before starting."},
+      {e:"🫕",n:"Dinner — Turkey & veg",t:"19:00",kc:460,c:36,p:42,f:14,ing:"160g turkey breast · 150g brown rice · broccoli + spinach · olive oil · garlic",why:"Turkey contains tryptophan which improves sleep quality — critical for recovery. Sleep is when most muscle repair happens."},
+    ]},
+  rest:{focus:"Rest day: lowest calorie intake. Muscles don't need glycogen replenishment. Reduce carbs 40%, increase protein for repair. Focus on anti-inflammatory foods and maximum hydration.",label:"Rest day focus",
+    meals:[
+      {e:"🍳",n:"Breakfast — Eggs & avocado",t:"08:30",kc:420,c:18,p:28,f:28,ing:"3 eggs (any style) · 1 avocado · 1 slice rye bread · cherry tomatoes · black coffee",why:"Low-carb, high-protein on rest day. Avocado provides omega-9 for joint health."},
+      {e:"🥗",n:"Lunch — Tuna salad",t:"13:00",kc:380,c:22,p:48,f:12,ing:"160g tuna in water · large mixed salad · chickpeas · cucumber · olive oil · lemon",why:"High-protein, low-carb lunch. No heavy rice or pasta today."},
+      {e:"🫐",n:"Snack",t:"16:00",kc:160,c:18,p:12,f:5,ing:"150g low-fat cottage cheese · blueberries · drizzle honey",why:"Cottage cheese is high in casein — slow-digesting protein ideal between meals."},
+      {e:"🐟",n:"Dinner — Salmon & veg",t:"19:00",kc:480,c:24,p:44,f:22,ing:"180g salmon · roasted broccoli & cauliflower · 100g sweet potato · olive oil",why:"Omega-3 rich dinner for maximum overnight recovery. Broccoli contains sulforaphane — reduces inflammation."},
+      {e:"🥛",n:"Evening protein",t:"21:30",kc:140,c:12,p:18,f:3,ing:"180g low-fat Greek yoghurt · small handful walnuts",why:"Casein protein before sleep feeds muscles for 7–8 hours overnight."},
+    ]},
+};
+
+var RECIPES=[
+  {d:'easy',e:'🍌',n:'Banana peanut butter toast',t:'5 min',kc:340,c:58,p:12,f:10,use:'Pre-training fuel',ing:'2 slices wholegrain bread · 1.5 tbsp peanut butter · 1 banana · drizzle honey',steps:['Toast bread until golden brown.','Spread peanut butter evenly on both slices.','Slice banana, place on top. Add honey.','Eat 60–90 minutes before training with 500ml water.'],note:'"Banana + toast before training works better than any supplement." — Used by semi-pro players worldwide.'},
+  {d:'easy',e:'🥤',n:'Chocolate milk recovery shake',t:'2 min',kc:290,c:42,p:18,f:8,use:'Post-training recovery',ing:'500ml semi-skimmed chocolate milk · 1 banana · optional: 1 scoop whey protein',steps:['Blend chocolate milk + banana for 30 seconds.','Drink within 30 minutes of finishing training.'],note:'Scientifically proven 4:1 carb:protein ratio matches expensive recovery products. Used in Premier League academies.'},
+  {d:'easy',e:'🥛',n:'Greek yoghurt power bowl',t:'3 min',kc:320,c:38,p:24,f:8,use:'Breakfast / recovery snack',ing:'200g Greek yoghurt · 40g granola · 1 banana · 1 tbsp honey · berries',steps:['Add Greek yoghurt to bowl.','Layer granola on top.','Slice banana, add berries.','Drizzle honey. Eat immediately.'],note:'High in casein protein — ideal before sleep or as recovery snack. No cooking required.'},
+  {d:'medium',e:'🍗',n:'Chicken & rice match day prep',t:'20 min',kc:620,c:72,p:50,f:14,use:'Lunch — match day / heavy training',ing:'150g chicken breast · 150g basmati rice · mixed veg · olive oil · garlic · herbs',steps:['Boil rice in salted water, 12 minutes.','Season chicken with garlic, herbs, salt and pepper.','Cook chicken in olive oil, 6–7 min each side.','Rest chicken 2 min. Slice and serve over rice.'],note:'Standard meal at Premier League clubs 3–4 hours before kick-off.'},
+  {d:'medium',e:'🥣',n:'Overnight oats',t:'5 min prep',kc:520,c:78,p:22,f:14,use:'Breakfast — all training types',ing:'80g rolled oats · 200ml milk · 150g Greek yoghurt · chia seeds · honey · berries (night before)',steps:['Mix oats, milk, yoghurt, chia seeds and honey in jar.','Refrigerate overnight (minimum 6 hours).','Morning: add fresh berries and extra honey.'],note:'Perfect for players with early morning training. 5 minutes prep the night before.'},
+  {d:'medium',e:'🍳',n:'Scrambled eggs with smoked salmon',t:'10 min',kc:420,c:8,p:42,f:24,use:'Breakfast — strength / rest day',ing:'3 eggs · 80g smoked salmon · 1 tbsp butter · dill · pepper · rye bread',steps:['Whisk eggs with pinch of salt.','Melt butter in pan on LOW heat — key for creamy eggs.','Add eggs, stir slowly. Remove while slightly wet.','Top with smoked salmon, dill, pepper and rye bread.'],note:'High omega-3 (salmon) + complete protein (eggs) = ideal strength day breakfast.'},
+  {d:'hard',e:'🍝',n:'Pre-match pasta bolognese',t:'35 min',kc:720,c:95,p:42,f:16,use:'Dinner — day before match',ing:'200g spaghetti · 150g lean beef mince · 1 tin tomatoes · onion · garlic · herbs · parmesan',steps:['Dice onion and garlic. Fry in olive oil 3–4 min.','Add beef mince, cook until browned, 5–6 minutes.','Add tinned tomatoes, herbs, salt, pepper. Simmer 15 min.','Cook spaghetti al dente. Combine. Top with parmesan.'],note:'Served to players at Juventus, Real Madrid and most European clubs the evening before a game.'},
+  {d:'hard',e:'🍲',n:'Anti-inflammatory lentil stew',t:'40 min',kc:480,c:62,p:28,f:12,use:'Dinner — recovery / rest day',ing:'200g red lentils · 1 tin tomatoes · onion · 2 carrots · garlic · turmeric · cumin · stock · spinach',steps:['Dice onion, carrot, garlic. Fry with turmeric and cumin.','Add lentils, tomatoes and stock. Bring to boil.','Simmer 25 minutes until lentils are soft.','Stir in fresh spinach. Season. Add lemon juice.'],note:'Turmeric (curcumin) reduces muscle inflammation by up to 25% in athletes.'},
+];
+
+var DSCI={
+  match:'Match day: 7–8g carbs/kg. Research proves this delays fatigue and maintains decision-making after 60 minutes — when most goals are scored. Every meal today is about carbohydrates.',
+  prematch:'Day before match: start carb loading now. Top clubs feed players high-carb dinners the evening before. Your performance tomorrow depends on what you eat today.',
+  strength:'Strength training: 5g carbs/kg + 2.2g protein/kg. Protein synthesis peaks 20 minutes post-training. Creatine monohydrate increases power output by 5–15%.',
+  cardio:'Cardio/endurance: 7g carbs/kg. Footballers run 9–12km per match, all powered by glycogen. Electrolyte replacement essential — you lose 1–2L sweat per hour of intense training.',
+  technical:'Technical training: moderate carbs for mental sharpness. The brain uses 120g glucose per day — carbs fuel decisions and reaction time as much as physical performance.',
+  easy:'Easy training: reduced intake. Focus on food quality. Perfect day to practice meal prep. Your body needs less fuel today — avoid overeating.',
+  recovery:'Active recovery: anti-inflammatory priority. Omega-3, antioxidants (blueberries, spinach) and hydration are your tools. Turmeric reduces inflammation by up to 25% in athletes.',
+  rest:'Rest day: reduce carbs 40%, increase protein 10%. Anti-inflammatory foods speed overnight recovery. Sleep 8–9 hours — this is when 80% of muscle repair happens.'
+};
+
+// ONBOARDING
 function ob(n){
-  ['ob1','ob2','ob3','ob4'].forEach(id=>{
-    var el=document.getElementById(id);
-    el.style.display='none';
-  });
-  if(n===2){P.naam=document.getElementById('i-naam').value||'Speler';P.pos=document.getElementById('i-pos').value;P.jaar=document.getElementById('i-jaar').value;}
+  ['ob1','ob2','ob3','ob4'].forEach(id=>{var el=document.getElementById(id);el.style.display='none';});
+  if(n===2){P.naam=document.getElementById('i-naam').value||'Player';P.pos=document.getElementById('i-pos').value;P.jaar=document.getElementById('i-jaar').value;}
   if(n===3){P.niv=document.getElementById('i-niv').value;P.clubs=[...SC];}
-  var el=document.getElementById('ob'+n);
-  el.style.display='flex';
-  el.style.flexDirection='column';
+  var el=document.getElementById('ob'+n);el.style.display='flex';el.style.flexDirection='column';
 }
-
-function tog(el,v){
-  el.classList.toggle('on');
-  if(SC.includes(v))SC=SC.filter(c=>c!==v);else SC.push(v);
-}
-
+function tog(el,v){el.classList.toggle('on');if(SC.includes(v))SC=SC.filter(c=>c!==v);else SC.push(v);}
 function sP(el,naam,emoji,story){
-  document.querySelectorAll('.popt').forEach(e=>e.classList.remove('on'));
-  el.classList.add('on');
+  document.querySelectorAll('.popt').forEach(e=>e.classList.remove('on'));el.classList.add('on');
   P.idool=naam;P.emoji=emoji;P.story=story;
   var pct=cM();
   document.getElementById('ob4-prev').innerHTML=
-    '<div style="display:flex;align-items:center;gap:13px;margin-bottom:12px;">'
-    +'<div style="width:44px;height:44px;border-radius:50%;background:var(--bg3);border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:22px;">'+emoji+'</div>'
-    +'<div style="flex:1;"><div style="font-size:15px;font-weight:700;">'+P.naam+'</div><div style="font-size:12px;color:var(--txt2);margin-top:2px;">'+P.pos+' · '+P.niv+'</div></div>'
-    +'<div style="text-align:right;"><div style="font-size:22px;font-weight:700;">'+pct+'%</div><div style="font-size:11px;color:var(--txt2);">match '+naam+'</div></div></div>'
-    +'<div style="font-size:12px;color:var(--txt2);line-height:1.6;padding-top:12px;border-top:0.5px solid var(--border);">'+story+'</div>';
+    '<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">'
+    +'<div style="width:42px;height:42px;border-radius:50%;background:var(--bg3);border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:21px;">'+emoji+'</div>'
+    +'<div style="flex:1;"><div style="font-size:14px;font-weight:700;">'+P.naam+'</div><div style="font-size:11px;color:var(--txt2);margin-top:2px;">'+P.pos+' · '+P.niv+'</div></div>'
+    +'<div style="text-align:right;"><div style="font-size:21px;font-weight:700;">'+pct+'%</div><div style="font-size:10px;color:var(--txt2);">match '+naam+'</div></div></div>'
+    +'<div style="font-size:11px;color:var(--txt2);line-height:1.6;padding-top:11px;border-top:0.5px solid var(--border);">'+story+'</div>';
   setTimeout(()=>ob(4),300);
 }
-
-function cM(){
-  var b=36;
-  if(P.clubs.length)b+=Math.min(P.clubs.length*5,20);
-  if(P.jaar==='6–10 jaar'||P.jaar==='10+ jaar')b+=12;
-  if(P.niv==='Halfprofessioneel'||P.niv==='Professioneel')b+=16;
-  return Math.min(b,94);
-}
+function cM(){var b=36;if(P.clubs.length)b+=Math.min(P.clubs.length*5,20);if(P.jaar==='6–10 years'||P.jaar==='10+ years')b+=12;if(P.niv==='Semi-professional'||P.niv==='Professional')b+=16;return Math.min(b,94);}
 
 function finish(){
-  document.getElementById('s-ob').classList.remove('on');
-  document.getElementById('s-ob').style.display='none';
+  document.getElementById('s-ob').classList.remove('on');document.getElementById('s-ob').style.display='none';
   goS('s-home');
   var pct=cM();
   var g=document.getElementById('hg');if(g)g.textContent='Hey '+P.naam+'!';
   var m=document.getElementById('hm');if(m)m.textContent=pct+'%';
   var mc=document.getElementById('hmc');
-  if(mc&&P.idool)mc.innerHTML='<div style="display:flex;align-items:center;gap:12px;"><div style="font-size:28px;">'+P.emoji+'</div><div style="flex:1;"><div style="font-size:14px;font-weight:600;">'+P.idool+'</div><div style="font-size:12px;color:var(--txt2);margin-top:2px;line-height:1.5;">'+P.story.substring(0,75)+'...</div></div><div style="font-size:20px;font-weight:700;">'+pct+'%</div></div>';
+  if(mc&&P.idool)mc.innerHTML='<div style="display:flex;align-items:center;gap:11px;"><div style="font-size:26px;">'+P.emoji+'</div><div style="flex:1;"><div style="font-size:13px;font-weight:600;">'+P.idool+'</div><div style="font-size:11px;color:var(--txt2);margin-top:2px;line-height:1.5;">'+P.story.substring(0,70)+'...</div></div><div style="font-size:19px;font-weight:700;">'+pct+'%</div></div>';
   var ci=document.getElementById('hci');if(ci)ci.textContent=P.emoji;
   var cn=document.getElementById('hcn');if(cn&&P.idool)cn.textContent=P.idool+' AI';
   var ca=document.getElementById('cava');if(ca)ca.textContent=P.emoji;
   var cn2=document.getElementById('cname');if(cn2&&P.idool)cn2.textContent=P.idool+' AI Coach';
   CM=P.idool||'default';
-  var ks=document.getElementById('ksub');if(ks&&P.naam)ks.textContent='Gebaseerd op traject van '+P.naam;
+  var ks=document.getElementById('ksub');if(ks&&P.naam)ks.textContent='Based on the journey of '+P.naam;
   buildGoals();buildKMC();
   sTL(document.querySelector('.ptab.on'),P.idool||'Griezmann');
-  convHistory=[];
-  aMsg(openMsg[P.idool]||'Hallo! Ik ben jouw AI-coach. Stel me een vraag.',false);
+  convH=[];
+  aMsg(openMsg[P.idool]||'Hello! I am your AI coach. Ask me anything.',false);
 }
 
 function buildGoals(){
-  var kg=document.getElementById('kgoals');
-  if(!kg||!P.naam)return;
-  kg.innerHTML='<div style="margin-bottom:10px;padding-bottom:10px;border-bottom:0.5px solid var(--border);"><div style="font-size:13px;font-weight:600;margin-bottom:3px;">Doel 1 — komende 6 maanden</div><div style="font-size:12px;color:var(--txt2);line-height:1.6;">Stap omhoog naar hoger niveau. Focus op consistentie en fysieke ontwikkeling.</div></div>'
-    +'<div style="margin-bottom:10px;padding-bottom:10px;border-bottom:0.5px solid var(--border);"><div style="font-size:13px;font-weight:600;margin-bottom:3px;">Doel 2 — 1 jaar</div><div style="font-size:12px;color:var(--txt2);line-height:1.6;">Netwerk uitbreiden. Contact leggen met scouts via betere wedstrijden.</div></div>'
-    +'<div><div style="font-size:13px;font-weight:600;margin-bottom:3px;">Doel 3 — 2–3 jaar</div><div style="font-size:12px;color:var(--txt2);line-height:1.6;">'+P.idool+' deed het ook. Jij kunt het. Stap voor stap.</div></div>';
+  var kg=document.getElementById('kgoals');if(!kg||!P.naam)return;
+  kg.innerHTML='<div style="margin-bottom:9px;padding-bottom:9px;border-bottom:0.5px solid var(--border);"><div style="font-size:12px;font-weight:600;margin-bottom:3px;">Goal 1 — next 6 months</div><div style="font-size:11px;color:var(--txt2);line-height:1.6;">Step up to higher level. Focus on consistency and physical development.</div></div>'
+    +'<div style="margin-bottom:9px;padding-bottom:9px;border-bottom:0.5px solid var(--border);"><div style="font-size:12px;font-weight:600;margin-bottom:3px;">Goal 2 — 1 year</div><div style="font-size:11px;color:var(--txt2);line-height:1.6;">Expand your network. Get noticed by scouts through better competitions.</div></div>'
+    +'<div><div style="font-size:12px;font-weight:600;margin-bottom:3px;">Goal 3 — 2–3 years</div><div style="font-size:11px;color:var(--txt2);line-height:1.6;">'+P.idool+' did it. You can too. Step by step, not in one jump.</div></div>';
 }
 
 function buildKMC(){
-  var kmc=document.getElementById('kmc');
-  if(!kmc||!P.idool)return;
+  var kmc=document.getElementById('kmc');if(!kmc||!P.idool)return;
   var pct=cM();
-  kmc.innerHTML='<div style="background:var(--bg2);border-radius:var(--r-md);padding:14px;border:0.5px solid var(--border);display:flex;align-items:center;gap:12px;">'
-    +'<div style="font-size:32px;">'+P.emoji+'</div>'
-    +'<div style="flex:1;"><div style="font-size:15px;font-weight:700;">'+P.idool+'</div>'
-    +'<div style="font-size:12px;color:var(--txt2);margin-top:3px;line-height:1.55;">'+P.story+'</div></div>'
-    +'<div style="text-align:right;flex-shrink:0;"><div style="font-size:24px;font-weight:700;">'+pct+'%</div><div style="font-size:11px;color:var(--txt2);">match</div></div></div>';
+  kmc.innerHTML='<div style="background:var(--bg2);border-radius:var(--rm);padding:13px;border:0.5px solid var(--border);display:flex;align-items:center;gap:11px;">'
+    +'<div style="font-size:30px;">'+P.emoji+'</div>'
+    +'<div style="flex:1;"><div style="font-size:14px;font-weight:700;">'+P.idool+'</div><div style="font-size:11px;color:var(--txt2);margin-top:2px;line-height:1.55;">'+P.story+'</div></div>'
+    +'<div style="text-align:right;flex-shrink:0;"><div style="font-size:22px;font-weight:700;">'+pct+'%</div><div style="font-size:10px;color:var(--txt2);">match</div></div></div>';
 }
 
 function goS(name){
-  document.querySelectorAll('.sc').forEach(s=>{s.classList.remove('on');});
+  document.querySelectorAll('.sc').forEach(s=>s.classList.remove('on'));
   document.getElementById(name).classList.add('on');
 }
 
-function setD(btn,lbl,kh,pr,vet){
-  document.querySelectorAll('#s-dieet .qb').forEach(b=>{b.style.borderColor='';b.style.color='';});
-  btn.style.borderColor='var(--txt)';btn.style.color='var(--txt)';
-  document.getElementById('dsub').textContent=lbl+' · vandaag';
-  document.getElementById('mkh').textContent=kh;
-  document.getElementById('mpr').textContent=pr;
-  document.getElementById('mvet').textContent=vet;
+// DIEET
+function swDieet(btn,pid){
+  document.querySelectorAll('.tabb').forEach(t=>t.classList.remove('on'));btn.classList.add('on');
+  document.querySelectorAll('.dpanel').forEach(p=>{p.style.display='none';p.classList.remove('on');});
+  var el=document.getElementById(pid);el.style.display='block';el.classList.add('on');
 }
 
+function dcalc(){
+  var w=parseInt(document.getElementById('dw').value)||70;
+  var t=document.getElementById('dtype').value;
+  var p=document.getElementById('dpos').value;
+  var cm={match:7.5,prematch:7.0,strength:5.0,cardio:7.0,technical:5.5,easy:4.5,recovery:4.0,rest:3.5};
+  var pm={match:1.8,prematch:1.8,strength:2.2,cardio:1.8,technical:2.0,easy:1.9,recovery:2.0,rest:2.2};
+  var fm={match:0.8,prematch:0.9,strength:1.1,cardio:0.8,technical:1.0,easy:1.0,recovery:1.1,rest:1.1};
+  var pa={striker:1.05,mid:1.0,defender:0.97,keeper:0.90};
+  var adj=pa[p]||1;
+  var carb=Math.round(w*cm[t]*adj);var prot=Math.round(w*pm[t]*adj);var fat=Math.round(w*fm[t]*adj);
+  var kcal=Math.round(carb*4+prot*4+fat*9);
+  var water=((w*0.033)+(t==='match'||t==='cardio'?1.0:t==='strength'||t==='technical'?0.7:0.3)).toFixed(1);
+  document.getElementById('d-kcal').textContent=kcal.toLocaleString();
+  document.getElementById('d-carb').textContent=carb+'g';
+  document.getElementById('d-prot').textContent=prot+'g';
+  document.getElementById('d-fat').textContent=fat+'g';
+  document.getElementById('d-ckg').textContent=(carb/w).toFixed(1)+'g';
+  document.getElementById('d-pkg').textContent=(prot/w).toFixed(1)+'g';
+  document.getElementById('d-water').textContent=water+'L';
+  document.getElementById('d-sci').textContent=DSCI[t];
+  var wb=document.getElementById('d-warn');var tb=document.getElementById('d-tip');
+  wb.style.display='none';tb.style.display='none';
+  if(w<60){wb.className='warn-box';wb.textContent='⚠️ Players under 60kg are at risk of underfuelling. Hit your calorie target every day — underfuelling is the #1 mistake in young footballers.';wb.style.display='block';}
+  else if(t==='match'&&carb>420){tb.className='tip-box';tb.textContent='💡 Start carb loading from yesterday\'s dinner. Add an extra portion of pasta or rice the night before the match.';tb.style.display='block';}
+  else if(t==='strength'){tb.className='tip-box';tb.textContent='💡 Take 3–5g creatine monohydrate before your session. Proven to increase strength output by 5–15%.';tb.style.display='block';}
+  else if(t==='rest'){tb.className='tip-box';tb.textContent='✅ Rest days are when you actually get stronger. Prioritise sleep (8–9h), hydration and anti-inflammatory foods.';tb.style.display='block';}
+}
+
+function setMP(btn,type){
+  document.querySelectorAll('#meal-tbns .train-btn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');
+  var plan=PLANS[type];
+  document.getElementById('mp-lbl').textContent=plan.label;
+  document.getElementById('mp-txt').textContent=plan.focus;
+  var ml=document.getElementById('meal-list');
+  ml.innerHTML=plan.meals.map(m=>'<div class="meal-card" onclick="tmeal(this)">'
+    +'<div class="meal-hdr"><div class="meal-ico">'+m.e+'</div><div style="flex:1;"><div class="meal-nm">'+m.n+'</div><div class="meal-sub">'+m.kc+' kcal · '+m.t+'</div></div><div class="meal-time">'+m.t+'</div></div>'
+    +'<div class="meal-det">'
+    +'<div class="mpills"><span class="pill c">'+m.c+'g carbs</span><span class="pill p">'+m.p+'g protein</span><span class="pill f">'+m.f+'g fat</span><span class="pill k">'+m.kc+' kcal</span></div>'
+    +'<div class="det-lbl">Ingredients</div><div style="font-size:11px;line-height:1.8;margin-bottom:4px;">'+m.ing+'</div>'
+    +'<div class="why-box">'+m.why+'</div>'
+    +'</div></div>').join('');
+}
+
+function filterRec(btn,diff){
+  document.querySelectorAll('#d-recipes .fbtn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');
+  var filtered=diff==='all'?RECIPES:RECIPES.filter(r=>r.d===diff);
+  document.getElementById('recipe-list').innerHTML=filtered.map(r=>'<div class="meal-card" onclick="tmeal(this)">'
+    +'<div class="meal-hdr"><div class="meal-ico">'+r.e+'</div><div style="flex:1;"><div class="meal-nm">'+r.n+'</div><div class="meal-sub">'+r.use+' · '+r.t+'</div></div>'
+    +'<span class="diff-b '+(r.d==='easy'?'d-easy':r.d==='medium'?'d-med':'d-hard')+'">'+(r.d==='easy'?'Easy':r.d==='medium'?'Medium':'Advanced')+'</span></div>'
+    +'<div class="meal-det">'
+    +'<div class="mpills"><span class="pill c">'+r.c+'g carbs</span><span class="pill p">'+r.p+'g protein</span><span class="pill f">'+r.f+'g fat</span><span class="pill k">'+r.kc+' kcal</span></div>'
+    +'<div class="det-lbl">Ingredients</div><div style="font-size:11px;line-height:1.8;margin-bottom:8px;">'+r.ing+'</div>'
+    +'<div class="det-lbl">Steps</div>'
+    +r.steps.map((s,i)=>'<div class="step"><div class="snum">'+(i+1)+'</div><div class="stxt">'+s+'</div></div>').join('')
+    +'<div class="why-box" style="margin-top:7px;">'+r.note+'</div>'
+    +'</div></div>').join('');
+}
+
+function tmeal(card){
+  var d=card.querySelector('.meal-det');var isOpen=d.classList.contains('open');
+  document.querySelectorAll('.meal-det.open').forEach(x=>x.classList.remove('open'));
+  document.querySelectorAll('.meal-card.open').forEach(x=>x.classList.remove('open'));
+  if(!isOpen){d.classList.add('open');card.classList.add('open');}
+}
+
+// CAREER
 function sTL(btn,player){
-  document.querySelectorAll('.ptab').forEach(b=>b.classList.remove('on'));
-  if(btn)btn.classList.add('on');
+  document.querySelectorAll('.ptab').forEach(b=>b.classList.remove('on'));if(btn)btn.classList.add('on');
   var d=TL[player];if(!d)return;
   var ph=document.getElementById('phero');
-  if(ph)ph.innerHTML='<div style="background:var(--bg2);border-radius:var(--r-md);padding:14px;border:0.5px solid var(--border);">'
-    +'<div style="display:flex;align-items:center;gap:12px;">'
-    +'<div style="width:44px;height:44px;border-radius:50%;background:var(--bg);border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:22px;">'+d.e+'</div>'
-    +'<div style="flex:1;"><div style="font-size:15px;font-weight:700;">'+player+'</div><div style="font-size:12px;color:var(--txt2);margin-top:2px;">'+d.s+'</div></div>'
-    +(P.idool===player?'<div style="text-align:right;"><div style="font-size:22px;font-weight:700;">'+cM()+'%</div><div style="font-size:11px;color:var(--txt2);">jouw match</div></div>':'')
+  if(ph)ph.innerHTML='<div style="background:var(--bg2);border-radius:var(--rm);padding:13px;border:0.5px solid var(--border);">'
+    +'<div style="display:flex;align-items:center;gap:11px;">'
+    +'<div style="width:42px;height:42px;border-radius:50%;background:var(--bg);border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:21px;">'+d.e+'</div>'
+    +'<div style="flex:1;"><div style="font-size:14px;font-weight:700;">'+player+'</div><div style="font-size:11px;color:var(--txt2);margin-top:2px;">'+d.s+'</div></div>'
+    +(P.idool===player?'<div style="text-align:right;"><div style="font-size:21px;font-weight:700;">'+cM()+'%</div><div style="font-size:10px;color:var(--txt2);">your match</div></div>':'')
     +'</div></div>';
   var kq=document.getElementById('kquote');
-  if(kq)kq.innerHTML='<div class="quote-box"><div class="qt">'+d.q+'</div><div class="qs">Geverifieerde bron</div></div>';
+  if(kq)kq.innerHTML='<div class="qt-box"><div class="qt-t">'+d.q+'</div><div class="qt-s">Verified source</div></div>';
   var tl=document.getElementById('tl');
   if(tl)tl.innerHTML=d.items.map((it,i)=>'<div class="tl-item">'
     +'<div class="tl-l"><div class="tl-age">'+it.a+'</div>'+(i<d.items.length-1?'<div class="tl-line"></div>':'')+'</div>'
-    +'<div class="tl-b'+(it.tl==='Doorbraak'||it.tl==='Wereldtop'||it.tl==='Legendarisch'||it.tl==='Absolute top'?' key':'')+'"><div class="tl-t">'+it.t+'</div><div class="tl-d">'+it.d+'</div>'
+    +'<div class="tl-b'+(it.tl==='Breakthrough'||it.tl==='World class'||it.tl==='Legendary'||it.tl==='Absolute top'?' key':'')+'"><div class="tl-t">'+it.t+'</div><div class="tl-d">'+it.d+'</div>'
     +(it.tl?'<span class="tl-tag'+(it.tag==='w'?' w':it.tag==='r'?' r':' n')+'">'+it.tl+'</span>':'')
     +'</div></div>').join('');
 }
 
+// AI COACH
 function swC(){
   var l=['default','Griezmann','Mendy','Vardy','Lukaku'];
   CM=l[(l.indexOf(CM)+1)%l.length];
   var em=pEmoji[CM]||'🤖';
   document.getElementById('cava').textContent=em;
-  document.getElementById('cname').textContent=CM==='default'?'AI Voetbalcoach':CM+' AI Coach';
-  convHistory=[];
-  aMsg('Geswitcht naar '+(CM==='default'?'algemene AI coach':CM+' AI coach')+'. Wat wil je weten?',false);
+  document.getElementById('cname').textContent=CM==='default'?'AI Football Coach':CM+' AI Coach';
+  convH=[];
+  aMsg('Switched to '+(CM==='default'?'general AI coach':CM+' AI coach')+'. What do you want to know?',false);
 }
 
 function aMsg(txt,isU){
@@ -532,75 +800,56 @@ function showTyping(){
   var id='t'+Date.now();
   var d=document.createElement('div');
   d.className='msg';d.id=id;
-  d.innerHTML='<div class="mava">'+(pEmoji[CM]||'🤖')+'</div><div><div class="typing-bubble"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div>';
-  c.appendChild(d);c.scrollTop=c.scrollHeight;
-  return id;
+  d.innerHTML='<div class="mava">'+(pEmoji[CM]||'🤖')+'</div><div><div class="mbub" style="display:flex;gap:4px;align-items:center;padding:10px 13px;"><div class="tdot"></div><div class="tdot"></div><div class="tdot"></div></div></div>';
+  c.appendChild(d);c.scrollTop=c.scrollHeight;return id;
 }
 
 function setLoad(state){
-  isLoading=state;
-  var inp=document.getElementById('ci');
-  var btn=document.getElementById('sendbtn');
+  isLoad=state;
+  var inp=document.getElementById('ci');var btn=document.getElementById('sendbtn');
   document.querySelectorAll('.qb').forEach(b=>b.disabled=state);
   inp.disabled=state;btn.disabled=state;
   if(!state)inp.focus();
 }
 
-function showErr(msg){
-  var b=document.getElementById('err');
-  b.textContent=msg;b.style.display='block';
-}
-function hideErr(){
-  var b=document.getElementById('err');
-  b.style.display='none';b.textContent='';
-}
-
-function esc(str){
-  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/\n/g,'<br>');
-}
+function showErr(msg){var b=document.getElementById('err');b.textContent=msg;b.style.display='block';}
+function hideErr(){var b=document.getElementById('err');b.style.display='none';b.textContent='';}
+function esc(str){return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/\n/g,'<br>');}
 
 async function sndMsg(){
-  var inp=document.getElementById('ci');
-  var txt=inp.value.trim();
-  if(!txt||isLoading)return;
-  inp.value='';autoResize(inp);
-  hideErr();setLoad(true);
-  aMsg(txt,true);
-  convHistory.push({role:'user',content:txt});
+  var inp=document.getElementById('ci');var txt=inp.value.trim();
+  if(!txt||isLoad)return;
+  inp.value='';autoR(inp);hideErr();setLoad(true);
+  aMsg(txt,true);convH.push({role:'user',content:txt});
   var tid=showTyping();
+  var coachPlayer=CM==='default'?(P.idool||'Griezmann'):CM;
   try{
     var r=await fetch('/.netlify/functions/chat',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({player:CM==='default'?(P.idool||'Griezmann'):CM,messages:convHistory})
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({player:coachPlayer,messages:convH})
     });
     var data=await r.json();
     document.getElementById(tid)&&document.getElementById(tid).remove();
-    if(!r.ok)throw new Error(data.error||'Fout van de server.');
-    convHistory.push({role:'assistant',content:data.reply});
+    if(!r.ok)throw new Error(data.error||'Server error.');
+    convH.push({role:'assistant',content:data.reply});
     aMsg(data.reply,false);
   }catch(e){
     document.getElementById(tid)&&document.getElementById(tid).remove();
-    convHistory.pop();
-    showErr(e.message||'Er ging iets mis. Probeer opnieuw.');
+    convH.pop();showErr(e.message||'Something went wrong. Please try again.');
   }finally{setLoad(false);}
 }
 
 function sQ(q){document.getElementById('ci').value=q;sndMsg();}
 
-function askAI(){
-  goS('s-coach');
-  sQ('Geef me een dieetplan voor '+document.getElementById('dsub').textContent+'. Mijn naam is '+P.naam+', positie: '+P.pos+'.');
-}
-
-function autoResize(el){
-  el.style.height='auto';
-  el.style.height=Math.min(el.scrollHeight,120)+'px';
-}
-
-document.getElementById('ci').addEventListener('input',function(){autoResize(this);hideErr();});
+function autoR(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,110)+'px';}
+document.getElementById('ci').addEventListener('input',function(){autoR(this);hideErr();});
 document.getElementById('ci').addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sndMsg();}});
+
+// INIT
 ob(1);
+dcalc();
+setMP(document.querySelector('#meal-tbns .train-btn'),'match');
+filterRec(document.querySelector('#d-recipes .fbtn'),'all');
 sTL(document.querySelector('.ptab.on'),'Griezmann');
 </script>
 </body>
