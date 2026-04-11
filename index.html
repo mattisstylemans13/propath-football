@@ -1,630 +1,853 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>ProPath Football — AI Coach</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --bg: #ffffff;
-    --bg2: #f8f8f7;
-    --bg3: #f2f2f0;
-    --txt: #0a0a0a;
-    --txt2: #6b6b6b;
-    --txt3: #a0a0a0;
-    --border: #e5e5e3;
-    --border2: #c8c8c5;
-    --success: #16a34a;
-    --danger: #dc2626;
-    --danger-bg: #fef2f2;
-    --r-sm: 8px;
-    --r-md: 12px;
-    --r-lg: 16px;
-    --font: 'Inter', sans-serif;
-  }
-
-  body {
-    font-family: var(--font);
-    background: #efefed;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    padding: 24px 16px 40px;
-  }
-
-  #app {
-    width: 100%;
-    max-width: 420px;
-    background: var(--bg);
-    border-radius: var(--r-lg);
-    border: 0.5px solid var(--border);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    min-height: 640px;
-  }
-
-  /* ── Header ── */
-  .app-header {
-    padding: 20px 20px 18px;
-    border-bottom: 0.5px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .logo-mark {
-    width: 34px; height: 34px;
-    background: var(--txt);
-    border-radius: 9px;
-    display: flex; align-items: center; justify-content: center;
-    color: var(--bg);
-    font-size: 17px;
-    flex-shrink: 0;
-  }
-  .logo-text { font-size: 16px; font-weight: 700; letter-spacing: -.2px; }
-  .logo-sub { font-size: 11px; color: var(--txt2); margin-top: 1px; }
-
-  /* ── Player Select ── */
-  #screen-select {
-    flex: 1;
-    padding: 28px 20px;
-    display: flex;
-    flex-direction: column;
-  }
-  .screen-title {
-    font-size: 20px;
-    font-weight: 700;
-    letter-spacing: -.3px;
-    margin-bottom: 6px;
-  }
-  .screen-sub {
-    font-size: 13px;
-    color: var(--txt2);
-    line-height: 1.55;
-    margin-bottom: 24px;
-  }
-
-  .player-card {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 15px 16px;
-    border: 0.5px solid var(--border);
-    border-radius: var(--r-md);
-    margin-bottom: 9px;
-    cursor: pointer;
-    background: var(--bg);
-    transition: border-color .15s, background .15s;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .player-card:hover { border-color: var(--border2); background: var(--bg2); }
-  .player-card:active { transform: scale(0.99); }
-
-  .player-ava {
-    width: 48px; height: 48px;
-    border-radius: 50%;
-    background: var(--bg2);
-    border: 0.5px solid var(--border);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 24px;
-    flex-shrink: 0;
-  }
-  .player-name { font-size: 14px; font-weight: 600; color: var(--txt); }
-  .player-desc { font-size: 12px; color: var(--txt2); margin-top: 2px; line-height: 1.4; }
-  .player-tag {
-    margin-left: auto;
-    font-size: 11px;
-    padding: 3px 10px;
-    border-radius: 20px;
-    background: var(--bg2);
-    color: var(--txt2);
-    border: 0.5px solid var(--border);
-    flex-shrink: 0;
-    white-space: nowrap;
-  }
-
-  /* ── Chat Screen ── */
-  #screen-chat {
-    flex: 1;
-    display: none;
-    flex-direction: column;
-  }
-
-  .chat-header {
-    padding: 14px 16px;
-    border-bottom: 0.5px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .coach-ava {
-    width: 36px; height: 36px;
-    border-radius: 50%;
-    background: var(--bg2);
-    border: 0.5px solid var(--border);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 18px;
-    flex-shrink: 0;
-  }
-  .coach-name { font-size: 14px; font-weight: 600; }
-  .coach-online { font-size: 11px; color: var(--success); font-weight: 500; }
-  .back-btn {
-    margin-left: auto;
-    padding: 6px 13px;
-    background: var(--bg2);
-    border: 0.5px solid var(--border);
-    border-radius: 7px;
-    color: var(--txt2);
-    font-family: var(--font);
-    font-size: 12px;
-    cursor: pointer;
-    transition: border-color .15s;
-  }
-  .back-btn:hover { border-color: var(--border2); }
-
-  /* Quick questions */
-  .quick-wrap {
-    padding: 10px 16px;
-    display: flex;
-    gap: 7px;
-    flex-wrap: wrap;
-    border-bottom: 0.5px solid var(--border);
-  }
-  .qbtn {
-    padding: 6px 13px;
-    border: 0.5px solid var(--border);
-    border-radius: 20px;
-    background: var(--bg);
-    color: var(--txt2);
-    font-family: var(--font);
-    font-size: 12px;
-    cursor: pointer;
-    transition: all .15s;
-    white-space: nowrap;
-  }
-  .qbtn:hover { border-color: var(--border2); color: var(--txt); }
-  .qbtn:disabled { opacity: .4; cursor: not-allowed; }
-
-  /* Messages */
-  .messages {
-    flex: 1;
-    overflow-y: auto;
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    min-height: 260px;
-    max-height: 360px;
-  }
-
-  .msg {
-    display: flex;
-    gap: 9px;
-    align-items: flex-start;
-  }
-  .msg.user { flex-direction: row-reverse; }
-
-  .msg-ava {
-    width: 28px; height: 28px;
-    border-radius: 50%;
-    background: var(--bg2);
-    border: 0.5px solid var(--border);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 13px;
-    flex-shrink: 0;
-    margin-top: 2px;
-  }
-
-  .msg-bubble {
-    background: var(--bg2);
-    border: 0.5px solid var(--border);
-    border-radius: 13px;
-    padding: 10px 14px;
-    font-size: 13px;
-    line-height: 1.65;
-    max-width: 80%;
-    color: var(--txt);
-    word-break: break-word;
-  }
-  .msg.user .msg-bubble {
-    background: var(--txt);
-    color: var(--bg);
-    border-color: var(--txt);
-  }
-
-  /* Typing indicator */
-  .typing-bubble {
-    background: var(--bg2);
-    border: 0.5px solid var(--border);
-    border-radius: 13px;
-    padding: 12px 16px;
-    display: flex;
-    gap: 5px;
-    align-items: center;
-  }
-  .typing-dot {
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    background: var(--txt3);
-    animation: bounce .9s infinite;
-  }
-  .typing-dot:nth-child(2) { animation-delay: .15s; }
-  .typing-dot:nth-child(3) { animation-delay: .3s; }
-  @keyframes bounce {
-    0%, 60%, 100% { transform: translateY(0); }
-    30% { transform: translateY(-5px); }
-  }
-
-  /* Error banner */
-  .error-banner {
-    display: none;
-    margin: 0 16px 4px;
-    padding: 10px 14px;
-    background: var(--danger-bg);
-    border: 0.5px solid #fecaca;
-    border-radius: var(--r-sm);
-    font-size: 12px;
-    color: var(--danger);
-    line-height: 1.5;
-  }
-
-  /* Input row */
-  .input-row {
-    display: flex;
-    gap: 9px;
-    padding: 12px 16px 16px;
-    border-top: 0.5px solid var(--border);
-    align-items: flex-end;
-  }
-  .chat-input {
-    flex: 1;
-    background: var(--bg2);
-    border: 0.5px solid var(--border);
-    border-radius: 22px;
-    padding: 10px 16px;
-    color: var(--txt);
-    font-family: var(--font);
-    font-size: 14px;
-    outline: none;
-    resize: none;
-    line-height: 1.5;
-    max-height: 120px;
-    overflow-y: auto;
-    transition: border-color .15s;
-  }
-  .chat-input:focus { border-color: var(--border2); }
-  .chat-input::placeholder { color: var(--txt3); }
-  .chat-input:disabled { opacity: .5; cursor: not-allowed; }
-
-  .send-btn {
-    width: 40px; height: 40px;
-    border-radius: 50%;
-    background: var(--txt);
-    border: none;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-    transition: opacity .15s, transform .1s;
-  }
-  .send-btn:hover { opacity: .85; }
-  .send-btn:active { transform: scale(.95); }
-  .send-btn:disabled { opacity: .35; cursor: not-allowed; }
-  .send-btn svg { width: 16px; height: 16px; }
-
-  /* AI disclaimer footer */
-  .ai-note {
-    text-align: center;
-    font-size: 11px;
-    color: var(--txt3);
-    padding: 0 20px 14px;
-    line-height: 1.5;
-  }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#fff;--bg2:#f8f8f7;--bg3:#f2f2f0;
+  --txt:#0a0a0a;--txt2:#6b6b6b;--txt3:#a0a0a0;
+  --border:#e5e5e3;--border2:#c8c8c5;
+  --green:#16a34a;--red:#dc2626;--red-bg:#fef2f2;
+  --blue-bg:#eff6ff;--blue-txt:#1d4ed8;--blue-border:#bfdbfe;
+  --green-bg:#f0fdf4;--green-txt:#15803d;--green-border:#bbf7d0;
+  --r:8px;--rm:12px;--rl:16px;--f:'Inter',sans-serif;
+}
+body{font-family:var(--f);background:#efefed;min-height:100vh;display:flex;justify-content:center;align-items:flex-start;padding:20px 12px 40px;}
+#app{width:100%;max-width:430px;background:var(--bg);border-radius:var(--rl);border:0.5px solid var(--border);overflow:hidden;display:flex;flex-direction:column;min-height:700px;}
+.sc{display:none;flex-direction:column;flex:1;}
+.sc.on{display:flex;}
+.scroll{overflow-y:auto;flex:1;padding-bottom:68px;}
+.app-hdr{padding:15px 18px 13px;border-bottom:0.5px solid var(--border);display:flex;align-items:center;gap:11px;flex-shrink:0;}
+.logo-box{width:30px;height:30px;background:var(--txt);border-radius:7px;display:flex;align-items:center;justify-content:center;color:var(--bg);font-size:15px;flex-shrink:0;}
+.logo-t{font-size:14px;font-weight:700;letter-spacing:-.2px;}
+.logo-s{font-size:10px;color:var(--txt2);margin-top:1px;}
+.nav{display:flex;background:var(--bg);border-top:0.5px solid var(--border);flex-shrink:0;}
+.nb{flex:1;padding:10px 3px 9px;background:none;border:none;color:var(--txt3);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;font-family:var(--f);font-size:9px;font-weight:500;transition:color .15s;}
+.nb.on{color:var(--txt);}
+.nb svg{width:19px;height:19px;stroke-width:1.6;}
+.inp{width:100%;padding:11px 13px;background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--r);color:var(--txt);font-family:var(--f);font-size:14px;outline:none;margin-bottom:12px;-webkit-appearance:none;}
+.inp:focus{border-color:var(--border2);}
+.inp::placeholder{color:var(--txt3);}
+.lbl{font-size:12px;font-weight:500;color:var(--txt2);margin-bottom:6px;}
+.btn{width:100%;padding:13px;background:var(--txt);color:var(--bg);border:none;border-radius:var(--r);font-family:var(--f);font-size:14px;font-weight:600;cursor:pointer;transition:opacity .15s;}
+.btn:hover{opacity:.83;}
+.sbar{display:flex;gap:4px;margin-bottom:24px;}
+.seg{height:3px;flex:1;border-radius:2px;background:var(--border);}
+.seg.d{background:var(--txt);}.seg.a{background:var(--txt3);}
+.lang-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;}
+.lang-btn{padding:11px 6px;border:0.5px solid var(--border);border-radius:var(--r);background:var(--bg2);color:var(--txt2);font-family:var(--f);font-size:12px;font-weight:500;cursor:pointer;text-align:center;transition:all .15s;}
+.lang-btn.on{background:var(--txt);color:var(--bg);border-color:var(--txt);}
+.lang-flag{font-size:20px;display:block;margin-bottom:3px;}
+.pos-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px;}
+.pos-btn{padding:14px 8px;border:0.5px solid var(--border);border-radius:var(--r);background:var(--bg2);color:var(--txt2);font-family:var(--f);font-size:13px;font-weight:500;cursor:pointer;text-align:center;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:6px;}
+.pos-btn.on{background:var(--txt);color:var(--bg);border-color:var(--txt);}
+.level-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
+.level-btn{padding:11px 6px;border:0.5px solid var(--border);border-radius:var(--r);background:var(--bg2);color:var(--txt2);font-family:var(--f);font-size:12px;font-weight:500;cursor:pointer;text-align:center;transition:all .15s;}
+.level-btn.on{background:var(--txt);color:var(--bg);border-color:var(--txt);}
+.popt{display:flex;align-items:center;gap:12px;padding:13px;border:0.5px solid var(--border);border-radius:var(--rm);margin-bottom:8px;cursor:pointer;background:var(--bg);transition:all .15s;}
+.popt:hover{border-color:var(--border2);}
+.popt.on{border-color:var(--txt);background:var(--bg2);}
+.pava{width:44px;height:44px;border-radius:50%;background:var(--bg2);border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0;}
+.pb{margin-left:auto;font-size:10px;padding:3px 9px;border-radius:20px;background:var(--bg2);color:var(--txt2);border:0.5px solid var(--border);flex-shrink:0;}
+.profile-card{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--rm);padding:20px;margin-bottom:20px;text-align:center;}
+.profile-avatar{width:76px;height:76px;border-radius:50%;background:var(--txt);margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:34px;color:var(--bg);}
+.profile-name{font-size:18px;font-weight:700;margin-bottom:4px;}
+.profile-sub{font-size:12px;color:var(--txt2);margin-bottom:12px;}
+.pbadges{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:12px;}
+.badge{font-size:11px;padding:4px 10px;border-radius:20px;background:var(--bg);border:0.5px solid var(--border);color:var(--txt2);}
+.dream-row{display:flex;align-items:center;gap:8px;background:var(--bg);border:0.5px solid var(--border);border-radius:var(--r);padding:9px 13px;justify-content:center;margin-bottom:12px;}
+.match-row{display:flex;align-items:center;gap:10px;padding-top:12px;border-top:0.5px solid var(--border);justify-content:center;}
+.card{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--rm);padding:13px 15px;margin:0 15px 8px;}
+.card.click{cursor:pointer;transition:border-color .15s;}
+.card.click:hover{border-color:var(--border2);}
+.mg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;}
+.met{background:var(--bg2);border-radius:var(--r);padding:12px 10px;}
+.mv{font-size:20px;font-weight:700;letter-spacing:-.5px;}
+.ml{font-size:10px;color:var(--txt2);margin-top:2px;}
+.slbl{font-size:10px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:var(--txt2);padding:0 18px;margin-bottom:9px;}
+.pro-b{font-size:10px;padding:2px 7px;background:var(--bg2);border:0.5px solid var(--border);color:var(--txt2);border-radius:4px;margin-left:5px;vertical-align:middle;}
+.tab-row{display:flex;border-bottom:0.5px solid var(--border);overflow-x:auto;-ms-overflow-style:none;scrollbar-width:none;flex-shrink:0;}
+.tab-row::-webkit-scrollbar{display:none;}
+.tabb{padding:11px 13px;background:none;border:none;border-bottom:2px solid transparent;color:var(--txt2);font-family:var(--f);font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap;transition:all .15s;flex-shrink:0;}
+.tabb.on{color:var(--txt);border-bottom-color:var(--txt);}
+.ptab-row{display:flex;gap:6px;padding:11px 15px;overflow-x:auto;-ms-overflow-style:none;scrollbar-width:none;}
+.ptab-row::-webkit-scrollbar{display:none;}
+.ptab{padding:6px 14px;border:0.5px solid var(--border);border-radius:20px;background:none;color:var(--txt2);font-family:var(--f);font-size:12px;cursor:pointer;white-space:nowrap;transition:all .15s;flex-shrink:0;}
+.ptab.on{background:var(--txt);color:var(--bg);border-color:var(--txt);}
+.tl-item{display:flex;gap:9px;padding:0 15px;margin-bottom:3px;}
+.tl-l{display:flex;flex-direction:column;align-items:center;width:40px;flex-shrink:0;}
+.tl-age{font-size:10px;font-weight:500;background:var(--bg2);border:0.5px solid var(--border);border-radius:4px;padding:2px 5px;color:var(--txt2);white-space:nowrap;text-align:center;}
+.tl-line{width:1px;flex:1;min-height:12px;background:var(--border);margin-top:4px;}
+.tl-b{flex:1;padding:9px 12px;border:0.5px solid var(--border);border-radius:9px;margin-bottom:9px;background:var(--bg);}
+.tl-b.key{border-color:var(--txt);}
+.tl-t{font-size:12px;font-weight:600;margin-bottom:2px;}
+.tl-d{font-size:11px;color:var(--txt2);line-height:1.55;}
+.tl-tag{display:inline-block;margin-top:5px;font-size:10px;padding:2px 7px;border-radius:4px;font-weight:500;}
+.tl-tag.w{background:#dcfce7;color:#15803d;}
+.tl-tag.r{background:#fee2e2;color:#b91c1c;}
+.tl-tag.n{background:var(--bg2);color:var(--txt2);border:0.5px solid var(--border);}
+.train-scroll{display:flex;gap:7px;padding:10px 15px;overflow-x:auto;-ms-overflow-style:none;scrollbar-width:none;flex-shrink:0;}
+.train-scroll::-webkit-scrollbar{display:none;}
+.train-btn{flex-shrink:0;padding:7px 13px;border:0.5px solid var(--border);border-radius:20px;background:var(--bg);color:var(--txt2);font-family:var(--f);font-size:11px;font-weight:500;cursor:pointer;transition:all .15s;}
+.train-btn.on{background:var(--txt);color:var(--bg);border-color:var(--txt);}
+.meal-card{margin:0 15px 8px;border:0.5px solid var(--border);border-radius:var(--rm);overflow:hidden;cursor:pointer;transition:border-color .15s;}
+.meal-card:hover{border-color:var(--border2);}
+.meal-card.open{border-color:var(--txt);}
+.meal-hdr{display:flex;align-items:center;gap:11px;padding:11px 13px;}
+.meal-ico{width:36px;height:36px;border-radius:8px;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.meal-nm{font-size:12px;font-weight:600;}
+.meal-sub{font-size:10px;color:var(--txt2);margin-top:2px;}
+.meal-time{margin-left:auto;font-size:11px;color:var(--txt2);flex-shrink:0;}
+.meal-det{display:none;padding:0 13px 13px;border-top:0.5px solid var(--border);}
+.meal-det.open{display:block;}
+.mpills{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;padding-top:9px;}
+.pill{font-size:10px;padding:2px 8px;border-radius:20px;font-weight:500;}
+.pill.c{background:#fef9c3;color:#854d0e;}
+.pill.p{background:#dcfce7;color:#166534;}
+.pill.f{background:#fce7f3;color:#9d174d;}
+.pill.k{background:var(--bg2);color:var(--txt2);border:0.5px solid var(--border);}
+.det-lbl{font-size:10px;font-weight:600;color:var(--txt2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;margin-top:8px;}
+.why-box{background:var(--bg2);border-radius:7px;padding:9px 11px;font-size:11px;color:var(--txt2);line-height:1.6;margin-top:7px;}
+.sci-box{margin:0 15px 9px;background:var(--blue-bg);border:0.5px solid var(--blue-border);border-radius:9px;padding:10px 13px;}
+.sci-lbl{font-size:9px;font-weight:600;color:var(--blue-txt);letter-spacing:.5px;text-transform:uppercase;margin-bottom:3px;}
+.sci-txt{font-size:11px;color:var(--txt);line-height:1.6;}
+.warn-box{margin:0 15px 9px;background:#fffbeb;border:0.5px solid #fde68a;border-radius:9px;padding:10px 13px;font-size:11px;color:#92400e;line-height:1.6;}
+.tip-box{margin:0 15px 9px;background:var(--green-bg);border:0.5px solid var(--green-border);border-radius:9px;padding:10px 13px;font-size:11px;color:var(--green-txt);line-height:1.6;}
+.body-row{display:flex;align-items:center;gap:9px;padding:0 15px;margin-bottom:7px;}
+.body-row label{font-size:11px;color:var(--txt2);width:85px;flex-shrink:0;}
+.body-row input,.body-row select{flex:1;padding:8px 11px;background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--r);font-family:var(--f);font-size:12px;color:var(--txt);outline:none;}
+.diff-b{font-size:10px;padding:2px 7px;border-radius:4px;font-weight:600;margin-left:auto;flex-shrink:0;}
+.d-easy{background:#dcfce7;color:#166534;}
+.d-med{background:#fef9c3;color:#854d0e;}
+.d-hard{background:#fee2e2;color:#991b1b;}
+.step{display:flex;gap:9px;align-items:flex-start;margin-bottom:7px;}
+.snum{width:18px;height:18px;border-radius:50%;background:var(--txt);color:var(--bg);font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.stxt{font-size:11px;line-height:1.6;}
+.fbtn{padding:5px 11px;border:0.5px solid var(--border);border-radius:20px;background:var(--bg);color:var(--txt2);font-family:var(--f);font-size:11px;cursor:pointer;transition:all .15s;}
+.fbtn.on,.fbtn:hover{background:var(--txt);color:var(--bg);border-color:var(--txt);}
+.tg{display:flex;margin:0 15px 9px;border:0.5px solid var(--border);border-radius:var(--rm);overflow:hidden;}
+.tbox{flex:1;padding:10px 5px;text-align:center;border-right:0.5px solid var(--border);}
+.tbox:last-child{border-right:none;}
+.tval{font-size:13px;font-weight:700;}
+.tlbl{font-size:9px;color:var(--txt2);margin-top:2px;line-height:1.3;}
+.msg{display:flex;gap:8px;align-items:flex-start;margin-bottom:9px;}
+.msg.u{flex-direction:row-reverse;}
+.mava{width:26px;height:26px;border-radius:50%;background:var(--bg2);border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;margin-top:2px;}
+.mbub{background:var(--bg2);border:0.5px solid var(--border);border-radius:11px;padding:9px 12px;font-size:12px;line-height:1.65;max-width:80%;color:var(--txt);word-break:break-word;}
+.msg.u .mbub{background:var(--txt);color:var(--bg);border-color:var(--txt);}
+.tdot{width:6px;height:6px;border-radius:50%;background:var(--txt3);animation:bounce .9s infinite;}
+.tdot:nth-child(2){animation-delay:.15s;}
+.tdot:nth-child(3){animation-delay:.3s;}
+@keyframes bounce{0%,60%,100%{transform:translateY(0);}30%{transform:translateY(-5px);}}
+.err-b{display:none;margin:0 15px 4px;padding:9px 13px;background:var(--red-bg);border:0.5px solid #fecaca;border-radius:var(--r);font-size:11px;color:var(--red);line-height:1.5;}
+.chat-inp{flex:1;background:var(--bg2);border:0.5px solid var(--border);border-radius:20px;padding:9px 14px;color:var(--txt);font-family:var(--f);font-size:13px;outline:none;resize:none;line-height:1.5;max-height:110px;overflow-y:auto;transition:border-color .15s;}
+.chat-inp:focus{border-color:var(--border2);}
+.chat-inp::placeholder{color:var(--txt3);}
+.chat-inp:disabled{opacity:.5;cursor:not-allowed;}
+.send{width:36px;height:36px;border-radius:50%;background:var(--txt);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.send:hover{opacity:.84;}
+.send:disabled{opacity:.35;cursor:not-allowed;}
+.qb{padding:5px 11px;border:0.5px solid var(--border);border-radius:20px;background:var(--bg);color:var(--txt2);font-family:var(--f);font-size:11px;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.qb:hover{border-color:var(--border2);color:var(--txt);}
+.qb:disabled{opacity:.4;cursor:not-allowed;}
+.qt-box{background:var(--bg2);border-radius:9px;padding:11px 13px;border:0.5px solid var(--border);}
+.qt-t{font-size:11px;font-style:italic;color:var(--txt2);line-height:1.65;margin-bottom:5px;}
+.qt-s{font-size:10px;color:var(--txt3);font-weight:500;}
 </style>
 </head>
 <body>
 <div id="app">
+<div class="app-hdr">
+  <div class="logo-box">⚽</div>
+  <div style="flex:1;"><div class="logo-t">ProPath Football</div><div class="logo-s">AI Career Coach</div></div>
+  <div style="font-size:11px;color:var(--txt3);" id="hdr-lang"></div>
+</div>
 
-  <!-- Header -->
-  <div class="app-header">
-    <div class="logo-mark">⚽</div>
-    <div>
-      <div class="logo-text">ProPath Football</div>
-      <div class="logo-sub">AI Carrièrecoach voor jonge voetballers</div>
-    </div>
+<!-- ===== ONBOARDING ===== -->
+<div id="s-ob" class="sc on">
+<div class="scroll">
+
+<div id="ob1" style="padding:28px 22px 24px;display:flex;flex-direction:column;min-height:580px;">
+  <div class="sbar"><div class="seg a"></div><div class="seg"></div><div class="seg"></div><div class="seg"></div><div class="seg"></div><div class="seg"></div></div>
+  <div style="font-size:22px;font-weight:700;letter-spacing:-.3px;margin-bottom:6px;">Welcome to ProPath ⚽</div>
+  <div style="font-size:13px;color:var(--txt2);margin-bottom:24px;line-height:1.55;">Your personal AI football coach. Let's build your profile in 5 steps.</div>
+  <div class="lbl">First name</div>
+  <input class="inp" id="i-naam" placeholder="e.g. Marcus"/>
+  <div class="lbl">Age</div>
+  <input class="inp" id="i-age" type="number" min="10" max="50" placeholder="e.g. 17"/>
+  <div style="flex:1;"></div>
+  <button class="btn" onclick="ob(2)">Next →</button>
+</div>
+
+<div id="ob2" style="display:none;padding:28px 22px 24px;flex-direction:column;min-height:580px;">
+  <div class="sbar"><div class="seg d"></div><div class="seg a"></div><div class="seg"></div><div class="seg"></div><div class="seg"></div><div class="seg"></div></div>
+  <div style="font-size:22px;font-weight:700;letter-spacing:-.3px;margin-bottom:6px;">Where are you from?</div>
+  <div style="font-size:13px;color:var(--txt2);margin-bottom:24px;">Select your country.</div>
+  <div class="lbl">Country</div>
+  <select class="inp" id="i-country">
+    <option value="">Select country...</option>
+    <option value="BE">🇧🇪 Belgium</option>
+    <option value="NL">🇳🇱 Netherlands</option>
+    <option value="FR">🇫🇷 France</option>
+    <option value="DE">🇩🇪 Germany</option>
+    <option value="ES">🇪🇸 Spain</option>
+    <option value="IT">🇮🇹 Italy</option>
+    <option value="PT">🇵🇹 Portugal</option>
+    <option value="GB">🏴󠁧󠁢󠁥󠁮󠁧󠁿 England</option>
+    <option value="BR">🇧🇷 Brazil</option>
+    <option value="AR">🇦🇷 Argentina</option>
+    <option value="US">🇺🇸 United States</option>
+    <option value="MX">🇲🇽 Mexico</option>
+    <option value="MA">🇲🇦 Morocco</option>
+    <option value="NG">🇳🇬 Nigeria</option>
+    <option value="SN">🇸🇳 Senegal</option>
+    <option value="OTHER">🌍 Other</option>
+  </select>
+  <div style="flex:1;"></div>
+  <button class="btn" onclick="ob(3)">Next →</button>
+</div>
+
+<div id="ob3" style="display:none;padding:28px 22px 24px;flex-direction:column;min-height:580px;">
+  <div class="sbar"><div class="seg d"></div><div class="seg d"></div><div class="seg a"></div><div class="seg"></div><div class="seg"></div><div class="seg"></div></div>
+  <div style="font-size:22px;font-weight:700;letter-spacing:-.3px;margin-bottom:6px;">Choose your language</div>
+  <div style="font-size:13px;color:var(--txt2);margin-bottom:20px;line-height:1.55;">The AI will respond in this language. You can always write in any language and the AI will follow.</div>
+  <div class="lang-grid">
+    <button class="lang-btn on" onclick="selLang(this,'en')"><span class="lang-flag">🇬🇧</span>English</button>
+    <button class="lang-btn" onclick="selLang(this,'nl')"><span class="lang-flag">🇧🇪</span>Nederlands</button>
+    <button class="lang-btn" onclick="selLang(this,'fr')"><span class="lang-flag">🇫🇷</span>Français</button>
+    <button class="lang-btn" onclick="selLang(this,'es')"><span class="lang-flag">🇪🇸</span>Español</button>
+    <button class="lang-btn" onclick="selLang(this,'de')"><span class="lang-flag">🇩🇪</span>Deutsch</button>
+    <button class="lang-btn" onclick="selLang(this,'it')"><span class="lang-flag">🇮🇹</span>Italiano</button>
   </div>
+  <div style="flex:1;"></div>
+  <button class="btn" onclick="ob(4)">Next →</button>
+</div>
 
-  <!-- Player Selection Screen -->
-  <div id="screen-select">
-    <div class="screen-title">Kies jouw idool</div>
-    <div class="screen-sub">Selecteer een speler. De AI is geïnspireerd op diens mentaliteit en loopbaan — en coacht jou op dezelfde manier.</div>
-
-    <div class="player-card" onclick="startChat('Griezmann','🇫🇷','Griezmann AI Coach')">
-      <div class="player-ava">🇫🇷</div>
-      <div>
-        <div class="player-name">Antoine Griezmann</div>
-        <div class="player-desc">Afgewezen op 14 → Wereldkampioen 2018</div>
-      </div>
-      <div class="player-tag">Late bloomer</div>
-    </div>
-
-    <div class="player-card" onclick="startChat('Mendy','🧤','Mendy AI Coach')">
-      <div class="player-ava">🧤</div>
-      <div>
-        <div class="player-name">Édouard Mendy</div>
-        <div class="player-desc">Jobcentrum op 23 → Champions League op 29</div>
-      </div>
-      <div class="player-tag">Nooit opgeven</div>
-    </div>
-
-    <div class="player-card" onclick="startChat('Vardy','🏴󠁧󠁢󠁥󠁮󠁧󠁿','Vardy AI Coach')">
-      <div class="player-ava">🏴󠁧󠁢󠁥󠁮󠁧󠁿</div>
-      <div>
-        <div class="player-name">Jamie Vardy</div>
-        <div class="player-desc">Fabriek op 23, 5e divisie op 25 → PL kampioen op 29</div>
-      </div>
-      <div class="player-tag">Non-league → top</div>
-    </div>
-
-    <div class="player-card" onclick="startChat('Lukaku','🇧🇪','Lukaku AI Coach')">
-      <div class="player-ava">🇧🇪</div>
-      <div>
-        <div class="player-name">Romelu Lukaku</div>
-        <div class="player-desc">Belgisch recordscorer · 400+ carrièredoelpunten</div>
-      </div>
-      <div class="player-tag">Vroeg talent</div>
-    </div>
+<div id="ob4" style="display:none;padding:28px 22px 24px;flex-direction:column;min-height:580px;">
+  <div class="sbar"><div class="seg d"></div><div class="seg d"></div><div class="seg d"></div><div class="seg a"></div><div class="seg"></div><div class="seg"></div></div>
+  <div style="font-size:22px;font-weight:700;letter-spacing:-.3px;margin-bottom:6px;">Your playing profile</div>
+  <div style="font-size:13px;color:var(--txt2);margin-bottom:20px;">What position and level do you play?</div>
+  <div class="lbl">Position</div>
+  <div class="pos-grid">
+    <button class="pos-btn" onclick="selPos(this,'Goalkeeper')"><span style="font-size:22px;">🧤</span><span id="plbl-gk">Goalkeeper</span></button>
+    <button class="pos-btn" onclick="selPos(this,'Defender')"><span style="font-size:22px;">🛡️</span><span id="plbl-def">Defender</span></button>
+    <button class="pos-btn" onclick="selPos(this,'Midfielder')"><span style="font-size:22px;">⚙️</span><span id="plbl-mid">Midfielder</span></button>
+    <button class="pos-btn" onclick="selPos(this,'Striker')"><span style="font-size:22px;">⚡</span><span id="plbl-str">Striker</span></button>
   </div>
+  <div class="lbl" style="margin-top:6px;">Level</div>
+  <div class="level-grid">
+    <button class="level-btn" onclick="selLevel(this,'Amateur')" id="llbl-am">Amateur</button>
+    <button class="level-btn" onclick="selLevel(this,'Semi-pro')" id="llbl-sp">Semi-pro</button>
+    <button class="level-btn" onclick="selLevel(this,'Professional')" id="llbl-pr">Professional</button>
+  </div>
+  <div style="flex:1;"></div>
+  <button class="btn" onclick="ob(5)">Next →</button>
+</div>
 
-  <!-- Chat Screen -->
-  <div id="screen-chat">
-
-    <div class="chat-header">
-      <div class="coach-ava" id="coach-ava">🤖</div>
-      <div>
-        <div class="coach-name" id="coach-name">AI Coach</div>
-        <div class="coach-online">● Online</div>
-      </div>
-      <button class="back-btn" onclick="goBack()">← Andere speler</button>
-    </div>
-
-    <div class="quick-wrap" id="quick-wrap">
-      <button class="qbtn" onclick="sendQuick('Hoe omga ik met een slechte wedstrijd?')">Na een slechte wedstrijd</button>
-      <button class="qbtn" onclick="sendQuick('Wat doe jij de dag voor een wedstrijd?')">Dag voor wedstrijd</button>
-      <button class="qbtn" onclick="sendQuick('Hoe blijf ik gemotiveerd als ik weinig speel?')">Weinig speeltijd</button>
-      <button class="qbtn" onclick="sendQuick('Hoe train ik slim buiten de training?')">Extra training</button>
-    </div>
-
-    <div class="messages" id="messages"></div>
-
-    <div class="error-banner" id="error-banner"></div>
-
-    <div class="input-row">
-      <textarea
-        class="chat-input"
-        id="chat-input"
-        placeholder="Stel een vraag aan je AI-coach..."
-        rows="1"
-        maxlength="500"
-      ></textarea>
-      <button class="send-btn" id="send-btn" onclick="sendMessage()" title="Verstuur">
-        <svg fill="none" viewBox="0 0 24 24">
-          <path d="M22 2L11 13" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M22 2L15 22L11 13L2 9L22 2Z" fill="white"/>
-        </svg>
-      </button>
-    </div>
-
-    <div class="ai-note">
-      Dit is een AI-coach geïnspireerd op de mentaliteit van de gekozen speler — niet de echte persoon.
-    </div>
-
+<div id="ob5" style="display:none;padding:28px 22px 24px;flex-direction:column;min-height:580px;">
+  <div class="sbar"><div class="seg d"></div><div class="seg d"></div><div class="seg d"></div><div class="seg d"></div><div class="seg a"></div><div class="seg"></div></div>
+  <div style="font-size:22px;font-weight:700;letter-spacing:-.3px;margin-bottom:6px;">Your dream & idol</div>
+  <div style="font-size:13px;color:var(--txt2);margin-bottom:20px;line-height:1.55;">Enter your dream club and choose your AI coach.</div>
+  <div class="lbl">Dream club</div>
+  <input class="inp" id="i-dream" placeholder="e.g. Real Madrid, Ajax, Man City..."/>
+  <div class="lbl" style="margin-top:4px;">Choose your idol — becomes your AI coach</div>
+  <div class="popt" onclick="sP(this,'Griezmann','🇫🇷','Rejected by Lyon at 14. Father drove 1,400km to Spain. World Champion at 27.')">
+    <div class="pava">🇫🇷</div>
+    <div><div style="font-size:13px;font-weight:600;">Antoine Griezmann</div><div style="font-size:11px;color:var(--txt2);margin-top:2px;">Rejected → World Champion 2018</div></div>
+    <div class="pb">Late bloomer</div>
+  </div>
+  <div class="popt" onclick="sP(this,'Mendy','🧤','Unemployed at 23, queuing at job centre. Champions League winner at 29.')">
+    <div class="pava">🧤</div>
+    <div><div style="font-size:13px;font-weight:600;">Édouard Mendy</div><div style="font-size:11px;color:var(--txt2);margin-top:2px;">Job centre at 23 → Champions League at 29</div></div>
+    <div class="pb">Never give up</div>
+  </div>
+  <div class="popt" onclick="sP(this,'Vardy','🏴󠁧󠁢󠁥󠁮󠁧󠁿','Factory worker at 23, 5th division at 25. Premier League champion at 29.')">
+    <div class="pava">🏴󠁧󠁢󠁥󠁮󠁧󠁿</div>
+    <div><div style="font-size:13px;font-weight:600;">Jamie Vardy</div><div style="font-size:11px;color:var(--txt2);margin-top:2px;">Factory → PL top scorer & champion</div></div>
+    <div class="pb">Non-league → top</div>
+  </div>
+  <div class="popt" onclick="sP(this,'Lukaku','🇧🇪','Belgian all-time top scorer. 89 goals. 400+ career goals.')">
+    <div class="pava">🇧🇪</div>
+    <div><div style="font-size:13px;font-weight:600;">Romelu Lukaku</div><div style="font-size:11px;color:var(--txt2);margin-top:2px;">Belgian record scorer · 400+ goals</div></div>
+    <div class="pb">Early talent</div>
   </div>
 </div>
 
+<div id="ob6" style="display:none;padding:28px 22px 24px;flex-direction:column;min-height:580px;">
+  <div class="sbar"><div class="seg d"></div><div class="seg d"></div><div class="seg d"></div><div class="seg d"></div><div class="seg d"></div><div class="seg a"></div></div>
+  <div style="font-size:22px;font-weight:700;letter-spacing:-.3px;margin-bottom:6px;">Your profile is ready!</div>
+  <div style="font-size:13px;color:var(--txt2);margin-bottom:20px;">Your personal AI coach and career plan are set up.</div>
+  <div id="ob6-card"></div>
+  <div style="flex:1;"></div>
+  <button class="btn" id="ob6-btn" onclick="finish()">Start my journey →</button>
+</div>
+
+</div>
+</div>
+
+<!-- ===== HOME ===== -->
+<div id="s-home" class="sc">
+<div class="scroll">
+  <div style="padding:22px 18px 0;">
+    <div style="font-size:10px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:var(--txt2);margin-bottom:4px;">Dashboard</div>
+    <div style="font-size:24px;font-weight:700;letter-spacing:-.4px;margin-bottom:3px;" id="hg">Good afternoon</div>
+    <div style="font-size:12px;color:var(--txt2);margin-bottom:18px;" id="h-sub">Your plan is ready for today.</div>
+    <div class="mg" style="margin-bottom:20px;">
+      <div class="met"><div class="mv">12</div><div class="ml">trainings</div></div>
+      <div class="met"><div class="mv">84%</div><div class="ml">consistency</div></div>
+      <div class="met"><div class="mv" id="hm">—</div><div class="ml">match %</div></div>
+    </div>
+  </div>
+  <div class="slbl">Today</div>
+  <div class="card click" onclick="goS('s-dieet')">
+    <div style="display:flex;align-items:center;gap:11px;">
+      <div style="width:38px;height:38px;border-radius:9px;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:18px;">⚡</div>
+      <div style="flex:1;"><div style="font-size:13px;font-weight:600;">Explosivity & sprint</div><div style="font-size:11px;color:var(--txt2);margin-top:2px;">45 min · Nutrition plan ready</div></div>
+      <svg style="color:var(--txt3);" width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 18l6-6-6-6"/></svg>
+    </div>
+  </div>
+  <div class="slbl" style="margin-top:10px;">Career match</div>
+  <div class="card click" id="hmc" onclick="goS('s-karriere')">
+    <div style="font-size:12px;color:var(--txt2);">Loading...</div>
+  </div>
+  <div class="slbl" style="margin-top:10px;">Quick access</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 15px 15px;">
+    <div class="card click" style="margin:0;" onclick="goS('s-coach')">
+      <div style="font-size:20px;margin-bottom:7px;" id="hci">🤖</div>
+      <div style="font-size:12px;font-weight:600;" id="hcn">AI Coach</div>
+      <div style="font-size:10px;color:var(--txt2);margin-top:2px;">Ask a question</div>
+    </div>
+    <div class="card click" style="margin:0;" onclick="goS('s-karriere')">
+      <div style="font-size:20px;margin-bottom:7px;">📈</div>
+      <div style="font-size:12px;font-weight:600;">Career plan</div>
+      <div style="font-size:10px;color:var(--txt2);margin-top:2px;">Your journey</div>
+    </div>
+  </div>
+</div>
+<div class="nav">
+  <button class="nb on" onclick="goS('s-home')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955a1.126 1.126 0 011.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75"/></svg>Home</button>
+  <button class="nb" onclick="goS('s-dieet')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z"/></svg>Nutrition</button>
+  <button class="nb" onclick="goS('s-karriere')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941"/></svg>Career</button>
+  <button class="nb" onclick="goS('s-coach')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"/></svg>AI Coach</button>
+</div>
+</div>
+
+<!-- ===== NUTRITION ===== -->
+<div id="s-dieet" class="sc">
+<div class="tab-row">
+  <button class="tabb on" onclick="swD(this,'d-an')">Analysis</button>
+  <button class="tabb" onclick="swD(this,'d-mp')">Meal plan</button>
+  <button class="tabb" onclick="swD(this,'d-rc')">Recipes</button>
+  <button class="tabb" onclick="swD(this,'d-tm')">Timing</button>
+</div>
+<div class="scroll">
+<div id="d-an" class="dp on">
+  <div class="slbl" style="padding-top:14px;">Daily fuel calculator</div>
+  <div class="body-row"><label>Weight (kg)</label><input type="number" id="dw" value="70" min="40" max="130" oninput="dcalc()"></div>
+  <div class="body-row"><label>Position</label><select id="dpos" oninput="dcalc()"><option value="striker">Striker/Winger</option><option value="mid" selected>Midfielder</option><option value="defender">Defender</option><option value="keeper">Goalkeeper</option></select></div>
+  <div class="body-row"><label>Training</label><select id="dtype" oninput="dcalc()"><option value="match">Match day</option><option value="prematch">Match day −1</option><option value="strength">Strength</option><option value="cardio">Cardio</option><option value="technical" selected>Technical</option><option value="easy">Easy</option><option value="recovery">Recovery</option><option value="rest">Rest day</option></select></div>
+  <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;padding:8px 15px;">
+    <div class="met"><div class="mv" id="d-kcal">—</div><div class="ml">kcal</div></div>
+    <div class="met"><div class="mv" id="d-carb">—</div><div class="ml">Carbs</div></div>
+    <div class="met"><div class="mv" id="d-prot">—</div><div class="ml">Protein</div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;padding:0 15px 4px;">
+    <div class="met"><div class="mv" id="d-fat">—</div><div class="ml">Fats</div></div>
+    <div class="met"><div class="mv" id="d-ckg">—</div><div class="ml">Carb/kg</div></div>
+    <div class="met"><div class="mv" id="d-pkg">—</div><div class="ml">Protein/kg</div></div>
+  </div>
+  <div class="sci-box"><div class="sci-lbl">Science — KNVB & Sports Medicine</div><div class="sci-txt" id="d-sci">Loading...</div></div>
+  <div id="d-warn" style="display:none;"></div>
+  <div id="d-tip" style="display:none;"></div>
+  <div class="slbl">Hydration</div>
+  <div class="card" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+    <div><div style="font-size:22px;font-weight:700;" id="d-water">—</div><div style="font-size:11px;color:var(--txt2);margin-top:2px;">Litres / day</div></div>
+    <div style="font-size:11px;color:var(--txt2);max-width:170px;text-align:right;line-height:1.6;">+500ml per hour of training. Pale yellow urine = good hydration.</div>
+  </div>
+</div>
+<div id="d-mp" class="dp" style="display:none;">
+  <div class="slbl" style="padding-top:14px;">Select training type</div>
+  <div class="train-scroll" id="mp-btns">
+    <button class="train-btn on" onclick="setMP(this,'match')">Match day</button>
+    <button class="train-btn" onclick="setMP(this,'prematch')">Day before</button>
+    <button class="train-btn" onclick="setMP(this,'strength')">Strength</button>
+    <button class="train-btn" onclick="setMP(this,'cardio')">Cardio</button>
+    <button class="train-btn" onclick="setMP(this,'technical')">Technical</button>
+    <button class="train-btn" onclick="setMP(this,'easy')">Easy</button>
+    <button class="train-btn" onclick="setMP(this,'recovery')">Recovery</button>
+    <button class="train-btn" onclick="setMP(this,'rest')">Rest day</button>
+  </div>
+  <div class="sci-box"><div class="sci-lbl" id="mp-lbl">Match day</div><div class="sci-txt" id="mp-txt">Loading...</div></div>
+  <div id="meal-list"></div>
+</div>
+<div id="d-rc" class="dp" style="display:none;">
+  <div class="slbl" style="padding-top:14px;">Filter by difficulty</div>
+  <div style="display:flex;gap:6px;padding:0 15px 10px;flex-wrap:wrap;">
+    <button class="fbtn on" onclick="filterRec(this,'all')">All</button>
+    <button class="fbtn" onclick="filterRec(this,'easy')">Easy (5–10 min)</button>
+    <button class="fbtn" onclick="filterRec(this,'medium')">Medium (15–25 min)</button>
+    <button class="fbtn" onclick="filterRec(this,'hard')">Advanced (30+ min)</button>
+  </div>
+  <div id="recipe-list"></div>
+</div>
+<div id="d-tm" class="dp" style="display:none;padding-bottom:16px;">
+  <div class="slbl" style="padding-top:14px;">Match day timing</div>
+  <div class="tg"><div class="tbox"><div class="tval">−4h</div><div class="tlbl">Pasta/rice</div></div><div class="tbox"><div class="tval">−2h</div><div class="tlbl">Light snack</div></div><div class="tbox"><div class="tval">−1h</div><div class="tlbl">Carbs + water</div></div><div class="tbox"><div class="tval">45'</div><div class="tlbl">30–60g carbs</div></div><div class="tbox" style="border:none;"><div class="tval">+30m</div><div class="tlbl">Recovery</div></div></div>
+  <div class="sci-box"><div class="sci-lbl">KNVB Guidelines</div><div class="sci-txt">6–8g carbs/kg per day · 1–3g/kg pre-match · 30–60g/hour during match · protein + carbs within 30 min post-match. Performance improves 2–6% with correct carb intake.</div></div>
+  <div class="slbl">Strength timing</div>
+  <div class="tg"><div class="tbox"><div class="tval">−3h</div><div class="tlbl">Protein meal</div></div><div class="tbox"><div class="tval">−1h</div><div class="tlbl">Creatine + carbs</div></div><div class="tbox"><div class="tval">Train</div><div class="tlbl">Water 15min</div></div><div class="tbox"><div class="tval">+20m</div><div class="tlbl">Whey + carbs</div></div><div class="tbox" style="border:none;"><div class="tval">+2h</div><div class="tlbl">Protein meal</div></div></div>
+  <div class="sci-box"><div class="sci-lbl">Strength Science</div><div class="sci-txt">Protein synthesis peaks 20–30 min post-training. 25–40g whey protein immediately after. Creatine monohydrate increases power output by 5–15%.</div></div>
+  <div class="slbl">Rest day strategy</div>
+  <div class="card" style="margin-bottom:4px;"><div style="font-size:12px;font-weight:600;margin-bottom:6px;">Reduce carbs · Increase protein · Anti-inflammatory</div><div style="font-size:11px;color:var(--txt2);line-height:1.7;">Cut carbs to 3–4g/kg, increase protein to 2.2g/kg. Focus on anti-inflammatory foods: salmon, spinach, blueberries, olive oil, turmeric. Sleep 8–9h — 80% of repair happens during sleep.</div></div>
+</div>
+</div>
+<div class="nav">
+  <button class="nb" onclick="goS('s-home')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955a1.126 1.126 0 011.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75"/></svg>Home</button>
+  <button class="nb on"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z"/></svg>Nutrition</button>
+  <button class="nb" onclick="goS('s-karriere')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941"/></svg>Career</button>
+  <button class="nb" onclick="goS('s-coach')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"/></svg>AI Coach</button>
+</div>
+</div>
+
+<!-- ===== CAREER ===== -->
+<div id="s-karriere" class="sc">
+<div class="scroll">
+  <div style="padding:20px 18px 14px;border-bottom:0.5px solid var(--border);">
+    <div style="font-size:19px;font-weight:700;letter-spacing:-.3px;">Career plan</div>
+    <div style="font-size:12px;color:var(--txt2);margin-top:3px;" id="ksub">Your personalised journey</div>
+  </div>
+  <div id="kmc" style="padding:13px 15px 0;"></div>
+  <div class="ptab-row">
+    <button class="ptab on" onclick="sTL(this,'Griezmann')">Griezmann</button>
+    <button class="ptab" onclick="sTL(this,'Mendy')">Mendy</button>
+    <button class="ptab" onclick="sTL(this,'Vardy')">Vardy</button>
+    <button class="ptab" onclick="sTL(this,'Lukaku')">Lukaku</button>
+  </div>
+  <div id="phero" style="padding:0 15px 12px;"></div>
+  <div id="kquote" style="padding:0 15px 12px;"></div>
+  <div class="slbl">Timeline</div>
+  <div id="tl" style="padding-bottom:8px;"></div>
+  <div class="slbl" style="margin-top:4px;">Your goals <span class="pro-b">Pro</span></div>
+  <div class="card" id="kgoals" style="margin-bottom:18px;"><div style="font-size:12px;color:var(--txt2);">Complete onboarding for your personal plan.</div></div>
+</div>
+<div class="nav">
+  <button class="nb" onclick="goS('s-home')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955a1.126 1.126 0 011.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75"/></svg>Home</button>
+  <button class="nb" onclick="goS('s-dieet')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z"/></svg>Nutrition</button>
+  <button class="nb on"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941"/></svg>Career</button>
+  <button class="nb" onclick="goS('s-coach')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"/></svg>AI Coach</button>
+</div>
+</div>
+
+<!-- ===== AI COACH ===== -->
+<div id="s-coach" class="sc">
+  <div style="padding:13px 15px;border-bottom:0.5px solid var(--border);display:flex;align-items:center;gap:11px;flex-shrink:0;">
+    <div id="cava" style="width:34px;height:34px;border-radius:50%;background:var(--bg2);border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:17px;">🤖</div>
+    <div><div style="font-size:13px;font-weight:600;" id="cname">AI Football Coach</div><div style="font-size:10px;color:var(--green);font-weight:500;">● Online</div></div>
+    <button onclick="swC()" style="margin-left:auto;padding:5px 11px;background:var(--bg2);border:0.5px solid var(--border);border-radius:6px;color:var(--txt2);font-family:var(--f);font-size:11px;cursor:pointer;">Switch coach</button>
+  </div>
+  <div style="padding:8px 15px;display:flex;gap:6px;flex-wrap:wrap;border-bottom:0.5px solid var(--border);flex-shrink:0;" id="qrow"></div>
+  <div id="cmsgs" style="padding:13px 15px;flex:1;overflow-y:auto;min-height:240px;max-height:300px;"></div>
+  <div id="think" style="display:none;font-size:11px;color:var(--txt3);font-style:italic;padding:3px 15px;">Thinking...</div>
+  <div class="err-b" id="err"></div>
+  <div style="display:flex;gap:8px;padding:10px 15px 13px;border-top:0.5px solid var(--border);flex-shrink:0;">
+    <textarea class="chat-inp" id="ci" placeholder="Ask your AI coach..." rows="1" maxlength="500"></textarea>
+    <button class="send" id="sendbtn" onclick="sndMsg()">
+      <svg width="13" height="13" fill="none" viewBox="0 0 24 24"><path d="M22 2L11 13" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 2L15 22L11 13L2 9L22 2Z" fill="white"/></svg>
+    </button>
+  </div>
+  <div style="text-align:center;font-size:10px;color:var(--txt3);padding:0 18px 11px;flex-shrink:0;">AI coach inspired by the chosen player — not the real person.</div>
+  <div class="nav">
+    <button class="nb" onclick="goS('s-home')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955a1.126 1.126 0 011.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75"/></svg>Home</button>
+    <button class="nb" onclick="goS('s-dieet')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z"/></svg>Nutrition</button>
+    <button class="nb" onclick="goS('s-karriere')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941"/></svg>Career</button>
+    <button class="nb on"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"/></svg>AI Coach</button>
+  </div>
+</div>
+</div>
+
 <script>
-  // ── State ──
-  var currentPlayer = null;
-  var conversationHistory = [];
-  var isLoading = false;
+// ── STATE ──
+var P={naam:'',age:'',country:'',lang:'en',position:'',level:'',dreamClub:'',idool:'',emoji:'🤖',story:''};
+var CM='default';var isLoad=false;var convH=[];
 
-  // ── Player emoji map ──
-  var playerEmoji = {
-    Griezmann: '🇫🇷',
-    Mendy: '🧤',
-    Vardy: '🏴󠁧󠁢󠁥󠁮󠁧󠁿',
-    Lukaku: '🇧🇪'
-  };
+var FLAGS={en:'🇬🇧 EN',nl:'🇧🇪 NL',fr:'🇫🇷 FR',es:'🇪🇸 ES',de:'🇩🇪 DE',it:'🇮🇹 IT'};
+var pEmoji={Griezmann:'🇫🇷',Mendy:'🧤',Vardy:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',Lukaku:'🇧🇪'};
+var posEmoji={Goalkeeper:'🧤',Defender:'🛡️',Midfielder:'⚙️',Striker:'⚡'};
 
-  // ── Navigation ──
-  function startChat(player, emoji, label) {
-    currentPlayer = player;
-    conversationHistory = [];
+var OPENMSGS={
+  en:{Griezmann:"I'm an AI coach inspired by Griezmann's mentality. Rejected at 14, World Champion at 27. What do you want to improve?",Mendy:"I'm an AI coach inspired by Mendy's mentality. Job centre at 23, Champions League at 29. Never too late. What's on your mind?",Vardy:"I'm an AI coach inspired by Vardy's mentality. Factory to Premier League top scorer. Never stop running. What do you want to know?",Lukaku:"I'm an AI coach inspired by Lukaku's mentality. 400+ career goals — discipline and belief. What's your question?"},
+  nl:{Griezmann:"Ik ben een AI-coach geïnspireerd op Griezmann. Afgewezen op 14, wereldkampioen op 27. Wat wil jij verbeteren?",Mendy:"Ik ben een AI-coach geïnspireerd op Mendy. Jobcentrum op 23, Champions League op 29. Nooit te laat. Wat houdt jou bezig?",Vardy:"Ik ben een AI-coach geïnspireerd op Vardy. Van fabriek naar PL topscorer. Stop nooit. Wat wil je weten?",Lukaku:"Ik ben een AI-coach geïnspireerd op Lukaku. 400+ doelpunten — discipline en geloof. Wat is jouw vraag?"},
+  fr:{Griezmann:"Je suis un coach IA inspiré par Griezmann. Refusé à 14 ans, champion du monde à 27. Que veux-tu améliorer?",Mendy:"Je suis un coach IA inspiré par Mendy. Au chômage à 23, vainqueur de la CL à 29. Que veux-tu savoir?",Vardy:"Je suis un coach IA inspiré par Vardy. De l'usine au meilleur buteur de PL. Ne t'arrête jamais.",Lukaku:"Je suis un coach IA inspiré par Lukaku. Plus de 400 buts en carrière. Quelle est ta question?"},
+  es:{Griezmann:"Soy un entrenador IA inspirado en Griezmann. Rechazado a 14, campeón del mundo a 27. ¿Qué quieres mejorar?",Mendy:"Soy un entrenador IA inspirado en Mendy. Desempleado a 23, campeón de la CL a 29.",Vardy:"Soy un entrenador IA inspirado en Vardy. De la fábrica al máximo goleador de la PL.",Lukaku:"Soy un entrenador IA inspirado en Lukaku. Más de 400 goles en carrera."},
+  de:{Griezmann:"Ich bin ein KI-Trainer inspiriert von Griezmann. Mit 14 abgelehnt, mit 27 Weltmeister. Was willst du verbessern?",Mendy:"Ich bin ein KI-Trainer inspiriert von Mendy. Mit 23 arbeitslos, mit 29 CL-Sieger.",Vardy:"Ich bin ein KI-Trainer inspiriert von Vardy. Von der Fabrik zum PL-Torschützenkönig.",Lukaku:"Ich bin ein KI-Trainer inspiriert von Lukaku. Über 400 Karrieretore."},
+  it:{Griezmann:"Sono un coach IA ispirato a Griezmann. Rifiutato a 14, campione del mondo a 27. Cosa vuoi migliorare?",Mendy:"Sono un coach IA ispirato a Mendy. Disoccupato a 23, vincitore della CL a 29.",Vardy:"Sono un coach IA ispirato a Vardy. Dalla fabbrica al capocannoniere della PL.",Lukaku:"Sono un coach IA ispirato a Lukaku. Oltre 400 gol in carriera."}
+};
 
-    document.getElementById('coach-ava').textContent = emoji;
-    document.getElementById('coach-name').textContent = label;
-    document.getElementById('messages').innerHTML = '';
-    document.getElementById('chat-input').value = '';
-    hideError();
+var QQS={
+  en:['Bad match?','Match prep?','Stay motivated?','Extra training?'],
+  nl:['Slechte wedstrijd?','Wedstrijdvoorbereiding?','Gemotiveerd blijven?','Extra training?'],
+  fr:['Mauvais match?','Préparation match?','Rester motivé?','Entraînement extra?'],
+  es:['¿Mal partido?','¿Preparación partido?','¿Mantenerse motivado?','¿Entrenamiento extra?'],
+  de:['Schlechtes Spiel?','Spielvorbereitung?','Motiviert bleiben?','Extra Training?'],
+  it:['Brutta partita?','Preparazione partita?','Rimanere motivati?','Allenamento extra?']
+};
 
-    document.getElementById('screen-select').style.display = 'none';
-    document.getElementById('screen-chat').style.display = 'flex';
-
-    // Opening message
-    var openingMessages = {
-      Griezmann: 'Ik ben een AI-coach geïnspireerd op de mentaliteit van Griezmann. Ik werd als tiener afgewezen door grote clubs, maar heb nooit opgegeven. Wat wil jij verbeteren aan jouw spel of carrière?',
-      Mendy: 'Ik ben een AI-coach geïnspireerd op de mentaliteit van Édouard Mendy. Zijn verhaal: werkloos op 23, Champions League-winnaar op 29. Nooit te laat. Wat houdt jou bezig?',
-      Vardy: 'Ik ben een AI-coach geïnspireerd op de mentaliteit van Jamie Vardy. Van fabriek naar Premier League-top. Als je nooit stopt met rennen, kom je er. Wat wil je van mij weten?',
-      Lukaku: 'Ik ben een AI-coach geïnspireerd op de mentaliteit van Romelu Lukaku. Meer dan 400 carrièredoelpunten — het begint altijd bij discipline en geloof in jezelf. Wat is jouw vraag?'
-    };
-
-    appendMessage('assistant', openingMessages[player]);
-  }
-
-  function goBack() {
-    currentPlayer = null;
-    conversationHistory = [];
-    document.getElementById('screen-chat').style.display = 'none';
-    document.getElementById('screen-select').style.display = 'flex';
-  }
-
-  // ── Send message ──
-  function sendMessage() {
-    var input = document.getElementById('chat-input');
-    var text = input.value.trim();
-
-    if (!text || isLoading) return;
-    if (text.length > 500) {
-      showError('Je bericht is te lang. Houd het onder 500 tekens.');
-      return;
-    }
-
-    input.value = '';
-    autoResize(input);
-    sendToAPI(text);
-  }
-
-  function sendQuick(text) {
-    if (isLoading) return;
-    document.getElementById('chat-input').value = '';
-    sendToAPI(text);
-  }
-
-  async function sendToAPI(text) {
-    hideError();
-    setLoading(true);
-
-    appendMessage('user', text);
-    conversationHistory.push({ role: 'user', content: text });
-
-    var typingId = showTyping();
-
-    try {
-      var response = await fetch('/.netlify/functions/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          player: currentPlayer,
-          messages: conversationHistory
-        })
-      });
-
-      var data = await response.json();
-      removeTyping(typingId);
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Onbekende fout van de server.');
-      }
-
-      var reply = data.reply;
-      conversationHistory.push({ role: 'assistant', content: reply });
-      appendMessage('assistant', reply);
-
-    } catch (err) {
-      removeTyping(typingId);
-      conversationHistory.pop(); // remove failed user message from history
-
-      var msg = err.message || 'Er ging iets mis. Probeer het opnieuw.';
-      showError(msg);
-      console.error('Chat fout:', err);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  // ── UI helpers ──
-  function appendMessage(role, text) {
-    var container = document.getElementById('messages');
-    var emoji = role === 'user' ? '👤' : (playerEmoji[currentPlayer] || '🤖');
-
-    var div = document.createElement('div');
-    div.className = 'msg' + (role === 'user' ? ' user' : '');
-    div.innerHTML =
-      '<div class="msg-ava">' + emoji + '</div>' +
-      '<div class="msg-bubble">' + escapeHtml(text) + '</div>';
-
-    container.appendChild(div);
-    container.scrollTop = container.scrollHeight;
-  }
-
-  function showTyping() {
-    var container = document.getElementById('messages');
-    var id = 'typing-' + Date.now();
-
-    var div = document.createElement('div');
-    div.className = 'msg';
-    div.id = id;
-    div.innerHTML =
-      '<div class="msg-ava">' + (playerEmoji[currentPlayer] || '🤖') + '</div>' +
-      '<div class="typing-bubble">' +
-        '<div class="typing-dot"></div>' +
-        '<div class="typing-dot"></div>' +
-        '<div class="typing-dot"></div>' +
-      '</div>';
-
-    container.appendChild(div);
-    container.scrollTop = container.scrollHeight;
-    return id;
-  }
-
-  function removeTyping(id) {
-    var el = document.getElementById(id);
-    if (el) el.remove();
-  }
-
-  function setLoading(state) {
-    isLoading = state;
-    var input = document.getElementById('chat-input');
-    var btn = document.getElementById('send-btn');
-    var qbtns = document.querySelectorAll('.qbtn');
-
-    input.disabled = state;
-    btn.disabled = state;
-    qbtns.forEach(function(b) { b.disabled = state; });
-
-    if (!state) input.focus();
-  }
-
-  function showError(msg) {
-    var banner = document.getElementById('error-banner');
-    banner.textContent = msg;
-    banner.style.display = 'block';
-  }
-
-  function hideError() {
-    var banner = document.getElementById('error-banner');
-    banner.style.display = 'none';
-    banner.textContent = '';
-  }
-
-  function escapeHtml(str) {
-    return str
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/\n/g, '<br>');
-  }
-
-  // ── Auto-resize textarea ──
-  function autoResize(el) {
-    el.style.height = 'auto';
-    el.style.height = Math.min(el.scrollHeight, 120) + 'px';
-  }
-
-  document.getElementById('chat-input').addEventListener('input', function() {
-    autoResize(this);
-    hideError();
+// ── ONBOARDING ──
+function ob(n){
+  ['ob1','ob2','ob3','ob4','ob5','ob6'].forEach(id=>{
+    var el=document.getElementById(id);if(el)el.style.display='none';
   });
+  if(n===2){P.naam=document.getElementById('i-naam').value.trim()||'Player';P.age=document.getElementById('i-age').value||'';}
+  if(n===3){P.country=document.getElementById('i-country').value||'OTHER';}
+  if(n===5){P.dreamClub=document.getElementById('i-dream').value.trim()||'';}
+  var el=document.getElementById('ob'+n);
+  if(el){el.style.display='flex';el.style.flexDirection='column';}
+}
 
-  document.getElementById('chat-input').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
-  });
+function selLang(btn,lang){
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');P.lang=lang;
+}
+
+function selPos(btn,pos){
+  document.querySelectorAll('.pos-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');P.position=pos;
+}
+
+function selLevel(btn,level){
+  document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');P.level=level;
+}
+
+function sP(el,naam,emoji,story){
+  document.querySelectorAll('.popt').forEach(e=>e.classList.remove('on'));
+  el.classList.add('on');
+  P.idool=naam;P.emoji=emoji;P.story=story;
+  P.dreamClub=document.getElementById('i-dream').value.trim()||'';
+  buildOb6Card();
+  setTimeout(()=>ob(6),300);
+}
+
+function buildOb6Card(){
+  var pct=cM();
+  var posEm=posEmoji[P.position]||'⚽';
+  var card=document.getElementById('ob6-card');if(!card)return;
+  card.innerHTML='<div class="profile-card">'
+    +'<div class="profile-avatar">'+posEm+'</div>'
+    +'<div class="profile-name">'+P.naam+'</div>'
+    +'<div class="profile-sub">'+(P.age?P.age+' yr · ':'')+P.position+' · '+P.level+'</div>'
+    +'<div class="pbadges"><span class="badge">'+P.country+'</span><span class="badge">'+FLAGS[P.lang]+'</span></div>'
+    +(P.dreamClub?'<div class="dream-row"><span style="font-size:18px;">🏟️</span><span style="font-size:13px;font-weight:600;">'+P.dreamClub+'</span></div>':'')
+    +'<div class="match-row"><div style="font-size:26px;">'+P.emoji+'</div><div><div style="font-size:13px;font-weight:600;">'+P.idool+' AI Coach</div><div style="font-size:11px;color:var(--txt2);margin-top:2px;">'+pct+'% match</div></div></div>'
+    +'</div>';
+  var startLabels={en:'Start my journey →',nl:'Start mijn traject →',fr:'Commencer mon parcours →',es:'Iniciar mi camino →',de:'Meine Reise beginnen →',it:'Inizia il mio percorso →'};
+  var btn=document.getElementById('ob6-btn');if(btn)btn.textContent=startLabels[P.lang]||'Start my journey →';
+}
+
+function cM(){
+  var b=38;
+  if(P.level==='Semi-pro')b+=10;
+  if(P.level==='Professional'||P.level==='Professioneel'||P.level==='Professionnel'||P.level==='Professionista'||P.level==='Profi')b+=18;
+  if(P.dreamClub)b+=6;
+  return Math.min(b,94);
+}
+
+function finish(){
+  // Save to localStorage
+  try{localStorage.setItem('propath_v2',JSON.stringify(P));}catch(e){}
+  // Hide onboarding
+  var ob=document.getElementById('s-ob');
+  ob.classList.remove('on');ob.style.display='none';
+  // Go to home
+  goS('s-home');
+  CM=P.idool||'default';
+  populateApp();
+  convH=[];
+  var msgs=OPENMSGS[P.lang]||OPENMSGS.en;
+  aMsg(msgs[P.idool]||msgs.Griezmann,false);
+  buildQRow();
+}
+
+function populateApp(){
+  var pct=cM();
+  // Header lang
+  var hl=document.getElementById('hdr-lang');if(hl)hl.textContent=FLAGS[P.lang]||'';
+  // Home greeting
+  var greet={en:'Hey',nl:'Hey',fr:'Salut',es:'Hola',de:'Hey',it:'Ciao'};
+  var g=document.getElementById('hg');if(g)g.textContent=(greet[P.lang]||'Hey')+' '+P.naam+'!';
+  var m=document.getElementById('hm');if(m)m.textContent=pct+'%';
+  // Match card
+  var mc=document.getElementById('hmc');
+  if(mc&&P.idool)mc.innerHTML='<div style="display:flex;align-items:center;gap:11px;">'
+    +'<div style="font-size:26px;">'+P.emoji+'</div>'
+    +'<div style="flex:1;"><div style="font-size:13px;font-weight:600;">'+P.idool+'</div>'
+    +'<div style="font-size:11px;color:var(--txt2);margin-top:2px;line-height:1.5;">'+P.story.substring(0,72)+'...</div></div>'
+    +'<div style="font-size:20px;font-weight:700;">'+pct+'%</div></div>';
+  // Quick access labels
+  var ci=document.getElementById('hci');if(ci)ci.textContent=P.emoji;
+  var cn=document.getElementById('hcn');if(cn&&P.idool)cn.textContent=P.idool+' AI';
+  // Coach header
+  var ca=document.getElementById('cava');if(ca)ca.textContent=P.emoji;
+  var cn2=document.getElementById('cname');if(cn2)cn2.textContent=(P.idool?P.idool+' ':'')+'AI Coach';
+  // Career
+  var ks=document.getElementById('ksub');if(ks)ks.textContent=P.naam+' · '+P.position+' · '+P.level;
+  buildKMC();
+  buildGoals();
+  sTL(document.querySelector('.ptab.on'),P.idool||'Griezmann');
+}
+
+function buildKMC(){
+  var kmc=document.getElementById('kmc');if(!kmc||!P.idool)return;
+  var pct=cM();
+  kmc.innerHTML='<div style="background:var(--bg2);border-radius:var(--rm);padding:13px;border:0.5px solid var(--border);display:flex;align-items:center;gap:11px;">'
+    +'<div style="font-size:30px;">'+P.emoji+'</div>'
+    +'<div style="flex:1;"><div style="font-size:14px;font-weight:700;">'+P.idool+'</div>'
+    +'<div style="font-size:11px;color:var(--txt2);margin-top:2px;line-height:1.55;">'+P.story+'</div></div>'
+    +'<div style="text-align:right;flex-shrink:0;"><div style="font-size:22px;font-weight:700;">'+pct+'%</div>'
+    +'<div style="font-size:10px;color:var(--txt2);">match</div></div></div>';
+}
+
+function buildGoals(){
+  var kg=document.getElementById('kgoals');if(!kg||!P.naam)return;
+  var g={en:['Goal 1 — next 6 months','Step up to a higher level. Focus on consistency.','Goal 2 — 1 year','Expand your network. Get noticed by scouts.','Goal 3 — 2–3 years','{{i}} did it. You can too. Step by step.'],
+    nl:['Doel 1 — 6 maanden','Stap omhoog. Focus op consistentie.','Doel 2 — 1 jaar','Netwerk uitbreiden via betere competities.','Doel 3 — 2–3 jaar','{{i}} deed het. Jij ook. Stap voor stap.'],
+    fr:['Objectif 1 — 6 mois','Monter de niveau. Se concentrer sur la régularité.','Objectif 2 — 1 an','Élargir ton réseau via de meilleures compétitions.','Objectif 3 — 2–3 ans','{{i}} l\'a fait. Tu peux aussi.'],
+    es:['Objetivo 1 — 6 meses','Subir de nivel. Enfocarse en la consistencia.','Objetivo 2 — 1 año','Ampliar tu red. Ser visto por ojeadores.','Objetivo 3 — 2–3 años','{{i}} lo hizo. Tú también puedes.'],
+    de:['Ziel 1 — 6 Monate','Niveau steigern. Auf Konstanz konzentrieren.','Ziel 2 — 1 Jahr','Netzwerk erweitern. Von Scouts bemerkt werden.','Ziel 3 — 2–3 Jahre','{{i}} hat es geschafft. Du auch.'],
+    it:['Obiettivo 1 — 6 mesi','Salire di livello. Concentrarsi sulla costanza.','Obiettivo 2 — 1 anno','Ampliare la rete. Farsi notare dai talent scout.','Obiettivo 3 — 2–3 anni','{{i}} ce l\'ha fatta. Anche tu puoi.']};
+  var gl=g[P.lang]||g.en;
+  kg.innerHTML='<div style="margin-bottom:9px;padding-bottom:9px;border-bottom:0.5px solid var(--border);"><div style="font-size:12px;font-weight:600;margin-bottom:3px;">'+gl[0]+'</div><div style="font-size:11px;color:var(--txt2);line-height:1.6;">'+gl[1]+'</div></div>'
+    +'<div style="margin-bottom:9px;padding-bottom:9px;border-bottom:0.5px solid var(--border);"><div style="font-size:12px;font-weight:600;margin-bottom:3px;">'+gl[2]+'</div><div style="font-size:11px;color:var(--txt2);line-height:1.6;">'+gl[3]+'</div></div>'
+    +'<div><div style="font-size:12px;font-weight:600;margin-bottom:3px;">'+gl[4]+'</div><div style="font-size:11px;color:var(--txt2);line-height:1.6;">'+gl[5].replace('{{i}}',P.idool||'Your idol')+'</div></div>';
+}
+
+function goS(name){
+  document.querySelectorAll('.sc').forEach(s=>s.classList.remove('on'));
+  document.getElementById(name).classList.add('on');
+}
+
+// ── NUTRITION ──
+var DSCI={match:'Match day: 7–8g carbs/kg. Delays fatigue and maintains decision-making after 60 minutes.',prematch:'Day before match: start carb loading now. Your performance tomorrow depends on today.',strength:'Strength: 5g carbs/kg + 2.2g protein/kg. Protein synthesis peaks 20 min post-training.',cardio:'Cardio: 7g carbs/kg. Footballers run 9–12km per match. Electrolyte replacement essential.',technical:'Technical: moderate carbs for mental sharpness. The brain uses 120g glucose per day.',easy:'Easy training: reduced intake. Focus on food quality. Don\'t overeat today.',recovery:'Active recovery: anti-inflammatory priority. Omega-3, antioxidants, hydration.',rest:'Rest day: reduce carbs 40%, increase protein. Sleep 8–9h — 80% of repair happens during sleep.'};
+
+var PLANS={
+  match:{label:'Match day',focus:'Maximise glycogen. Every meal = carbohydrates. 7–8g carbs/kg delays fatigue after 60 minutes when most goals are scored.',meals:[{e:'🌅',n:'Breakfast — High-carb oat bowl',t:'07:00',kc:520,c:88,p:18,f:11,ing:'80g oats · 1 banana · 1 tbsp honey · 200ml milk · berries',why:'Maximum glycogen loading. Oats + banana + honey = slow + fast carbs.'},{e:'🍝',n:'Lunch — Pasta with chicken',t:'12:30',kc:720,c:98,p:44,f:14,ing:'200g pasta · 150g chicken · tinned tomatoes · garlic · olive oil · parmesan',why:'Standard pre-match meal at every professional club. Eat 3–4 hours before kick-off.'},{e:'⚡',n:'Pre-match snack',t:'KO −90min',kc:240,c:48,p:6,f:4,ing:'1 banana · 2 rice cakes with jam · 400ml water',why:'Fast carbs only. No fat or fibre — slows absorption.'},{e:'🍊',n:'Half-time fuel',t:'Half-time',kc:120,c:30,p:2,f:1,ing:'1 banana · orange slices · sports drink',why:'30–60g carbs per hour per KNVB guidelines. Don\'t skip.'},{e:'💪',n:'Post-match recovery',t:'KO +30min',kc:380,c:52,p:32,f:8,ing:'500ml chocolate milk · 1 banana · optional whey',why:'4:1 carb:protein proven to restore glycogen. Drink within 30 min.'}]},
+  prematch:{label:'Day before match',focus:'Maximum carb loading. Eat more than usual at dinner. Your performance tomorrow depends on today.',meals:[{e:'🥞',n:'Breakfast — Pancakes',t:'07:00',kc:580,c:95,p:16,f:14,ing:'150g pancake mix · 2 eggs · 200ml milk · maple syrup · banana',why:'High-GI breakfast rapidly tops up liver glycogen.'},{e:'🍗',n:'Lunch — Rice & chicken',t:'12:30',kc:640,c:78,p:50,f:12,ing:'180g basmati rice · 150g chicken · vegetables · olive oil',why:'Continue loading. Avoid high-fat — fat slows glycogen uptake.'},{e:'🍌',n:'Afternoon snack',t:'15:30',kc:280,c:55,p:8,f:5,ing:'2 slices toast · peanut butter · banana · orange juice',why:'Keep carbs high all day. As important as match day.'},{e:'🍝',n:'Dinner — Pasta bolognese',t:'18:30',kc:780,c:105,p:45,f:18,ing:'220g spaghetti · 180g lean beef · tomatoes · onion · garlic · parmesan',why:'Most important meal before match. Used by Premier League, Bundesliga and Serie A clubs.'},{e:'🥛',n:'Evening snack',t:'21:00',kc:180,c:28,p:14,f:3,ing:'200g Greek yoghurt · honey · banana',why:'Casein protein before sleep + carbs prevents overnight glycogen breakdown.'}]},
+  strength:{label:'Strength training',focus:'High protein to build muscle, moderate carbs for energy. Protein within 20 minutes post-training.',meals:[{e:'🍳',n:'Breakfast — Eggs & avocado',t:'07:00',kc:480,c:42,p:32,f:18,ing:'3 eggs · 2 slices wholegrain toast · 1 avocado · cherry tomatoes',why:'Protein-forward. Eggs = all essential amino acids. Leucine triggers muscle building.'},{e:'🥩',n:'Lunch — Beef & sweet potato',t:'12:30',kc:620,c:52,p:54,f:16,ing:'180g lean beef · 200g sweet potato · broccoli · olive oil · garlic',why:'Lean beef provides natural creatine. Sweet potato = slow-release energy.'},{e:'💊',n:'Pre-strength snack',t:'−60min',kc:220,c:38,p:12,f:4,ing:'3–5g creatine monohydrate · banana · 400ml water',why:'Creatine increases power output by 5–15%. Combine with carbs for uptake.'},{e:'💪',n:'Post-strength shake',t:'Within 20min',kc:340,c:42,p:36,f:5,ing:'30g whey protein · 300ml milk · 1 banana — blend',why:'20-min anabolic window. 25–40g whey + fast carbs. Most important meal for muscle growth.'},{e:'🐟',n:'Dinner — Salmon & quinoa',t:'19:30',kc:580,c:48,p:46,f:19,ing:'180g salmon · 150g quinoa · spinach · lemon · olive oil',why:'Salmon omega-3 reduces inflammation. Quinoa = complete protein.'}]},
+  cardio:{label:'Cardio training',focus:'Highest carbs of all types. 9–12km per match = all glycogen. Electrolytes critical.',meals:[{e:'🌅',n:'Breakfast — Carb power bowl',t:'07:00',kc:560,c:95,p:16,f:11,ing:'90g oats · 2 bananas · 2 tbsp honey · 200ml milk · dried fruit',why:'Maximum carb loading. Low fat for fast gastric emptying.'},{e:'🍚',n:'Lunch — White rice & tuna',t:'12:00',kc:580,c:82,p:42,f:8,ing:'180g white rice · 160g tuna · cucumber · soy sauce',why:'White rice = faster glycogen uptake. Tuna = low fat, high protein.'},{e:'⚡',n:'Pre-cardio fuel',t:'−60min',kc:260,c:54,p:5,f:3,ing:'2 bananas · 500ml sports drink OR energy gel + water',why:'Pure carbs only. Add electrolytes if session exceeds 60 min.'},{e:'🧃',n:'During session',t:'Every 20min',kc:120,c:30,p:2,f:0,ing:'Sports drink 500ml · electrolyte tablet',why:'30–60g carbs/hour. 2% dehydration = 10–20% performance drop.'},{e:'🌊',n:'Post-cardio recovery',t:'+30min',kc:400,c:68,p:24,f:6,ing:'500ml coconut water · banana · rice cakes with honey',why:'Glycogen depleted. 4:1 carb:protein. Electrolyte replacement essential.'}]},
+  technical:{label:'Technical training',focus:'Moderate carbs for brain and muscle. The brain uses 120g glucose/day — carbs fuel decisions.',meals:[{e:'🌅',n:'Breakfast — Balanced start',t:'07:00',kc:480,c:62,p:24,f:14,ing:'2 eggs on toast · 1 banana · Greek yoghurt · coffee',why:'Balanced for technical day. Carbs for mental focus.'},{e:'🥗',n:'Lunch — Chicken rice bowl',t:'12:30',kc:580,c:65,p:46,f:12,ing:'140g chicken · 140g basmati rice · veg · olive oil',why:'Basmati for sustained energy. Chicken for lean protein.'},{e:'🍌',n:'Pre-session snack',t:'−60min',kc:200,c:38,p:6,f:4,ing:'1 banana · 1 rice cake with peanut butter · 400ml water',why:'Light fuel. Enough to stay sharp during drills.'},{e:'🥤',n:'Post-session recovery',t:'+30min',kc:280,c:34,p:26,f:5,ing:'200g Greek yoghurt · 40g granola · honey OR protein shake',why:'Protein for muscle maintenance.'},{e:'🐟',n:'Dinner — Recovery plate',t:'19:30',kc:520,c:50,p:40,f:16,ing:'160g salmon · 180g sweet potato · broccoli · spinach · olive oil',why:'Salmon omega-3 reduces inflammation.'}]},
+  easy:{label:'Easy training',focus:'Reduced calories vs heavy days. Focus on quality. Perfect day to practice nutrition habits.',meals:[{e:'🥣',n:'Breakfast — Overnight oats',t:'07:00',kc:420,c:58,p:20,f:12,ing:'70g oats · 180ml milk · 130g yoghurt · chia seeds · honey · berries',why:'Slow-release carbs. Prep night before.'},{e:'🥗',n:'Lunch — Protein salad',t:'12:30',kc:460,c:38,p:44,f:14,ing:'Mixed greens · 130g chicken · chickpeas · feta · olive oil · lemon',why:'Lighter carb load. High protein without heaviness.'},{e:'🍎',n:'Afternoon snack',t:'15:30',kc:160,c:28,p:8,f:3,ing:'1 apple · 20g almonds · water',why:'Light fuel. Apple adds fructose for liver glycogen.'},{e:'🥤',n:'Post-session protein',t:'+30min',kc:220,c:22,p:26,f:4,ing:'150g Greek yoghurt · granola · honey',why:'Protein to maintain muscle even after easy sessions.'},{e:'🍲',n:'Dinner — Veggie bowl',t:'19:30',kc:480,c:58,p:28,f:14,ing:'130g lentils · roasted veg · feta · olive oil · tahini',why:'Plant-based recovery. Lentils = underrated protein source.'}]},
+  recovery:{label:'Active recovery',focus:'Anti-inflammatory nutrition is the priority. Omega-3, antioxidants and hydration are your tools.',meals:[{e:'🫐',n:'Breakfast — Anti-inflammatory bowl',t:'08:00',kc:380,c:52,p:18,f:12,ing:'60g oats · 200ml almond milk · blueberries · flaxseed · turmeric · honey · walnuts',why:'Blueberries reduce muscle soreness by 30%. Turmeric reduces inflammation markers.'},{e:'🐟',n:'Lunch — Salmon & quinoa',t:'12:30',kc:540,c:44,p:46,f:18,ing:'170g salmon · 130g quinoa · spinach · avocado · lemon · olive oil',why:'Salmon omega-3 actively speeds up repair.'},{e:'🍵',n:'Recovery snack',t:'15:30',kc:180,c:24,p:10,f:6,ing:'200ml tart cherry juice · walnuts · 1 banana',why:'Tart cherry juice reduces muscle soreness by up to 24 hours.'},{e:'💊',n:'Supplements',t:'Throughout',kc:0,c:0,p:0,f:0,ing:'Magnesium 300mg · omega-3 · vitamin D3 · 3L+ water',why:'Recovery day: ideal for magnesium, vitamin D, omega-3. Consult doctor first.'},{e:'🫕',n:'Dinner — Turkey & veg',t:'19:00',kc:460,c:36,p:42,f:14,ing:'160g turkey · 150g brown rice · broccoli + spinach · olive oil · garlic',why:'Turkey tryptophan improves sleep quality. Sleep = when repair happens.'}]},
+  rest:{label:'Rest day',focus:'Lowest intake. No glycogen replenishment needed. Reduce carbs 40%, increase protein. Anti-inflammatory + sleep 8–9h.',meals:[{e:'🍳',n:'Breakfast — Eggs & avocado',t:'08:30',kc:420,c:18,p:28,f:28,ing:'3 eggs · 1 avocado · 1 slice rye bread · cherry tomatoes',why:'Low-carb, high-protein. Avocado = omega-9 for joint health.'},{e:'🥗',n:'Lunch — Tuna salad',t:'13:00',kc:380,c:22,p:48,f:12,ing:'160g tuna · large salad · chickpeas · cucumber · olive oil · lemon',why:'High-protein, low-carb. No heavy rice or pasta today.'},{e:'🫐',n:'Snack',t:'16:00',kc:160,c:18,p:12,f:5,ing:'150g cottage cheese · blueberries · honey',why:'Cottage cheese = casein protein. Slow-digesting.'},{e:'🐟',n:'Dinner — Salmon & veg',t:'19:00',kc:480,c:24,p:44,f:22,ing:'180g salmon · broccoli & cauliflower · 100g sweet potato · olive oil',why:'Omega-3 for maximum overnight recovery.'},{e:'🥛',n:'Evening protein',t:'21:30',kc:140,c:12,p:18,f:3,ing:'180g Greek yoghurt · small handful walnuts',why:'Casein feeds muscles for 7–8 hours overnight.'}]}
+};
+
+var RECIPES=[
+  {d:'easy',e:'🍌',n:'Banana peanut butter toast',t:'5 min',kc:340,c:58,p:12,f:10,use:'Pre-training fuel',ing:'2 slices wholegrain bread · peanut butter · 1 banana · honey',steps:['Toast bread golden brown.','Spread peanut butter on both slices.','Slice banana on top. Add honey.','Eat 60–90 min before training with 500ml water.'],note:'"Banana + toast works better than any supplement." — semi-pro players worldwide.'},
+  {d:'easy',e:'🥤',n:'Chocolate milk recovery shake',t:'2 min',kc:290,c:42,p:18,f:8,use:'Post-training',ing:'500ml chocolate milk · 1 banana · optional whey protein',steps:['Blend chocolate milk + banana 30 sec.','Drink within 30 minutes of training.'],note:'Scientifically proven 4:1 carb:protein ratio. Used in Premier League academies.'},
+  {d:'easy',e:'🥛',n:'Greek yoghurt power bowl',t:'3 min',kc:320,c:38,p:24,f:8,use:'Breakfast / recovery',ing:'200g Greek yoghurt · 40g granola · 1 banana · honey · berries',steps:['Add yoghurt to bowl.','Layer granola.','Add banana and berries.','Drizzle honey.'],note:'High casein protein — ideal before sleep or as recovery snack.'},
+  {d:'medium',e:'🍗',n:'Chicken & rice match day',t:'20 min',kc:620,c:72,p:50,f:14,use:'Lunch — match day',ing:'150g chicken · 150g basmati rice · veg · olive oil · garlic',steps:['Boil rice in salted water, 12 min.','Season chicken with garlic, herbs, salt.','Cook chicken 6–7 min each side.','Rest 2 min. Slice. Serve over rice.'],note:'Standard at Premier League clubs 3–4 hours before kick-off.'},
+  {d:'medium',e:'🥣',n:'Overnight oats',t:'5 min prep',kc:520,c:78,p:22,f:14,use:'Breakfast — all types',ing:'80g oats · 200ml milk · 150g yoghurt · chia seeds · honey · berries (night before)',steps:['Mix oats, milk, yoghurt, chia, honey in jar.','Refrigerate overnight (min 6h).','Morning: add berries and honey.'],note:'5 min prep the night before. Perfect for early morning training.'},
+  {d:'medium',e:'🍳',n:'Scrambled eggs & smoked salmon',t:'10 min',kc:420,c:8,p:42,f:24,use:'Breakfast — strength/rest day',ing:'3 eggs · 80g smoked salmon · butter · dill · rye bread',steps:['Whisk eggs with salt.','Melt butter on LOW heat.','Add eggs, stir slowly. Remove while slightly wet.','Top with salmon, dill, pepper. Serve with rye.'],note:'High omega-3 + complete protein = ideal strength day breakfast.'},
+  {d:'hard',e:'🍝',n:'Pre-match pasta bolognese',t:'35 min',kc:720,c:95,p:42,f:16,use:'Dinner — day before match',ing:'200g spaghetti · 150g lean beef mince · 1 tin tomatoes · onion · garlic · herbs · parmesan',steps:['Dice onion and garlic. Fry in olive oil 3–4 min.','Add beef. Cook until browned.','Add tomatoes, herbs, salt, pepper. Simmer 15 min.','Cook spaghetti al dente. Combine. Top with parmesan.'],note:'Served at Juventus, Real Madrid and most European clubs the evening before a match.'},
+  {d:'hard',e:'🍲',n:'Anti-inflammatory lentil stew',t:'40 min',kc:480,c:62,p:28,f:12,use:'Dinner — recovery/rest day',ing:'200g red lentils · 1 tin tomatoes · onion · carrots · garlic · turmeric · cumin · stock · spinach',steps:['Dice veg. Fry with turmeric and cumin.','Add lentils, tomatoes and stock. Boil.','Simmer 25 min until soft.','Stir in spinach. Season. Add lemon juice.'],note:'Turmeric (curcumin) reduces muscle inflammation by up to 25% in athletes.'}
+];
+
+function swD(btn,pid){
+  document.querySelectorAll('.tabb').forEach(t=>t.classList.remove('on'));btn.classList.add('on');
+  document.querySelectorAll('.dp').forEach(p=>{p.style.display='none';p.classList.remove('on');});
+  var el=document.getElementById(pid);el.style.display='block';el.classList.add('on');
+}
+
+function dcalc(){
+  var w=parseInt(document.getElementById('dw').value)||70;
+  var t=document.getElementById('dtype').value;
+  var p=document.getElementById('dpos').value;
+  var cm={match:7.5,prematch:7.0,strength:5.0,cardio:7.0,technical:5.5,easy:4.5,recovery:4.0,rest:3.5};
+  var pm={match:1.8,prematch:1.8,strength:2.2,cardio:1.8,technical:2.0,easy:1.9,recovery:2.0,rest:2.2};
+  var fm={match:0.8,prematch:0.9,strength:1.1,cardio:0.8,technical:1.0,easy:1.0,recovery:1.1,rest:1.1};
+  var pa={striker:1.05,mid:1.0,defender:0.97,keeper:0.90};
+  var adj=pa[p]||1;
+  var carb=Math.round(w*cm[t]*adj);var prot=Math.round(w*pm[t]*adj);var fat=Math.round(w*fm[t]*adj);
+  var kcal=Math.round(carb*4+prot*4+fat*9);
+  var water=((w*0.033)+(t==='match'||t==='cardio'?1.0:t==='strength'||t==='technical'?0.7:0.3)).toFixed(1);
+  document.getElementById('d-kcal').textContent=kcal.toLocaleString();
+  document.getElementById('d-carb').textContent=carb+'g';
+  document.getElementById('d-prot').textContent=prot+'g';
+  document.getElementById('d-fat').textContent=fat+'g';
+  document.getElementById('d-ckg').textContent=(carb/w).toFixed(1)+'g';
+  document.getElementById('d-pkg').textContent=(prot/w).toFixed(1)+'g';
+  document.getElementById('d-water').textContent=water+'L';
+  document.getElementById('d-sci').textContent=DSCI[t];
+  var wb=document.getElementById('d-warn');var tb=document.getElementById('d-tip');
+  wb.style.display='none';tb.style.display='none';
+  if(w<60){wb.className='warn-box';wb.textContent='⚠️ Players under 60kg risk underfuelling. This is the #1 mistake in young footballers.';wb.style.display='block';}
+  else if(t==='strength'){tb.className='tip-box';tb.textContent='💡 Take 3–5g creatine monohydrate before your session. Proven to increase strength by 5–15%.';tb.style.display='block';}
+  else if(t==='rest'){tb.className='tip-box';tb.textContent='✅ Rest days are when you get stronger. Prioritise sleep (8–9h) and anti-inflammatory foods.';tb.style.display='block';}
+}
+
+function setMP(btn,type){
+  document.querySelectorAll('#mp-btns .train-btn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');
+  var plan=PLANS[type];
+  document.getElementById('mp-lbl').textContent=plan.label;
+  document.getElementById('mp-txt').textContent=plan.focus;
+  document.getElementById('meal-list').innerHTML=plan.meals.map(m=>
+    '<div class="meal-card" onclick="tmeal(this)">'
+    +'<div class="meal-hdr"><div class="meal-ico">'+m.e+'</div><div style="flex:1;"><div class="meal-nm">'+m.n+'</div><div class="meal-sub">'+m.kc+' kcal</div></div><div class="meal-time">'+m.t+'</div></div>'
+    +'<div class="meal-det"><div class="mpills"><span class="pill c">'+m.c+'g carbs</span><span class="pill p">'+m.p+'g protein</span><span class="pill f">'+m.f+'g fat</span><span class="pill k">'+m.kc+' kcal</span></div>'
+    +'<div class="det-lbl">Ingredients</div><div style="font-size:11px;line-height:1.8;margin-bottom:4px;">'+m.ing+'</div>'
+    +'<div class="why-box">'+m.why+'</div></div></div>'
+  ).join('');
+}
+
+function filterRec(btn,diff){
+  document.querySelectorAll('#d-rc .fbtn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');
+  var filtered=diff==='all'?RECIPES:RECIPES.filter(r=>r.d===diff);
+  document.getElementById('recipe-list').innerHTML=filtered.map(r=>
+    '<div class="meal-card" onclick="tmeal(this)">'
+    +'<div class="meal-hdr"><div class="meal-ico">'+r.e+'</div><div style="flex:1;"><div class="meal-nm">'+r.n+'</div><div class="meal-sub">'+r.use+' · '+r.t+'</div></div>'
+    +'<span class="diff-b '+(r.d==='easy'?'d-easy':r.d==='medium'?'d-med':'d-hard')+'">'+(r.d==='easy'?'Easy':r.d==='medium'?'Medium':'Advanced')+'</span></div>'
+    +'<div class="meal-det"><div class="mpills"><span class="pill c">'+r.c+'g carbs</span><span class="pill p">'+r.p+'g protein</span><span class="pill f">'+r.f+'g fat</span><span class="pill k">'+r.kc+' kcal</span></div>'
+    +'<div class="det-lbl">Ingredients</div><div style="font-size:11px;line-height:1.8;margin-bottom:8px;">'+r.ing+'</div>'
+    +'<div class="det-lbl">Steps</div>'
+    +r.steps.map((s,i)=>'<div class="step"><div class="snum">'+(i+1)+'</div><div class="stxt">'+s+'</div></div>').join('')
+    +'<div class="why-box" style="margin-top:7px;">'+r.note+'</div></div></div>'
+  ).join('');
+}
+
+function tmeal(card){
+  var d=card.querySelector('.meal-det');var isOpen=d.classList.contains('open');
+  document.querySelectorAll('.meal-det.open').forEach(x=>x.classList.remove('open'));
+  document.querySelectorAll('.meal-card.open').forEach(x=>x.classList.remove('open'));
+  if(!isOpen){d.classList.add('open');card.classList.add('open');}
+}
+
+// ── CAREER ──
+var TL={
+  Griezmann:{e:'🇫🇷',s:'Attacking midfielder · Striker',q:'"Transitioning from being rejected by French academies for his size to becoming Atlético Madrid\'s all-time top scorer and a 2018 World Cup winner." — Google AI Overview',
+    items:[{a:'14',t:'Rejected — Lyon & Mönchengladbach',d:'Too small, too weak. Every French academy said no.',tag:'r',tl:'Lowest point'},{a:'14',t:'Father drives 1,400km to Real Sociedad',d:'One chance. One test. They saw what others missed.',tag:'n',tl:'Turning point'},{a:'18',t:'Professional debut La Liga',d:'Started as substitute. Grew step by step.',tag:'n',tl:''},{a:'23',t:'Atlético Madrid — €30M',d:'All-time top scorer within 2 years.',tag:'w',tl:'Breakthrough'},{a:'25',t:'Golden Boot EURO 2016',d:'Best player of the tournament.',tag:'w',tl:''},{a:'27',t:'World Champion 2018',d:'Scored in the final. From rejected teen to world champion.',tag:'w',tl:'World class'}]},
+  Mendy:{e:'🧤',s:'Goalkeeper',q:'"Five years ago, aged 23, he was unemployed, queuing at a local job centre and ready to quit football." — Verified source',
+    items:[{a:'20',t:'Contract lost at Cherbourg',d:'No club, no income.',tag:'r',tl:'Lowest point'},{a:'23',t:'Unemployed — job centre queue',d:'Considered quitting football for good.',tag:'r',tl:'Nearly quit'},{a:'23',t:'Chose football over security',d:'Started again at amateur level.',tag:'n',tl:'Turning point'},{a:'25',t:'Stade Laval — Ligue 2',d:'First real pro contract.',tag:'w',tl:'First step'},{a:'27',t:'Stade Rennais — Ligue 1',d:'Top division. Scouts start watching.',tag:'w',tl:'Breakthrough'},{a:'28',t:'Chelsea FC — £22M',d:'Biggest transfer for an African goalkeeper.',tag:'w',tl:'Dream'},{a:'29',t:'Champions League winner',d:'From job centre to European champion.',tag:'w',tl:'World class'}]},
+  Vardy:{e:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',s:'Striker',q:'"You can work on the factory floor when you\'re 23, and play in the fifth division when you\'re 25. If you chase hopeless balls, you could still be top scorer." — Erik Niva',
+    items:[{a:'16',t:'Rejected by Sheffield Wednesday',d:'"Too small." Stopped playing for 8 months.',tag:'r',tl:'Lowest point'},{a:'17-22',t:'Prosthetics factory + Sunday football',d:'Heavy factory work. Football as a hobby.',tag:'n',tl:'Real life'},{a:'21',t:'Ankle tag after pub fight',d:'Evening curfew. Not allowed on away trips.',tag:'r',tl:'Low point'},{a:'25',t:'Leicester City — £1M',d:'First pro contract. From 5th division.',tag:'w',tl:'Turning point'},{a:'27',t:'PL goals vs Man United',d:'Mourinho: "Do you ever stop fucking running?"',tag:'w',tl:'Breakthrough'},{a:'29',t:'Premier League champion',d:'Greatest fairytale in football history.',tag:'w',tl:'Legendary'}]},
+  Lukaku:{e:'🇧🇪',s:'Striker · Belgian all-time top scorer',q:'"A tale of early prodigious talent, immense goal-scoring figures, record-breaking transfers, and frequent controversies." — Verified analysis',
+    items:[{a:'16',t:'Anderlecht — youngest Pro League top scorer',d:'Won Belgian title as a teenager.',tag:'w',tl:'Early breakthrough'},{a:'18',t:'Chelsea (1st) — bench warmer',d:'Barely any playing time.',tag:'r',tl:'Frustration'},{a:'21',t:'Everton — 25 goals/season',d:'Full playing time. Recognised as top striker.',tag:'w',tl:'Best period'},{a:'27',t:'Inter Milan — Serie A MVP',d:'Absolute peak under Conte.',tag:'w',tl:'Absolute top'},{a:'28',t:'Chelsea return — controversy',d:'Sky Italia interview ruined everything.',tag:'r',tl:'Big mistake'},{a:'32',t:'Napoli crisis — April 2026',d:'Did not return from leave. "Professional misconduct."',tag:'r',tl:'Current 2026'}]}
+};
+
+function sTL(btn,player){
+  document.querySelectorAll('.ptab').forEach(b=>b.classList.remove('on'));if(btn)btn.classList.add('on');
+  var d=TL[player];if(!d)return;
+  var ph=document.getElementById('phero');
+  if(ph)ph.innerHTML='<div style="background:var(--bg2);border-radius:var(--rm);padding:13px;border:0.5px solid var(--border);">'
+    +'<div style="display:flex;align-items:center;gap:11px;">'
+    +'<div style="width:42px;height:42px;border-radius:50%;background:var(--bg);border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:21px;">'+d.e+'</div>'
+    +'<div style="flex:1;"><div style="font-size:14px;font-weight:700;">'+player+'</div><div style="font-size:11px;color:var(--txt2);margin-top:2px;">'+d.s+'</div></div>'
+    +(P.idool===player?'<div style="text-align:right;"><div style="font-size:21px;font-weight:700;">'+cM()+'%</div><div style="font-size:10px;color:var(--txt2);">your match</div></div>':'')
+    +'</div></div>';
+  var kq=document.getElementById('kquote');
+  if(kq)kq.innerHTML='<div class="qt-box"><div class="qt-t">'+d.q+'</div><div class="qt-s">Verified source</div></div>';
+  var tl=document.getElementById('tl');
+  if(tl)tl.innerHTML=d.items.map((it,i)=>
+    '<div class="tl-item"><div class="tl-l"><div class="tl-age">'+it.a+'</div>'+(i<d.items.length-1?'<div class="tl-line"></div>':'')+'</div>'
+    +'<div class="tl-b'+(it.tl==='Breakthrough'||it.tl==='World class'||it.tl==='Legendary'||it.tl==='Absolute top'?' key':'')+'"><div class="tl-t">'+it.t+'</div><div class="tl-d">'+it.d+'</div>'
+    +(it.tl?'<span class="tl-tag'+(it.tag==='w'?' w':it.tag==='r'?' r':' n')+'">'+it.tl+'</span>':'')
+    +'</div></div>'
+  ).join('');
+}
+
+// ── AI COACH ──
+function buildQRow(){
+  var qs=QQS[P.lang]||QQS.en;
+  var row=document.getElementById('qrow');if(!row)return;
+  row.innerHTML=qs.map(q=>'<button class="qb" onclick="sQ(this.dataset.q)" data-q="'+q.replace(/"/g,'&quot;')+'">'+q+'</button>').join('');
+}
+
+function swC(){
+  var l=['default','Griezmann','Mendy','Vardy','Lukaku'];
+  CM=l[(l.indexOf(CM)+1)%l.length];
+  var em=pEmoji[CM]||'🤖';
+  document.getElementById('cava').textContent=em;
+  document.getElementById('cname').textContent=(CM==='default'?'AI Coach':CM+' AI Coach');
+  convH=[];
+  var switchLabels={en:'Switched to '+(CM==='default'?'general AI coach':CM+' AI coach')+'. What do you want to know?',
+    nl:'Geswitcht naar '+(CM==='default'?'algemene AI coach':CM+' AI coach')+'. Wat wil je weten?',
+    fr:'Changé vers '+(CM==='default'?'coach IA général':CM+' coach IA')+'. Que veux-tu savoir?',
+    es:'Cambiado a '+(CM==='default'?'entrenador IA general':CM+' entrenador IA')+'. ¿Qué quieres saber?',
+    de:'Gewechselt zu '+(CM==='default'?'allgemeiner KI-Coach':CM+' KI-Coach')+'. Was willst du wissen?',
+    it:'Cambiato a '+(CM==='default'?'coach IA generale':CM+' coach IA')+'. Cosa vuoi sapere?'};
+  aMsg(switchLabels[P.lang]||switchLabels.en,false);
+}
+
+function aMsg(txt,isU){
+  var c=document.getElementById('cmsgs');
+  var d=document.createElement('div');
+  d.className='msg'+(isU?' u':'');
+  d.innerHTML='<div class="mava">'+(isU?'👤':(pEmoji[CM]||'🤖'))+'</div><div><div class="mbub">'+esc(txt)+'</div></div>';
+  c.appendChild(d);c.scrollTop=c.scrollHeight;
+}
+
+function showTyping(){
+  var c=document.getElementById('cmsgs');
+  var id='t'+Date.now();
+  var d=document.createElement('div');
+  d.className='msg';d.id=id;
+  d.innerHTML='<div class="mava">'+(pEmoji[CM]||'🤖')+'</div><div><div class="mbub" style="display:flex;gap:4px;align-items:center;"><div class="tdot"></div><div class="tdot"></div><div class="tdot"></div></div></div>';
+  c.appendChild(d);c.scrollTop=c.scrollHeight;return id;
+}
+
+function setLoad(state){
+  isLoad=state;
+  var inp=document.getElementById('ci');var btn=document.getElementById('sendbtn');
+  document.querySelectorAll('.qb').forEach(b=>b.disabled=state);
+  inp.disabled=state;btn.disabled=state;
+  if(!state)inp.focus();
+}
+
+function showErr(msg){var b=document.getElementById('err');b.textContent=msg;b.style.display='block';}
+function hideErr(){var b=document.getElementById('err');b.style.display='none';b.textContent='';}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/\n/g,'<br>');}
+
+async function sndMsg(){
+  var inp=document.getElementById('ci');
+  var txt=inp.value.trim();if(!txt||isLoad)return;
+  inp.value='';autoR(inp);hideErr();setLoad(true);
+  aMsg(txt,true);
+  convH.push({role:'user',content:txt});
+  var tid=showTyping();
+  var cp=CM==='default'?(P.idool||'Griezmann'):CM;
+  try{
+    var r=await fetch('/.netlify/functions/chat',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({player:cp,messages:convH,preferredLanguage:P.lang||'en',profile:{name:P.naam,age:P.age,position:P.position,level:P.level,dreamClub:P.dreamClub,country:P.country}})
+    });
+    var data=await r.json();
+    var el=document.getElementById(tid);if(el)el.remove();
+    if(!r.ok)throw new Error(data.error||'Server error.');
+    convH.push({role:'assistant',content:data.reply});
+    aMsg(data.reply,false);
+  }catch(e){
+    var el2=document.getElementById(tid);if(el2)el2.remove();
+    convH.pop();showErr(e.message||'Something went wrong. Try again.');
+  }finally{setLoad(false);}
+}
+
+function sQ(q){document.getElementById('ci').value=q;sndMsg();}
+function autoR(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,110)+'px';}
+document.getElementById('ci').addEventListener('input',function(){autoR(this);hideErr();});
+document.getElementById('ci').addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sndMsg();}});
+
+// ── INIT — ALWAYS clear all storage and show onboarding first ──
+try {
+  localStorage.clear();
+} catch(e) {}
+
+ob(1);
+dcalc();
+setMP(document.querySelector('#mp-btns .train-btn'),'match');
+filterRec(document.querySelector('#d-rc .fbtn'),'all');
+sTL(document.querySelector('.ptab.on'),'Griezmann');
 </script>
 </body>
 </html>
