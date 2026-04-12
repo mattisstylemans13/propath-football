@@ -1,0 +1,270 @@
+const https = require("https");
+
+function callAnthropicVision(apiKey, imageBase64, mediaType, profile, trainingType) {
+  return new Promise((resolve, reject) => {
+    const targets = calculateMacroTargets(profile, trainingType);
+    
+    const prompt = `You are a sports nutrition AI for footballers. Analyze this meal photo and return ONLY valid JSON, no markdown, no explanation.
+
+Identify every food item visible. For each item estimate grams based on visual portion size.
+
+Return this exact JSON structure:
+{
+  "items": [
+    {
+      "name": "food name in English",
+      "grams": estimated_grams_number,
+      "calories": number,
+      "carbs": number,
+      "protein": number,
+      "fat": number,
+      "confidence": 0.0_to_1.0
+    }
+  ],
+  "totalCalories": number,
+  "totalCarbs": number,
+  "totalProtein": number,
+  "totalFat": number,
+  "overallConfidence": 0.0_to_1.0,
+  "notes": "brief note about hidden calories like oils or sauces if visible"
+}
+
+Context: This is for a footballer on a ${trainingType} day. Their daily targets are ${targets.calories} kcal, ${targets.carbs}g carbs, ${targets.protein}g protein, ${targets.fat}g fat.
+
+Be precise with portion sizes. A standard chicken breast is 150g. A medium plate of pasta is 200g cooked. Estimate oil/butter if food appears fried or glossy.`;
+
+    const body = JSON.stringify({
+      model: "claude-opus-4-6",
+      max_tokens: 1000,
+      messages: [
+        {
+          role: "user",
+          content: [
+            {
+              type: "image",
+              source: {
+                type: "base64",
+                media_type: mediaType || "image/jpeg",
+                data: imageBase64
+              }
+            },
+            {
+              type: "text",
+              text: prompt
+            }
+          ]
+        }
+      ]
+    });
+
+    const options = {
+      hostname: "api.anthropic.com",
+      path: "/v1/messages",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
+        "Content-Length": Buffer.byteLength(body)
+      }
+    };
+
+    const req = https.request(options, (res) => {
+      let data = "";
+      res.on("data", (chunk) => { data += chunk; });
+      res.on("end", () => {
+        try {
+          const parsed = JSON.parse(data);
+          resolve({ status: res.statusCode, body: parsed });
+        } catch (e) {
+          reject(new Error("Failed to parse response."));
+        }
+      });
+    });
+
+    req.on("error", reject);
+    req.write(body);
+    req.end();
+  });
+}
+
+function calculateMacroTargets(profile, trainingType) {
+  const w = parseFloat(profile.weight) || 70;
+  const h = parseFloat(profile.height) || 175;
+  const age = parseFloat(profile.age) || 20;
+  const gender = profile.gender || "male";
+
+  let bmr;
+  if (gender === "female") {
+    bmr = 447.593 + (9.247 * w) + (3.098 * h) - (4.330 * age);
+  } else {
+    bmr = 88.362 + (13.397 * w) + (4.799 * h) - (5.677 * age);
+  }
+
+  const activityFactors = {
+    rest: 1.2, recovery: 1.3, easy: 1.4,
+    technical: 1.55, strength: 1.55, cardio: 1.65,
+    team: 1.65, match: 1.8, double: 1.9
+  };
+
+  const carbMultipliers = {
+    rest: 3.5, recovery: 4.0, easy: 4.5,
+    technical: 5.5, strength: 5.0, cardio: 7.0,
+    team: 6.0, match: 7.5, double: 8.0
+  };
+
+  const proteinMultipliers = {
+    rest: 2.2, recovery: 2.2, easy: 1.9,
+    technical: 2.0, strength: 2.2, cardio: 1.8,
+    team: 2.0, match: 1.8, double: 2.0
+  };
+
+  const af = activityFactors[trainingType] || 1.55;
+  const cm = carbMultipliers[trainingType] || 5.0;
+  const pm = proteinMultipliers[trainingType] || 2.0;
+
+  const posAdj = { striker: 1.05, winger: 1.05, midfielder: 1.0, defender: 0.97, goalkeeper: 0.90 };
+  const adj = posAdj[profile.position] || 1.0;
+
+  const calories = Math.round(bmr * af * adj);
+  const carbs = Math.round(w * cm * adj);
+  const protein = Math.round(w * pm * adj);
+  const carbCal = carbs * 4;
+  const protCal = protein * 4;
+  const fat = Math.round((calories - carbCal - protCal) / 9);
+
+  return { calories, carbs, protein, fat: Math.max(fat, 40) };
+}
+
+function generateFeedback(scanResult, targets, consumed, trainingType, lang) {
+  const remaining = {
+    calories: targets.calories - consumed.calories,
+    carbs: targets.carbs - consumed.carbs,
+    protein: targets.protein - consumed.protein,
+    fat: targets.fat - consumed.fat
+  };
+
+  const isMatchDay = trainingType === "match";
+  const isRestDay = trainingType === "rest" || trainingType === "recovery";
+
+  const messages = {
+    en: [],
+    nl: [],
+    fr: [],
+    es: [],
+    de: [],
+    it: []
+  };
+
+  if (remaining.carbs > 100 && isMatchDay) {
+    messages.en.push(`You still need ${remaining.carbs}g of carbs today. Eat extra pasta or rice before your match.`);
+    messages.nl.push(`Je mist nog ${remaining.carbs}g koolhydraten. Eet extra pasta of rijst voor je wedstrijd.`);
+    messages.fr.push(`Il te manque encore ${remaining.carbs}g de glucides. Mange des pâtes ou du riz avant ton match.`);
+    messages.es.push(`Aún necesitas ${remaining.carbs}g de carbohidratos. Come pasta o arroz extra antes del partido.`);
+    messages.de.push(`Dir fehlen noch ${remaining.carbs}g Kohlenhydrate. Iss extra Pasta oder Reis vor dem Spiel.`);
+    messages.it.push(`Ti mancano ancora ${remaining.carbs}g di carboidrati. Mangia pasta o riso extra prima della partita.`);
+  } else if (remaining.protein < 0) {
+    messages.en.push(`Protein goal reached! Focus on carbs and healthy fats for the rest of the day.`);
+    messages.nl.push(`Eiwitdoel bereikt! Focus de rest van de dag op koolhydraten en gezonde vetten.`);
+    messages.fr.push(`Objectif protéines atteint ! Concentre-toi sur les glucides le reste de la journée.`);
+    messages.es.push(`¡Objetivo de proteínas alcanzado! Enfócate en carbohidratos el resto del día.`);
+    messages.de.push(`Proteinziel erreicht! Konzentriere dich auf Kohlenhydrate und gesunde Fette.`);
+    messages.it.push(`Obiettivo proteine raggiunto! Concentrati sui carboidrati per il resto della giornata.`);
+  } else if (remaining.calories < 0) {
+    messages.en.push(`You've exceeded your calorie target. Keep tomorrow's meals lighter.`);
+    messages.nl.push(`Je hebt je caloriedoel overschreden. Eet morgen iets lichter.`);
+    messages.fr.push(`Tu as dépassé ton objectif calorique. Mange plus léger demain.`);
+    messages.es.push(`Has superado tu objetivo calórico. Come más ligero mañana.`);
+    messages.de.push(`Du hast dein Kalorienziel überschritten. Iss morgen etwas leichter.`);
+    messages.it.push(`Hai superato il tuo obiettivo calorico. Mangia più leggero domani.`);
+  } else if (remaining.carbs > 50 && !isRestDay) {
+    messages.en.push(`Good meal! You still need ${remaining.carbs}g carbs to hit today's target.`);
+    messages.nl.push(`Goede maaltijd! Je hebt nog ${remaining.carbs}g koolhydraten nodig voor je dagdoel.`);
+    messages.fr.push(`Bon repas ! Il te reste ${remaining.carbs}g de glucides pour atteindre ton objectif.`);
+    messages.es.push(`¡Buena comida! Aún necesitas ${remaining.carbs}g de carbohidratos para tu objetivo.`);
+    messages.de.push(`Gute Mahlzeit! Du brauchst noch ${remaining.carbs}g Kohlenhydrate für dein Tagesziel.`);
+    messages.it.push(`Buon pasto! Ti mancano ancora ${remaining.carbs}g di carboidrati per il tuo obiettivo.`);
+  } else {
+    messages.en.push(`On track! Keep it up for the rest of the day.`);
+    messages.nl.push(`Op schema! Houd dit vol voor de rest van de dag.`);
+    messages.fr.push(`En bonne voie ! Continue ainsi pour le reste de la journée.`);
+    messages.es.push(`¡En camino! Sigue así el resto del día.`);
+    messages.de.push(`Auf Kurs! Weiter so für den Rest des Tages.`);
+    messages.it.push(`In carreggiata! Continua così per il resto della giornata.`);
+  }
+
+  return {
+    remaining,
+    feedback: messages[lang] || messages.en,
+    score: Math.max(0, Math.round((1 - Math.abs(remaining.calories) / targets.calories) * 100))
+  };
+}
+
+exports.handler = async function(event) {
+  const headers = {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Content-Type": "application/json"
+  };
+
+  if (event.httpMethod === "OPTIONS") return { statusCode: 204, headers, body: "" };
+  if (event.httpMethod !== "POST") return { statusCode: 405, headers, body: JSON.stringify({ error: "Method not allowed." }) };
+
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) return { statusCode: 500, headers, body: JSON.stringify({ error: "API key missing." }) };
+
+  let body;
+  try { body = JSON.parse(event.body); }
+  catch { return { statusCode: 400, headers, body: JSON.stringify({ error: "Invalid request." }) }; }
+
+  const { imageBase64, mediaType, profile, trainingType, consumed, lang } = body;
+
+  if (!imageBase64) return { statusCode: 400, headers, body: JSON.stringify({ error: "No image provided." }) };
+
+  const targets = calculateMacroTargets(profile || {}, trainingType || "technical");
+
+  try {
+    const result = await callAnthropicVision(apiKey, imageBase64, mediaType, profile || {}, trainingType || "technical");
+
+    if (result.status !== 200) {
+      const errMsg = result.status === 529 ? "AI is overloaded. Try again in a moment." : "Vision API error.";
+      return { statusCode: result.status, headers, body: JSON.stringify({ error: errMsg }) };
+    }
+
+    const rawText = result.body?.content?.[0]?.text || "";
+    let scanData;
+    try {
+      const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+      scanData = JSON.parse(jsonMatch ? jsonMatch[0] : rawText);
+    } catch {
+      return { statusCode: 500, headers, body: JSON.stringify({ error: "Could not parse AI response." }) };
+    }
+
+    const newConsumed = {
+      calories: (consumed?.calories || 0) + (scanData.totalCalories || 0),
+      carbs: (consumed?.carbs || 0) + (scanData.totalCarbs || 0),
+      protein: (consumed?.protein || 0) + (scanData.totalProtein || 0),
+      fat: (consumed?.fat || 0) + (scanData.totalFat || 0)
+    };
+
+    const feedbackData = generateFeedback(scanData, targets, newConsumed, trainingType || "technical", lang || "en");
+
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify({
+        scan: scanData,
+        targets,
+        consumed: newConsumed,
+        feedback: feedbackData.feedback,
+        remaining: feedbackData.remaining,
+        score: feedbackData.score
+      })
+    };
+
+  } catch (err) {
+    console.error("Scan error:", err.message);
+    return { statusCode: 500, headers, body: JSON.stringify({ error: "Something went wrong. Try again." }) };
+  }
+};
