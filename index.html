@@ -157,6 +157,67 @@ body{font-family:var(--f);background:#efefed;min-height:100vh;display:flex;justi
 .qt-box{background:var(--bg2);border-radius:9px;padding:11px 13px;border:0.5px solid var(--border);}
 .qt-t{font-size:11px;font-style:italic;color:var(--txt2);line-height:1.65;margin-bottom:5px;}
 .qt-s{font-size:10px;color:var(--txt3);font-weight:500;}
+
+/* ── SCAN SCREEN ── */
+.scan-hero{position:relative;margin:0 15px 10px;border-radius:var(--rm);overflow:hidden;background:var(--txt);min-height:180px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.scan-hero-inner{text-align:center;color:var(--bg);padding:20px;}
+.scan-icon{width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:24px;}
+.scan-hero-title{font-size:16px;font-weight:700;margin-bottom:4px;}
+.scan-hero-sub{font-size:12px;opacity:.7;}
+#scan-file-input{display:none;}
+.day-selector{display:flex;gap:7px;padding:0 15px 10px;overflow-x:auto;-ms-overflow-style:none;scrollbar-width:none;}
+.day-selector::-webkit-scrollbar{display:none;}
+.day-btn{flex-shrink:0;padding:7px 12px;border:0.5px solid var(--border);border-radius:20px;background:var(--bg);color:var(--txt2);font-family:var(--f);font-size:11px;font-weight:500;cursor:pointer;transition:all .15s;}
+.day-btn.on{background:var(--txt);color:var(--bg);border-color:var(--txt);}
+.progress-ring-wrap{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;padding:0 15px 10px;}
+.pring{background:var(--bg2);border-radius:var(--r);padding:11px 8px;text-align:center;}
+.pring-val{font-size:16px;font-weight:700;}
+.pring-lbl{font-size:9px;color:var(--txt2);margin-top:2px;}
+.pring-bar{height:3px;background:var(--border);border-radius:2px;margin-top:6px;overflow:hidden;}
+.pring-fill{height:100%;border-radius:2px;background:var(--txt);transition:width .4s;}
+.pring-fill.over{background:var(--red);}
+.scan-loading{display:none;padding:30px 20px;text-align:center;}
+.scan-spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--txt);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 16px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.scan-step{font-size:13px;color:var(--txt2);margin-top:4px;}
+.scan-results{display:none;padding:0 0 16px;}
+.scan-result-item{display:flex;align-items:center;gap:10px;padding:11px 15px;border-bottom:0.5px solid var(--border);}
+.scan-result-item:last-child{border-bottom:none;}
+.sri-conf{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.sri-conf.high{background:#16a34a;}
+.sri-conf.med{background:#f59e0b;}
+.sri-conf.low{background:#dc2626;}
+.sri-name{font-size:13px;font-weight:500;flex:1;}
+.sri-grams{font-size:11px;color:var(--txt2);margin-top:2px;}
+.sri-kcal{font-size:12px;font-weight:600;color:var(--txt2);flex-shrink:0;}
+.sri-edit{width:28px;height:28px;border-radius:50%;background:var(--bg2);border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;flex-shrink:0;}
+.scan-total-card{margin:0 15px;background:var(--bg2);border-radius:var(--rm);padding:14px;border:0.5px solid var(--border);}
+.scan-macros-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-top:10px;}
+.scan-macro{text-align:center;}
+.scan-macro-val{font-size:16px;font-weight:700;}
+.scan-macro-lbl{font-size:9px;color:var(--txt2);margin-top:2px;}
+.scan-feedback{margin:10px 15px 0;border-radius:9px;padding:11px 13px;font-size:12px;line-height:1.6;}
+.scan-feedback.good{background:var(--green-bg);border:0.5px solid var(--green-border);color:var(--green-txt);}
+.scan-feedback.warn{background:var(--amber-bg);border:0.5px solid var(--amber-border);color:var(--amber-txt);}
+.scan-feedback.alert{background:var(--red-bg);border:0.5px solid #fecaca;color:var(--red);}
+.scan-action-row{display:flex;gap:8px;padding:10px 15px 0;}
+.scan-action-row .btn{flex:1;padding:11px;}
+.scan-action-row .btn.sec{background:var(--bg2);color:var(--txt);border:0.5px solid var(--border);}
+.scan-preview{width:100%;max-height:200px;object-fit:cover;border-radius:var(--rm);margin:0 0 10px;display:none;}
+.conf-note{margin:6px 15px 0;font-size:11px;color:var(--txt3);line-height:1.5;}
+.edit-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;align-items:flex-end;justify-content:center;}
+.edit-modal.on{display:flex;}
+.edit-sheet{background:var(--bg);border-radius:16px 16px 0 0;padding:20px;width:100%;max-width:430px;}
+.edit-sheet-title{font-size:15px;font-weight:700;margin-bottom:16px;}
+.edit-inp-row{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.edit-inp-row label{font-size:12px;color:var(--txt2);width:80px;flex-shrink:0;}
+.edit-inp-row input{flex:1;padding:9px 12px;background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--r);font-family:var(--f);font-size:13px;color:var(--txt);outline:none;}
+.meals-log{margin:10px 15px 0;}
+.log-entry{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:0.5px solid var(--border);}
+.log-entry:last-child{border-bottom:none;}
+.log-time{font-size:10px;color:var(--txt3);width:36px;flex-shrink:0;}
+.log-name{font-size:12px;font-weight:500;flex:1;}
+.log-kcal{font-size:11px;color:var(--txt2);}
 </style>
 </head>
 <body>
@@ -333,6 +394,8 @@ body{font-family:var(--f);background:#efefed;min-height:100vh;display:flex;justi
   <button class="nb" onclick="goS('s-dieet')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z"/></svg>Nutrition</button>
   <button class="nb" onclick="goS('s-karriere')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941"/></svg>Career</button>
   <button class="nb" onclick="goS('s-coach')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"/></svg>AI Coach</button>
+
+  <button class="nb" id="nb-scan" onclick="goS('s-scan')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.538 2.25 8.368 2.25 9.375v3.75c0 1.007.75 1.837 1.802 1.971.397.05.792.095 1.184.136a2.25 2.25 0 011.08 3.901L5.25 20.25"/><circle cx="12" cy="13" r="3"/><path stroke-linecap="round" stroke-linejoin="round" d="M9 3.75H6.912a2.25 2.25 0 00-2.15 1.588L4.5 6.75M15 3.75h2.088a2.25 2.25 0 012.15 1.588l.262.912M9 3.75h6M4.5 6.75h15M4.5 6.75A2.25 2.25 0 002.25 9v9a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25"/></svg>Scan</button>
 </div>
 </div>
 
@@ -410,6 +473,8 @@ body{font-family:var(--f);background:#efefed;min-height:100vh;display:flex;justi
   <button class="nb on"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z"/></svg>Nutrition</button>
   <button class="nb" onclick="goS('s-karriere')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941"/></svg>Career</button>
   <button class="nb" onclick="goS('s-coach')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"/></svg>AI Coach</button>
+
+  <button class="nb" id="nb-scan" onclick="goS('s-scan')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.538 2.25 8.368 2.25 9.375v3.75c0 1.007.75 1.837 1.802 1.971.397.05.792.095 1.184.136a2.25 2.25 0 011.08 3.901L5.25 20.25"/><circle cx="12" cy="13" r="3"/><path stroke-linecap="round" stroke-linejoin="round" d="M9 3.75H6.912a2.25 2.25 0 00-2.15 1.588L4.5 6.75M15 3.75h2.088a2.25 2.25 0 012.15 1.588l.262.912M9 3.75h6M4.5 6.75h15M4.5 6.75A2.25 2.25 0 002.25 9v9a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25"/></svg>Scan</button>
 </div>
 </div>
 
@@ -439,6 +504,8 @@ body{font-family:var(--f);background:#efefed;min-height:100vh;display:flex;justi
   <button class="nb" onclick="goS('s-dieet')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z"/></svg>Nutrition</button>
   <button class="nb on"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941"/></svg>Career</button>
   <button class="nb" onclick="goS('s-coach')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"/></svg>AI Coach</button>
+
+  <button class="nb" id="nb-scan" onclick="goS('s-scan')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.538 2.25 8.368 2.25 9.375v3.75c0 1.007.75 1.837 1.802 1.971.397.05.792.095 1.184.136a2.25 2.25 0 011.08 3.901L5.25 20.25"/><circle cx="12" cy="13" r="3"/><path stroke-linecap="round" stroke-linejoin="round" d="M9 3.75H6.912a2.25 2.25 0 00-2.15 1.588L4.5 6.75M15 3.75h2.088a2.25 2.25 0 012.15 1.588l.262.912M9 3.75h6M4.5 6.75h15M4.5 6.75A2.25 2.25 0 002.25 9v9a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25"/></svg>Scan</button>
 </div>
 </div>
 
@@ -465,7 +532,9 @@ body{font-family:var(--f);background:#efefed;min-height:100vh;display:flex;justi
     <button class="nb" onclick="goS('s-dieet')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z"/></svg>Nutrition</button>
     <button class="nb" onclick="goS('s-karriere')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941"/></svg>Career</button>
     <button class="nb on"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"/></svg>AI Coach</button>
-  </div>
+  
+  <button class="nb" id="nb-scan" onclick="goS('s-scan')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.538 2.25 8.368 2.25 9.375v3.75c0 1.007.75 1.837 1.802 1.971.397.05.792.095 1.184.136a2.25 2.25 0 011.08 3.901L5.25 20.25"/><circle cx="12" cy="13" r="3"/><path stroke-linecap="round" stroke-linejoin="round" d="M9 3.75H6.912a2.25 2.25 0 00-2.15 1.588L4.5 6.75M15 3.75h2.088a2.25 2.25 0 012.15 1.588l.262.912M9 3.75h6M4.5 6.75h15M4.5 6.75A2.25 2.25 0 002.25 9v9a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25"/></svg>Scan</button>
+</div>
 </div>
 </div>
 
@@ -838,6 +907,279 @@ function autoR(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeig
 document.getElementById('ci').addEventListener('input',function(){autoR(this);hideErr();});
 document.getElementById('ci').addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sndMsg();}});
 
+
+// ── SCAN FEATURE ──
+var scanState = {
+  dayType: 'match',
+  consumed: { calories: 0, carbs: 0, protein: 0, fat: 0 },
+  targets: { calories: 2800, carbs: 350, protein: 140, fat: 70 },
+  currentScan: null,
+  loggedMeals: [],
+  editIndex: -1,
+  stepInterval: null
+};
+
+function setScanDay(btn, type) {
+  document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  scanState.dayType = type;
+  updateScanTargets();
+  var lbl = document.getElementById('scan-day-label');
+  if (lbl) lbl.textContent = btn.textContent;
+  var tgt = document.getElementById('scan-target-type');
+  if (tgt) tgt.textContent = btn.textContent;
+}
+
+function getScanTargets() {
+  var w = parseFloat(P.weight) || 70;
+  var h = parseFloat(P.height) || 175;
+  var age = parseFloat(P.age) || 20;
+  var g = P.gender || 'male';
+  var bmr = g === 'female'
+    ? 447.593 + (9.247*w) + (3.098*h) - (4.330*age)
+    : 88.362 + (13.397*w) + (4.799*h) - (5.677*age);
+  var af = {rest:1.2,recovery:1.3,easy:1.4,technical:1.55,strength:1.55,cardio:1.65,team:1.65,match:1.8,double:1.9};
+  var cm = {rest:3.5,recovery:4.0,easy:4.5,technical:5.5,strength:5.0,cardio:7.0,team:6.0,match:7.5,double:8.0};
+  var pm = {rest:2.2,recovery:2.2,easy:1.9,technical:2.0,strength:2.2,cardio:1.8,team:2.0,match:1.8,double:2.0};
+  var pa = {Striker:1.05,Winger:1.05,Midfielder:1.0,Defender:0.97,Goalkeeper:0.90};
+  var adj = pa[P.position] || 1.0;
+  var t = scanState.dayType;
+  var cal = Math.round(bmr * (af[t]||1.55) * adj);
+  var carb = Math.round(w * (cm[t]||5.5) * adj);
+  var prot = Math.round(w * (pm[t]||2.0) * adj);
+  var fat = Math.max(40, Math.round((cal - carb*4 - prot*4) / 9));
+  return { calories: cal, carbs: carb, protein: prot, fat: fat };
+}
+
+function updateScanTargets() {
+  scanState.targets = getScanTargets();
+  var t = scanState.targets;
+  function el(id){return document.getElementById(id);}
+  if (el('tgt-kcal')) el('tgt-kcal').textContent = t.calories.toLocaleString();
+  if (el('tgt-carb')) el('tgt-carb').textContent = t.carbs + 'g';
+  if (el('tgt-prot')) el('tgt-prot').textContent = t.protein + 'g';
+  if (el('tgt-fat')) el('tgt-fat').textContent = t.fat + 'g';
+  updateProgressBars();
+}
+
+function updateProgressBars() {
+  var c = scanState.consumed;
+  var t = scanState.targets;
+  function el(id){return document.getElementById(id);}
+  if (el('prog-kcal')) el('prog-kcal').textContent = Math.round(c.calories).toLocaleString();
+  if (el('prog-carb')) el('prog-carb').textContent = Math.round(c.carbs) + 'g';
+  if (el('prog-prot')) el('prog-prot').textContent = Math.round(c.protein) + 'g';
+  if (el('prog-fat')) el('prog-fat').textContent = Math.round(c.fat) + 'g';
+  function setBar(barId, val, target) {
+    var bar = document.getElementById(barId);
+    if (!bar) return;
+    var pct = Math.min(110, Math.round((val / target) * 100));
+    bar.style.width = Math.min(100, pct) + '%';
+    if (pct > 105) bar.classList.add('over'); else bar.classList.remove('over');
+  }
+  setBar('prog-kcal-bar', c.calories, t.calories);
+  setBar('prog-carb-bar', c.carbs, t.carbs);
+  setBar('prog-prot-bar', c.protein, t.protein);
+  setBar('prog-fat-bar', c.fat, t.fat);
+}
+
+function triggerScan() {
+  document.getElementById('scan-file-input').click();
+}
+
+function handleScanFile(event) {
+  var file = event.target.files[0];
+  if (!file) return;
+  if (file.size > 10 * 1024 * 1024) { alert('Image too large. Use a photo under 10MB.'); return; }
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var dataUrl = e.target.result;
+    var base64 = dataUrl.split(',')[1];
+    var mediaType = file.type || 'image/jpeg';
+    var preview = document.getElementById('scan-preview');
+    if (preview) { preview.src = dataUrl; preview.style.display = 'block'; }
+    showScanLoading();
+    runScanAnalysis(base64, mediaType, dataUrl);
+  };
+  reader.readAsDataURL(file);
+  event.target.value = '';
+}
+
+function showScanLoading() {
+  document.getElementById('scan-hero').style.display = 'none';
+  document.getElementById('scan-results').style.display = 'none';
+  document.getElementById('scan-loading').style.display = 'block';
+  var steps = ['Recognising ingredients...','Estimating portion sizes...','Calculating macros...','Personalising for your training day...'];
+  var i = 0;
+  var stepEl = document.getElementById('scan-step-text');
+  if (scanState.stepInterval) clearInterval(scanState.stepInterval);
+  scanState.stepInterval = setInterval(function() {
+    i = (i + 1) % steps.length;
+    if (stepEl) stepEl.textContent = steps[i];
+  }, 1200);
+}
+
+async function runScanAnalysis(base64, mediaType, dataUrl) {
+  try {
+    var profile = { weight: P.weight||70, height: P.height||175, age: P.age||20, gender: P.gender||'male', position: P.position||'Midfielder' };
+    var response = await fetch('/.netlify/functions/scan', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ imageBase64: base64, mediaType: mediaType, profile: profile, trainingType: scanState.dayType, consumed: scanState.consumed, lang: P.lang||P.preferredLanguage||'en' })
+    });
+    var data = await response.json();
+    if (scanState.stepInterval) clearInterval(scanState.stepInterval);
+    if (!response.ok) throw new Error(data.error || 'Scan failed.');
+    scanState.currentScan = data;
+    scanState.currentScan.imageUrl = dataUrl;
+    if (data.targets) scanState.targets = data.targets;
+    showScanResults(data, dataUrl);
+  } catch (err) {
+    if (scanState.stepInterval) clearInterval(scanState.stepInterval);
+    document.getElementById('scan-loading').style.display = 'none';
+    document.getElementById('scan-hero').style.display = '';
+    alert(err.message || 'Scan failed. Please try again.');
+  }
+}
+
+function showScanResults(data, imageUrl) {
+  document.getElementById('scan-loading').style.display = 'none';
+  var resultsEl = document.getElementById('scan-results');
+  resultsEl.style.display = 'block';
+  var img = document.getElementById('scan-result-img');
+  if (img && imageUrl) { img.src = imageUrl; img.style.display = 'block'; }
+  var items = (data.scan && data.scan.items) ? data.scan.items : [];
+  var mealName = items.length > 0 ? items.slice(0,2).map(function(i){return i.name;}).join(' + ') : 'Scanned meal';
+  var mealNameEl = document.getElementById('scan-meal-name');
+  if (mealNameEl) mealNameEl.textContent = mealName;
+  var list = document.getElementById('scan-items-list');
+  if (list) {
+    list.innerHTML = items.map(function(item, idx) {
+      var cc = item.confidence >= 0.85 ? 'high' : item.confidence >= 0.6 ? 'med' : 'low';
+      return '<div class="scan-result-item">'
+        + '<div class="sri-conf ' + cc + '"></div>'
+        + '<div style="flex:1;"><div class="sri-name">' + esc(item.name) + '</div>'
+        + '<div class="sri-grams">~' + item.grams + 'g &nbsp;·&nbsp; ' + item.carbs + 'g carbs &nbsp;·&nbsp; ' + item.protein + 'g protein &nbsp;·&nbsp; ' + item.fat + 'g fat</div></div>'
+        + '<div class="sri-kcal">' + item.calories + ' kcal</div>'
+        + '<div class="sri-edit" onclick="openEditModal(' + idx + ')">✏️</div>'
+        + '</div>';
+    }).join('');
+  }
+  var lowConf = items.filter(function(i){return i.confidence < 0.6;}).length;
+  var confNote = document.getElementById('scan-conf-note');
+  if (confNote) {
+    if (lowConf > 0) confNote.textContent = '⚠️ ' + lowConf + ' item(s) uncertain — tap ✏️ to correct for better accuracy.';
+    else if (data.scan && data.scan.notes) confNote.textContent = '💡 ' + data.scan.notes;
+    else confNote.textContent = '✅ All ingredients recognised with high confidence.';
+  }
+  var s = data.scan || {};
+  function el(id){return document.getElementById(id);}
+  if (el('res-kcal')) el('res-kcal').textContent = Math.round(s.totalCalories||0);
+  if (el('res-carb')) el('res-carb').textContent = Math.round(s.totalCarbs||0) + 'g';
+  if (el('res-prot')) el('res-prot').textContent = Math.round(s.totalProtein||0) + 'g';
+  if (el('res-fat')) el('res-fat').textContent = Math.round(s.totalFat||0) + 'g';
+  var feedbackEl = document.getElementById('scan-feedback-box');
+  if (feedbackEl && data.feedback && data.feedback.length > 0) {
+    feedbackEl.textContent = data.feedback[0];
+    feedbackEl.style.display = 'block';
+    var rem = data.remaining || {};
+    if ((rem.calories||0) < -200) feedbackEl.className = 'scan-feedback alert';
+    else if ((rem.carbs||0) > 100) feedbackEl.className = 'scan-feedback warn';
+    else feedbackEl.className = 'scan-feedback good';
+  }
+  if (data.targets) {
+    scanState.targets = data.targets;
+    var t = data.targets;
+    if (el('tgt-kcal')) el('tgt-kcal').textContent = t.calories.toLocaleString();
+    if (el('tgt-carb')) el('tgt-carb').textContent = t.carbs + 'g';
+    if (el('tgt-prot')) el('tgt-prot').textContent = t.protein + 'g';
+    if (el('tgt-fat')) el('tgt-fat').textContent = t.fat + 'g';
+  }
+  updateProgressBars();
+}
+
+function logMeal() {
+  if (!scanState.currentScan) return;
+  var s = scanState.currentScan.scan || {};
+  var now = new Date();
+  var timeStr = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+  scanState.consumed.calories += s.totalCalories || 0;
+  scanState.consumed.carbs += s.totalCarbs || 0;
+  scanState.consumed.protein += s.totalProtein || 0;
+  scanState.consumed.fat += s.totalFat || 0;
+  var items = s.items || [];
+  var mealName = items.length > 0 ? items.slice(0,2).map(function(i){return i.name;}).join(' + ') : 'Meal';
+  scanState.loggedMeals.push({ time: timeStr, name: mealName, calories: Math.round(s.totalCalories||0), carbs: Math.round(s.totalCarbs||0), protein: Math.round(s.totalProtein||0), fat: Math.round(s.totalFat||0) });
+  updateProgressBars();
+  renderLoggedMeals();
+  resetScan();
+  var inner = document.querySelector('#scan-hero .scan-hero-inner');
+  if (inner) {
+    inner.innerHTML = '<div class="scan-icon">✅</div><div class="scan-hero-title">Meal logged!</div><div class="scan-hero-sub">Tap to scan your next meal</div>';
+    setTimeout(function() { inner.innerHTML = '<div class="scan-icon">📷</div><div class="scan-hero-title">Scan your meal</div><div class="scan-hero-sub">Take a photo or upload from your gallery</div>'; }, 2000);
+  }
+}
+
+function resetScan() {
+  document.getElementById('scan-hero').style.display = '';
+  document.getElementById('scan-loading').style.display = 'none';
+  document.getElementById('scan-results').style.display = 'none';
+  scanState.currentScan = null;
+  var prev = document.getElementById('scan-preview');
+  if (prev) { prev.src = ''; prev.style.display = 'none'; }
+}
+
+function renderLoggedMeals() {
+  var section = document.getElementById('meals-logged-section');
+  var list = document.getElementById('meals-log-list');
+  if (!section || !list || scanState.loggedMeals.length === 0) return;
+  section.style.display = 'block';
+  list.innerHTML = scanState.loggedMeals.map(function(m) {
+    return '<div class="log-entry"><div class="log-time">' + m.time + '</div>'
+      + '<div style="flex:1;"><div class="log-name">' + esc(m.name) + '</div>'
+      + '<div style="font-size:10px;color:var(--txt3);margin-top:2px;">' + m.carbs + 'g carbs · ' + m.protein + 'g protein</div></div>'
+      + '<div class="log-kcal">' + m.calories + ' kcal</div></div>';
+  }).join('');
+}
+
+function openEditModal(idx) {
+  if (!scanState.currentScan || !scanState.currentScan.scan) return;
+  var item = scanState.currentScan.scan.items[idx];
+  if (!item) return;
+  scanState.editIndex = idx;
+  document.getElementById('edit-name').value = item.name;
+  document.getElementById('edit-grams').value = item.grams;
+  document.getElementById('edit-modal').classList.add('on');
+}
+
+function closeEditModal() {
+  document.getElementById('edit-modal').classList.remove('on');
+  scanState.editIndex = -1;
+}
+
+function saveEditModal() {
+  if (scanState.editIndex < 0 || !scanState.currentScan || !scanState.currentScan.scan) return;
+  var name = document.getElementById('edit-name').value.trim();
+  var grams = parseFloat(document.getElementById('edit-grams').value) || 0;
+  var item = scanState.currentScan.scan.items[scanState.editIndex];
+  var ratio = item.grams > 0 ? grams / item.grams : 1;
+  item.name = name; item.grams = grams;
+  item.calories = Math.round(item.calories * ratio);
+  item.carbs = Math.round(item.carbs * ratio);
+  item.protein = Math.round(item.protein * ratio);
+  item.fat = Math.round(item.fat * ratio);
+  var items = scanState.currentScan.scan.items;
+  scanState.currentScan.scan.totalCalories = items.reduce(function(s,i){return s+i.calories;},0);
+  scanState.currentScan.scan.totalCarbs = items.reduce(function(s,i){return s+i.carbs;},0);
+  scanState.currentScan.scan.totalProtein = items.reduce(function(s,i){return s+i.protein;},0);
+  scanState.currentScan.scan.totalFat = items.reduce(function(s,i){return s+i.fat;},0);
+  closeEditModal();
+  showScanResults(scanState.currentScan, scanState.currentScan.imageUrl);
+}
+
+function initScanScreen() {
+  updateScanTargets();
+}
+
 // ── INIT — ALWAYS clear all storage and show onboarding first ──
 try {
   localStorage.clear();
@@ -848,6 +1190,147 @@ dcalc();
 setMP(document.querySelector('#mp-btns .train-btn'),'match');
 filterRec(document.querySelector('#d-rc .fbtn'),'all');
 sTL(document.querySelector('.ptab.on'),'Griezmann');
+initScanScreen();
 </script>
+
+<!-- ===== MEAL SCANNER ===== -->
+<div id="s-scan" class="sc">
+<div class="app-hdr" style="border-bottom:0.5px solid var(--border);">
+  <div style="font-size:15px;font-weight:700;flex:1;">Meal Scanner</div>
+  <div style="font-size:11px;color:var(--txt2);" id="scan-day-label">Match day</div>
+</div>
+<div class="scroll">
+
+  <!-- Day type selector -->
+  <div class="slbl" style="padding-top:14px;">Training type today</div>
+  <div class="day-selector" id="scan-day-selector">
+    <button class="day-btn on" onclick="setScanDay(this,'match')">Match day</button>
+    <button class="day-btn" onclick="setScanDay(this,'team')">Team training</button>
+    <button class="day-btn" onclick="setScanDay(this,'strength')">Strength</button>
+    <button class="day-btn" onclick="setScanDay(this,'cardio')">Cardio</button>
+    <button class="day-btn" onclick="setScanDay(this,'technical')">Technical</button>
+    <button class="day-btn" onclick="setScanDay(this,'recovery')">Recovery</button>
+    <button class="day-btn" onclick="setScanDay(this,'rest')">Rest day</button>
+  </div>
+
+  <!-- Daily progress -->
+  <div class="slbl">Today's progress</div>
+  <div class="progress-ring-wrap">
+    <div class="pring">
+      <div class="pring-val" id="prog-kcal">0</div>
+      <div class="pring-lbl">kcal</div>
+      <div class="pring-bar"><div class="pring-fill" id="prog-kcal-bar" style="width:0%"></div></div>
+    </div>
+    <div class="pring">
+      <div class="pring-val" id="prog-carb">0g</div>
+      <div class="pring-lbl">carbs</div>
+      <div class="pring-bar"><div class="pring-fill" id="prog-carb-bar" style="width:0%"></div></div>
+    </div>
+    <div class="pring">
+      <div class="pring-val" id="prog-prot">0g</div>
+      <div class="pring-lbl">protein</div>
+      <div class="pring-bar"><div class="pring-fill" id="prog-prot-bar" style="width:0%"></div></div>
+    </div>
+    <div class="pring">
+      <div class="pring-val" id="prog-fat">0g</div>
+      <div class="pring-lbl">fat</div>
+      <div class="pring-bar"><div class="pring-fill" id="prog-fat-bar" style="width:0%"></div></div>
+    </div>
+  </div>
+
+  <!-- Target display -->
+  <div class="card" style="margin-bottom:8px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+      <div style="font-size:12px;font-weight:600;">Daily targets</div>
+      <div style="font-size:11px;color:var(--txt2);" id="scan-target-type">Match day</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;">
+      <div style="text-align:center;"><div style="font-size:14px;font-weight:700;" id="tgt-kcal">—</div><div style="font-size:9px;color:var(--txt2);">kcal</div></div>
+      <div style="text-align:center;"><div style="font-size:14px;font-weight:700;" id="tgt-carb">—</div><div style="font-size:9px;color:var(--txt2);">carbs</div></div>
+      <div style="text-align:center;"><div style="font-size:14px;font-weight:700;" id="tgt-prot">—</div><div style="font-size:9px;color:var(--txt2);">protein</div></div>
+      <div style="text-align:center;"><div style="font-size:14px;font-weight:700;" id="tgt-fat">—</div><div style="font-size:9px;color:var(--txt2);">fat</div></div>
+    </div>
+  </div>
+
+  <!-- Scan hero button -->
+  <div id="scan-hero" class="scan-hero" onclick="triggerScan()">
+    <input type="file" id="scan-file-input" accept="image/*" capture="environment" onchange="handleScanFile(event)">
+    <div class="scan-hero-inner">
+      <div class="scan-icon">📷</div>
+      <div class="scan-hero-title">Scan your meal</div>
+      <div class="scan-hero-sub">Take a photo or upload from your gallery</div>
+    </div>
+  </div>
+
+  <!-- Loading state -->
+  <div class="scan-loading" id="scan-loading">
+    <img id="scan-preview" class="scan-preview" alt="Meal preview">
+    <div class="scan-spinner"></div>
+    <div style="font-size:14px;font-weight:600;">Analysing your meal...</div>
+    <div class="scan-step" id="scan-step-text">Recognising ingredients...</div>
+  </div>
+
+  <!-- Results -->
+  <div class="scan-results" id="scan-results">
+    <img id="scan-result-img" class="scan-preview" style="display:block;margin:0 15px 10px;width:calc(100% - 30px);" alt="">
+    
+    <div class="slbl">Recognised ingredients</div>
+    <div id="scan-items-list"></div>
+    <div class="conf-note" id="scan-conf-note"></div>
+
+    <div class="slbl" style="margin-top:10px;">This meal</div>
+    <div class="scan-total-card">
+      <div style="font-size:14px;font-weight:700;" id="scan-meal-name">Meal analysis</div>
+      <div class="scan-macros-row">
+        <div class="scan-macro"><div class="scan-macro-val" id="res-kcal">—</div><div class="scan-macro-lbl">kcal</div></div>
+        <div class="scan-macro"><div class="scan-macro-val" id="res-carb">—</div><div class="scan-macro-lbl">carbs</div></div>
+        <div class="scan-macro"><div class="scan-macro-val" id="res-prot">—</div><div class="scan-macro-lbl">protein</div></div>
+        <div class="scan-macro"><div class="scan-macro-val" id="res-fat">—</div><div class="scan-macro-lbl">fat</div></div>
+      </div>
+    </div>
+
+    <div id="scan-feedback-box" class="scan-feedback good" style="display:none;"></div>
+
+    <div class="scan-action-row">
+      <button class="btn sec" onclick="resetScan()">Scan again</button>
+      <button class="btn" onclick="logMeal()">Log this meal ✓</button>
+    </div>
+  </div>
+
+  <!-- Meals logged today -->
+  <div id="meals-logged-section" style="display:none;">
+    <div class="slbl" style="margin-top:10px;">Logged today</div>
+    <div class="meals-log" id="meals-log-list"></div>
+  </div>
+
+</div>
+<div class="nav">
+  <button class="nb" onclick="goS('s-home')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955a1.126 1.126 0 011.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75"/></svg>Home</button>
+  <button class="nb" onclick="goS('s-dieet')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z"/></svg>Nutrition</button>
+  <button class="nb" onclick="goS('s-karriere')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941"/></svg>Career</button>
+  <button class="nb" onclick="goS('s-coach')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"/></svg>AI Coach</button>
+  <button class="nb on"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.6"><circle cx="12" cy="13" r="3"/><path stroke-linecap="round" stroke-linejoin="round" d="M9 3.75H6.912a2.25 2.25 0 00-2.15 1.588L4.5 6.75M15 3.75h2.088a2.25 2.25 0 012.15 1.588l.262.912M4.5 6.75h15M4.5 6.75A2.25 2.25 0 002.25 9v9a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25"/></svg>Scan</button>
+</div>
+</div>
+
+<!-- Edit ingredient modal -->
+<div class="edit-modal" id="edit-modal">
+  <div class="edit-sheet">
+    <div class="edit-sheet-title">Edit ingredient</div>
+    <div class="edit-inp-row">
+      <label>Name</label>
+      <input type="text" id="edit-name" placeholder="e.g. Chicken breast">
+    </div>
+    <div class="edit-inp-row">
+      <label>Grams</label>
+      <input type="number" id="edit-grams" placeholder="150" min="0" max="2000">
+    </div>
+    <div style="display:flex;gap:8px;margin-top:8px;">
+      <button class="btn" style="flex:1;background:var(--bg2);color:var(--txt);border:0.5px solid var(--border);" onclick="closeEditModal()">Cancel</button>
+      <button class="btn" style="flex:1;" onclick="saveEditModal()">Save changes</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
