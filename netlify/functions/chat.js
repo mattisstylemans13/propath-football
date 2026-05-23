@@ -1,5 +1,5 @@
 // netlify/functions/chat.js
-// AI Coach via OpenAI (ChatGPT)
+// AI Coach via Google Gemini (gratis tier — 1500 req/dag)
 
 exports.handler = async (event) => {
   const headers = {
@@ -22,12 +22,12 @@ exports.handler = async (event) => {
   }
 
   try {
-    const apiKey = process.env.OPENAI_API_KEY;
+    const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
       return {
         statusCode: 500,
         headers,
-        body: JSON.stringify({ error: 'OPENAI_API_KEY not configured' }),
+        body: JSON.stringify({ error: 'GEMINI_API_KEY not configured' }),
       };
     }
 
@@ -41,35 +41,42 @@ exports.handler = async (event) => {
       };
     }
 
-    // Build OpenAI message array
-    const openaiMessages = [];
-    if (systemPrompt) {
-      openaiMessages.push({ role: 'system', content: systemPrompt });
-    }
-    messages.forEach((m) => {
-      if (m.role && m.content) {
-        openaiMessages.push({ role: m.role, content: m.content });
-      }
-    });
+    // Convert OpenAI-style messages to Gemini format
+    // Gemini uses "contents" with roles: "user" and "model" (not "assistant")
+    const contents = messages
+      .filter((m) => m.role && m.content)
+      .map((m) => ({
+        role: m.role === 'assistant' ? 'model' : 'user',
+        parts: [{ text: m.content }],
+      }));
 
-    // Call OpenAI Chat Completions
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini', // fast + cheap; use 'gpt-4o' for higher quality
-        messages: openaiMessages,
-        max_tokens: 300,
+    // Build request body — Gemini supports system_instruction separately
+    const body = {
+      contents: contents,
+      generationConfig: {
         temperature: 0.7,
-      }),
+        maxOutputTokens: 400,
+        topP: 0.9,
+      },
+    };
+
+    if (systemPrompt) {
+      body.systemInstruction = {
+        parts: [{ text: systemPrompt }],
+      };
+    }
+
+    // Call Gemini API
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
     });
 
     if (!response.ok) {
       const errText = await response.text();
-      console.error('OpenAI error:', errText);
+      console.error('Gemini error:', errText);
       return {
         statusCode: response.status,
         headers,
@@ -78,7 +85,7 @@ exports.handler = async (event) => {
     }
 
     const data = await response.json();
-    const reply = data.choices?.[0]?.message?.content || '';
+    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
 
     return {
       statusCode: 200,
