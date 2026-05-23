@@ -2063,8 +2063,13 @@ input[type=range].wslider::-moz-range-thumb{width:20px;height:20px;border-radius
   <!-- Remove old match% stat (h-matchpct) — kept as hidden for backwards compat -->
   <div id="h-matchpct" style="display:none;"></div>
 
-  <div style="padding:0 18px 28px;">
-    <button onclick="resetProfile()" style="width:100%;padding:11px;background:none;border:1px solid var(--border);border-radius:var(--r);color:var(--txt3);font-family:var(--f);font-size:11px;font-weight:600;cursor:pointer;letter-spacing:.3px;">Reset profile &amp; start over</button>
+  <div style="padding:14px 18px 28px;">
+    <div style="font-size:10px;font-weight:700;color:var(--txt3);letter-spacing:.8px;text-transform:uppercase;margin-bottom:8px;">Settings</div>
+    <button onclick="resetProfile()" style="width:100%;padding:14px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--rm);color:var(--txt);font-family:var(--f);font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+      <span style="font-size:16px;">🔄</span>
+      <span>Reset profile &amp; restart onboarding</span>
+    </button>
+    <div style="font-size:10px;color:var(--txt3);text-align:center;margin-top:6px;line-height:1.5;">Clears all your data and starts fresh from step 1.</div>
   </div>
 </div>
 </div>
@@ -4395,7 +4400,7 @@ function finish() {
   P.onboardedAt = Date.now();
   localStorage.setItem('pp_p', JSON.stringify(P));
   localStorage.setItem('pp_ob_done', 'true');
-  localStorage.setItem('pp_version', '12.0');
+  localStorage.setItem('pp_version', '13.0');
   document.getElementById('s-ob').classList.remove('on');
   document.getElementById('s-home').classList.add('on');
   // Reveal nav bars — hidden during onboarding
@@ -6887,14 +6892,14 @@ function initDNA(){
 }
 
 function resetProfile() {
-  if (!confirm('Reset your profile and start over? All your data will be cleared.')) return;
+  if (!confirm('Reset all your data and restart onboarding?\n\nThis will clear:\n• Your profile (name, position, club)\n• DNA assessment results\n• Training sessions\n• Goals & wellness logs\n\nYou will start fresh from step 1.')) return;
   localStorage.clear();
   location.reload();
 }
 
 // ══ BOOT ══
 (function() {
-  var APP_VERSION = '12.0';
+  var APP_VERSION = '13.0';
 
   function setNavVisible(visible) {
     document.querySelectorAll('.app-nav').forEach(function(n) {
