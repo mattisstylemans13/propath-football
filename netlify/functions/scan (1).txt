@@ -1,5 +1,5 @@
 // netlify/functions/scan.js
-// Meal Scanner via Google Gemini Vision
+// Meal Scanner via Google Gemini 2.0 Flash-Lite Vision
 
 exports.handler = async (event) => {
   const headers = {
@@ -41,7 +41,6 @@ exports.handler = async (event) => {
       };
     }
 
-    // Strip data:image/...;base64, prefix if present
     const cleanBase64 = imageBase64.replace(/^data:image\/\w+;base64,/, '');
     const mt = mimeType || 'image/jpeg';
 
@@ -66,8 +65,8 @@ Rules:
 - If the image does not contain food, return: {"error": "no_food", "message": "I don't see food in this image."}
 - Respond with ONLY valid JSON, no markdown, no explanation`;
 
-    // Call Gemini API
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+    // Use gemini-2.0-flash-lite for vision — 1500 req/day on free tier
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${apiKey}`;
     const response = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -99,12 +98,10 @@ Rules:
     const data = await response.json();
     const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
 
-    // Try to parse the JSON response
     let parsed;
     try {
       parsed = JSON.parse(rawText);
     } catch (parseErr) {
-      // Try stripping markdown code fences just in case
       const cleaned = rawText.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
       try {
         parsed = JSON.parse(cleaned);
