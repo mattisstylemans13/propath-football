@@ -1,5 +1,5 @@
-// netlify/functions/chat.js
-// AI Coach via Google Gemini (gratis tier — 1500 req/dag)
+// netlify/functions/scan.js
+// Meal Scanner via Google Gemini 2.0 Flash-Lite Vision
 
 exports.handler = async (event) => {
   const headers = {
@@ -31,47 +31,58 @@ exports.handler = async (event) => {
       };
     }
 
-    const { messages, systemPrompt } = JSON.parse(event.body || '{}');
+    const { imageBase64, mimeType } = JSON.parse(event.body || '{}');
 
-    if (!messages || !Array.isArray(messages)) {
+    if (!imageBase64) {
       return {
         statusCode: 400,
         headers,
-        body: JSON.stringify({ error: 'Invalid request: messages array required' }),
+        body: JSON.stringify({ error: 'Missing image data' }),
       };
     }
 
-    // Convert OpenAI-style messages to Gemini format
-    // Gemini uses "contents" with roles: "user" and "model" (not "assistant")
-    const contents = messages
-      .filter((m) => m.role && m.content)
-      .map((m) => ({
-        role: m.role === 'assistant' ? 'model' : 'user',
-        parts: [{ text: m.content }],
-      }));
+    const cleanBase64 = imageBase64.replace(/^data:image\/\w+;base64,/, '');
+    const mt = mimeType || 'image/jpeg';
 
-    // Build request body — Gemini supports system_instruction separately
-    const body = {
-      contents: contents,
-      generationConfig: {
-        temperature: 0.7,
-        maxOutputTokens: 400,
-        topP: 0.9,
-      },
-    };
+    const prompt = `You are a precise nutrition analyzer for an athletic football app. Analyze the meal in the image and return a JSON object with this exact shape:
 
-    if (systemPrompt) {
-      body.systemInstruction = {
-        parts: [{ text: systemPrompt }],
-      };
-    }
+{
+  "name": "Short meal name (e.g. 'Grilled chicken with rice')",
+  "items": [
+    {"name":"chicken breast","grams":150,"kcal":248,"protein":46,"carbs":0,"fat":5},
+    {"name":"white rice","grams":200,"kcal":260,"protein":5,"carbs":56,"fat":1}
+  ],
+  "total": {"kcal":508,"protein":51,"carbs":56,"fat":6},
+  "verdict": "Strong protein meal, good for post-training recovery.",
+  "score": 8
+}
 
-    // Call Gemini API
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+Rules:
+- Estimate portion sizes realistically from visual cues
+- All numbers are integers
+- "score" is 1-10 for athletic suitability
+- "verdict" is one sentence, useful for a young football player
+- If the image does not contain food, return: {"error": "no_food", "message": "I don't see food in this image."}
+- Respond with ONLY valid JSON, no markdown, no explanation`;
+
+    // Use gemini-2.0-flash-lite for vision — 1500 req/day on free tier
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${apiKey}`;
     const response = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
+      body: JSON.stringify({
+        contents: [{
+          parts: [
+            { text: prompt },
+            { inline_data: { mime_type: mt, data: cleanBase64 } },
+          ],
+        }],
+        generationConfig: {
+          temperature: 0.2,
+          maxOutputTokens: 1024,
+          responseMimeType: 'application/json',
+        },
+      }),
     });
 
     if (!response.ok) {
@@ -80,20 +91,36 @@ exports.handler = async (event) => {
       return {
         statusCode: response.status,
         headers,
-        body: JSON.stringify({ error: 'AI service error', detail: errText }),
+        body: JSON.stringify({ error: 'Vision service error', detail: errText }),
       };
     }
 
     const data = await response.json();
-    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
+
+    let parsed;
+    try {
+      parsed = JSON.parse(rawText);
+    } catch (parseErr) {
+      const cleaned = rawText.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
+      try {
+        parsed = JSON.parse(cleaned);
+      } catch (e) {
+        return {
+          statusCode: 500,
+          headers,
+          body: JSON.stringify({ error: 'Could not parse AI response', raw: rawText }),
+        };
+      }
+    }
 
     return {
       statusCode: 200,
       headers,
-      body: JSON.stringify({ reply, content: reply }),
+      body: JSON.stringify(parsed),
     };
   } catch (err) {
-    console.error('Chat function error:', err);
+    console.error('Scan function error:', err);
     return {
       statusCode: 500,
       headers,
