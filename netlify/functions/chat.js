@@ -1,5 +1,5 @@
 // netlify/functions/chat.js
-// AI Coach via Google Gemini 1.5 Flash (free tier with higher quotas)
+// AI Coach via Google Gemini — multi-model fallback
 
 exports.handler = async (event) => {
   const headers = {
@@ -48,12 +48,19 @@ exports.handler = async (event) => {
       body.systemInstruction = { parts: [{ text: systemPrompt }] };
     }
 
-    // Try multiple models in order — fallback if one quota is exhausted
-    const models = ['gemini-1.5-flash-latest', 'gemini-1.5-flash-8b', 'gemini-2.0-flash-lite'];
+    // Try multiple Gemini models in order — fallback if quota exhausted
+    // Using v1 (stable) endpoint with current valid model names
+    const models = [
+      'gemini-flash-latest',
+      'gemini-2.0-flash',
+      'gemini-2.0-flash-lite',
+      'gemini-flash-lite-latest'
+    ];
     let lastError = null;
 
     for (const model of models) {
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+      // Use v1 endpoint (stable) instead of v1beta
+      const url = `https://generativelanguage.googleapis.com/v1/models/${model}:generateContent?key=${apiKey}`;
       const response = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -68,10 +75,10 @@ exports.handler = async (event) => {
 
       const errText = await response.text();
       lastError = { status: response.status, text: errText, model };
-      console.error(`Model ${model} failed:`, errText);
+      console.error(`Model ${model} failed:`, errText.substring(0, 300));
 
-      // If it's not a quota error, stop trying other models
-      if (response.status !== 429 && response.status !== 403) break;
+      // If it's not a quota/not-found error, stop trying other models
+      if (response.status !== 429 && response.status !== 404 && response.status !== 403) break;
     }
 
     return {
