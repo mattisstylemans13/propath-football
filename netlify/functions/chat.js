@@ -1,5 +1,5 @@
 // netlify/functions/chat.js
-// AI Coach via Google Gemini — multi-model fallback
+// AI Coach via Google Gemini — multi-model fallback (v1 endpoint)
 
 exports.handler = async (event) => {
   const headers = {
@@ -28,12 +28,34 @@ exports.handler = async (event) => {
       return { statusCode: 400, headers, body: JSON.stringify({ error: 'Invalid request' }) };
     }
 
-    const contents = messages
-      .filter((m) => m.role && m.content)
-      .map((m) => ({
-        role: m.role === 'assistant' ? 'model' : 'user',
-        parts: [{ text: m.content }],
-      }));
+    // Build conversation — prepend system prompt to first user message
+    // (v1 endpoint doesn't support systemInstruction field reliably)
+    const userMessages = messages.filter((m) => m.role && m.content);
+    const contents = [];
+
+    if (systemPrompt && userMessages.length > 0) {
+      // Wrap first user message with the system instructions
+      const first = userMessages[0];
+      contents.push({
+        role: first.role === 'assistant' ? 'model' : 'user',
+        parts: [{ text: systemPrompt + '\n\n---\n\nUser message: ' + first.content }],
+      });
+      // Add remaining messages normally
+      for (let i = 1; i < userMessages.length; i++) {
+        const m = userMessages[i];
+        contents.push({
+          role: m.role === 'assistant' ? 'model' : 'user',
+          parts: [{ text: m.content }],
+        });
+      }
+    } else {
+      userMessages.forEach((m) => {
+        contents.push({
+          role: m.role === 'assistant' ? 'model' : 'user',
+          parts: [{ text: m.content }],
+        });
+      });
+    }
 
     const body = {
       contents: contents,
@@ -44,12 +66,7 @@ exports.handler = async (event) => {
       },
     };
 
-    if (systemPrompt) {
-      body.systemInstruction = { parts: [{ text: systemPrompt }] };
-    }
-
-    // Try multiple Gemini models in order — fallback if quota exhausted
-    // Using v1 (stable) endpoint with current valid model names
+    // Try multiple Gemini models — fallback if quota exhausted or model missing
     const models = [
       'gemini-flash-latest',
       'gemini-2.0-flash',
@@ -59,7 +76,6 @@ exports.handler = async (event) => {
     let lastError = null;
 
     for (const model of models) {
-      // Use v1 endpoint (stable) instead of v1beta
       const url = `https://generativelanguage.googleapis.com/v1/models/${model}:generateContent?key=${apiKey}`;
       const response = await fetch(url, {
         method: 'POST',
@@ -77,14 +93,14 @@ exports.handler = async (event) => {
       lastError = { status: response.status, text: errText, model };
       console.error(`Model ${model} failed:`, errText.substring(0, 300));
 
-      // If it's not a quota/not-found error, stop trying other models
+      // Only retry for quota/not-found/forbidden — stop on real errors
       if (response.status !== 429 && response.status !== 404 && response.status !== 403) break;
     }
 
     return {
       statusCode: lastError?.status || 500,
       headers,
-      body: JSON.stringify({ error: 'All Gemini models exhausted', detail: lastError }),
+      body: JSON.stringify({ error: 'All Gemini models failed', detail: lastError }),
     };
   } catch (err) {
     console.error('Chat function error:', err);
