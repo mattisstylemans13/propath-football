@@ -14,34 +14,20 @@ exports.handler = async (event) => {
   }
 
   if (event.httpMethod !== 'POST') {
-    return {
-      statusCode: 405,
-      headers,
-      body: JSON.stringify({ error: 'Method not allowed' }),
-    };
+    return { statusCode: 405, headers, body: JSON.stringify({ error: 'Method not allowed' }) };
   }
 
   try {
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
-      return {
-        statusCode: 500,
-        headers,
-        body: JSON.stringify({ error: 'GEMINI_API_KEY not configured' }),
-      };
+      return { statusCode: 500, headers, body: JSON.stringify({ error: 'GEMINI_API_KEY not configured' }) };
     }
 
     const { imageBase64, mimeType } = JSON.parse(event.body || '{}');
-
     if (!imageBase64) {
-      return {
-        statusCode: 400,
-        headers,
-        body: JSON.stringify({ error: 'Missing image data' }),
-      };
+      return { statusCode: 400, headers, body: JSON.stringify({ error: 'Missing image data' }) };
     }
 
-    // Strip data:image/...;base64, prefix if present
     const cleanBase64 = imageBase64.replace(/^data:image\/\w+;base64,/, '');
     const mt = mimeType || 'image/jpeg';
 
@@ -66,68 +52,68 @@ Rules:
 - If the image does not contain food, return: {"error": "no_food", "message": "I don't see food in this image."}
 - Respond with ONLY valid JSON, no markdown, no explanation`;
 
-    // Call Gemini API
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{
-          parts: [
-            { text: prompt },
-            { inline_data: { mime_type: mt, data: cleanBase64 } },
-          ],
-        }],
-        generationConfig: {
-          temperature: 0.2,
-          maxOutputTokens: 1024,
-          responseMimeType: 'application/json',
-        },
-      }),
-    });
+    const body = {
+      contents: [{
+        parts: [
+          { text: prompt },
+          { inline_data: { mime_type: mt, data: cleanBase64 } },
+        ],
+      }],
+      generationConfig: {
+        temperature: 0.2,
+        maxOutputTokens: 1024,
+        responseMimeType: 'application/json',
+      },
+    };
 
-    if (!response.ok) {
-      const errText = await response.text();
-      console.error('Gemini error:', errText);
-      return {
-        statusCode: response.status,
-        headers,
-        body: JSON.stringify({ error: 'Vision service error', detail: errText }),
-      };
-    }
+    // Try multiple Gemini vision models — fallback if quota exhausted
+    const models = [
+      'gemini-flash-latest',
+      'gemini-2.0-flash',
+      'gemini-2.0-flash-lite',
+      'gemini-flash-lite-latest'
+    ];
+    let lastError = null;
 
-    const data = await response.json();
-    const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
+    for (const model of models) {
+      const url = `https://generativelanguage.googleapis.com/v1/models/${model}:generateContent?key=${apiKey}`;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
 
-    // Try to parse the JSON response
-    let parsed;
-    try {
-      parsed = JSON.parse(rawText);
-    } catch (parseErr) {
-      // Try stripping markdown code fences just in case
-      const cleaned = rawText.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
-      try {
-        parsed = JSON.parse(cleaned);
-      } catch (e) {
-        return {
-          statusCode: 500,
-          headers,
-          body: JSON.stringify({ error: 'Could not parse AI response', raw: rawText }),
-        };
+      if (response.ok) {
+        const data = await response.json();
+        const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
+        let parsed;
+        try {
+          parsed = JSON.parse(rawText);
+        } catch (e) {
+          const cleaned = rawText.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
+          try {
+            parsed = JSON.parse(cleaned);
+          } catch (e2) {
+            return { statusCode: 500, headers, body: JSON.stringify({ error: 'Could not parse AI response', raw: rawText }) };
+          }
+        }
+        return { statusCode: 200, headers, body: JSON.stringify(parsed) };
       }
+
+      const errText = await response.text();
+      lastError = { status: response.status, text: errText, model };
+      console.error(`Model ${model} failed:`, errText.substring(0, 300));
+
+      if (response.status !== 429 && response.status !== 404 && response.status !== 403) break;
     }
 
     return {
-      statusCode: 200,
+      statusCode: lastError?.status || 500,
       headers,
-      body: JSON.stringify(parsed),
+      body: JSON.stringify({ error: 'All Gemini models exhausted', detail: lastError }),
     };
   } catch (err) {
     console.error('Scan function error:', err);
-    return {
-      statusCode: 500,
-      headers,
-      body: JSON.stringify({ error: 'Internal error', message: err.message }),
-    };
+    return { statusCode: 500, headers, body: JSON.stringify({ error: 'Internal error', message: err.message }) };
   }
 };
