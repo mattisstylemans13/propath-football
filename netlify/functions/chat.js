@@ -1,5 +1,5 @@
 // netlify/functions/chat.js
-// AI Coach via Google Gemini 2.0 Flash-Lite (1500 req/dag gratis)
+// AI Coach via Google Gemini 1.5 Flash (free tier with higher quotas)
 
 exports.handler = async (event) => {
   const headers = {
@@ -14,34 +14,20 @@ exports.handler = async (event) => {
   }
 
   if (event.httpMethod !== 'POST') {
-    return {
-      statusCode: 405,
-      headers,
-      body: JSON.stringify({ error: 'Method not allowed' }),
-    };
+    return { statusCode: 405, headers, body: JSON.stringify({ error: 'Method not allowed' }) };
   }
 
   try {
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
-      return {
-        statusCode: 500,
-        headers,
-        body: JSON.stringify({ error: 'GEMINI_API_KEY not configured' }),
-      };
+      return { statusCode: 500, headers, body: JSON.stringify({ error: 'GEMINI_API_KEY not configured' }) };
     }
 
     const { messages, systemPrompt } = JSON.parse(event.body || '{}');
-
     if (!messages || !Array.isArray(messages)) {
-      return {
-        statusCode: 400,
-        headers,
-        body: JSON.stringify({ error: 'Invalid request: messages array required' }),
-      };
+      return { statusCode: 400, headers, body: JSON.stringify({ error: 'Invalid request' }) };
     }
 
-    // Convert OpenAI-style messages to Gemini format
     const contents = messages
       .filter((m) => m.role && m.content)
       .map((m) => ({
@@ -59,43 +45,42 @@ exports.handler = async (event) => {
     };
 
     if (systemPrompt) {
-      body.systemInstruction = {
-        parts: [{ text: systemPrompt }],
-      };
+      body.systemInstruction = { parts: [{ text: systemPrompt }] };
     }
 
-    // Use gemini-2.0-flash-lite — 1500 req/day on free tier (vs 200 for flash)
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${apiKey}`;
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    });
+    // Try multiple models in order — fallback if one quota is exhausted
+    const models = ['gemini-1.5-flash-latest', 'gemini-1.5-flash-8b', 'gemini-2.0-flash-lite'];
+    let lastError = null;
 
-    if (!response.ok) {
+    for (const model of models) {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+        return { statusCode: 200, headers, body: JSON.stringify({ reply, content: reply, model }) };
+      }
+
       const errText = await response.text();
-      console.error('Gemini error:', errText);
-      return {
-        statusCode: response.status,
-        headers,
-        body: JSON.stringify({ error: 'AI service error', detail: errText }),
-      };
-    }
+      lastError = { status: response.status, text: errText, model };
+      console.error(`Model ${model} failed:`, errText);
 
-    const data = await response.json();
-    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      // If it's not a quota error, stop trying other models
+      if (response.status !== 429 && response.status !== 403) break;
+    }
 
     return {
-      statusCode: 200,
+      statusCode: lastError?.status || 500,
       headers,
-      body: JSON.stringify({ reply, content: reply }),
+      body: JSON.stringify({ error: 'All Gemini models exhausted', detail: lastError }),
     };
   } catch (err) {
     console.error('Chat function error:', err);
-    return {
-      statusCode: 500,
-      headers,
-      body: JSON.stringify({ error: 'Internal error', message: err.message }),
-    };
+    return { statusCode: 500, headers, body: JSON.stringify({ error: 'Internal error', message: err.message }) };
   }
 };
