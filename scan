@@ -31,26 +31,7 @@ exports.handler = async (event) => {
     const cleanBase64 = imageBase64.replace(/^data:image\/\w+;base64,/, '');
     const mt = mimeType || 'image/jpeg';
 
-    const prompt = `You are a precise nutrition analyzer for an athletic football app. Analyze the meal in the image and return a JSON object with this exact shape:
-
-{
-  "name": "Short meal name (e.g. 'Grilled chicken with rice')",
-  "items": [
-    {"name":"chicken breast","grams":150,"kcal":248,"protein":46,"carbs":0,"fat":5},
-    {"name":"white rice","grams":200,"kcal":260,"protein":5,"carbs":56,"fat":1}
-  ],
-  "total": {"kcal":508,"protein":51,"carbs":56,"fat":6},
-  "verdict": "Strong protein meal, good for post-training recovery.",
-  "score": 8
-}
-
-Rules:
-- Estimate portion sizes realistically from visual cues
-- All numbers are integers
-- "score" is 1-10 for athletic suitability
-- "verdict" is one sentence, useful for a young football player
-- If the image does not contain food, return: {"error": "no_food", "message": "I don't see food in this image."}
-- Respond with ONLY valid JSON, no markdown, no explanation`;
+    const prompt = 'You are a precise nutrition analyzer for an athletic football app. Analyze the meal in the image and return a JSON object with this exact shape:\n\n{\n  "name": "Short meal name",\n  "items": [{"name":"chicken breast","grams":150,"kcal":248,"protein":46,"carbs":0,"fat":5}],\n  "total": {"kcal":508,"protein":51,"carbs":56,"fat":6},\n  "verdict": "Strong protein meal, good for post-training recovery.",\n  "score": 8\n}\n\nRules:\n- Estimate portion sizes from visual cues\n- All numbers are integers\n- "score" is 1-10 for athletic suitability\n- "verdict" is one sentence for a young football player\n- If no food: return {"error": "no_food", "message": "I don\'t see food in this image."}\n- Respond with ONLY valid JSON, no markdown';
 
     const body = {
       contents: [{
@@ -66,7 +47,6 @@ Rules:
       },
     };
 
-    // Try multiple Gemini vision models — fallback if quota exhausted
     const models = [
       'gemini-flash-latest',
       'gemini-2.0-flash',
@@ -102,15 +82,15 @@ Rules:
 
       const errText = await response.text();
       lastError = { status: response.status, text: errText, model };
-      console.error(`Model ${model} failed:`, errText.substring(0, 300));
+      console.error('Model ' + model + ' failed:', errText.substring(0, 300));
 
       if (response.status !== 429 && response.status !== 404 && response.status !== 403) break;
     }
 
     return {
-      statusCode: lastError?.status || 500,
+      statusCode: lastError ? lastError.status : 500,
       headers,
-      body: JSON.stringify({ error: 'All Gemini models exhausted', detail: lastError }),
+      body: JSON.stringify({ error: 'All Gemini models failed', detail: lastError }),
     };
   } catch (err) {
     console.error('Scan function error:', err);
