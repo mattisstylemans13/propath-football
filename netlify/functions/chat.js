@@ -1,5 +1,5 @@
 // netlify/functions/chat.js
-// AI Coach via Google Gemini — multi-model fallback (v1 endpoint)
+// AI Coach via Google Gemini
 
 exports.handler = async (event) => {
   const headers = {
@@ -29,18 +29,15 @@ exports.handler = async (event) => {
     }
 
     // Build conversation — prepend system prompt to first user message
-    // (v1 endpoint doesn't support systemInstruction field reliably)
     const userMessages = messages.filter((m) => m.role && m.content);
     const contents = [];
 
     if (systemPrompt && userMessages.length > 0) {
-      // Wrap first user message with the system instructions
       const first = userMessages[0];
       contents.push({
         role: first.role === 'assistant' ? 'model' : 'user',
         parts: [{ text: systemPrompt + '\n\n---\n\nUser message: ' + first.content }],
       });
-      // Add remaining messages normally
       for (let i = 1; i < userMessages.length; i++) {
         const m = userMessages[i];
         contents.push({
@@ -66,7 +63,7 @@ exports.handler = async (event) => {
       },
     };
 
-    // Try multiple Gemini models — fallback if quota exhausted or model missing
+    // Try multiple Gemini models — fallback if quota exhausted
     const models = [
       'gemini-flash-latest',
       'gemini-2.0-flash',
@@ -91,14 +88,13 @@ exports.handler = async (event) => {
 
       const errText = await response.text();
       lastError = { status: response.status, text: errText, model };
-      console.error(`Model ${model} failed:`, errText.substring(0, 300));
+      console.error('Model ' + model + ' failed:', errText.substring(0, 300));
 
-      // Only retry for quota/not-found/forbidden — stop on real errors
       if (response.status !== 429 && response.status !== 404 && response.status !== 403) break;
     }
 
     return {
-      statusCode: lastError?.status || 500,
+      statusCode: lastError ? lastError.status : 500,
       headers,
       body: JSON.stringify({ error: 'All Gemini models failed', detail: lastError }),
     };
