@@ -1092,6 +1092,14 @@ input[type=range].wslider::-moz-range-thumb{width:20px;height:20px;border-radius
 .log-t{font-family:var(--fm);font-size:10px;color:var(--txt3);width:36px;flex-shrink:0;}
 .log-n{font-size:12px;font-weight:600;flex:1;}
 .log-c{font-size:11px;color:var(--txt3);font-weight:700;}
+.log-del{
+  background:none;border:none;cursor:pointer;
+  font-size:14px;padding:4px 6px;
+  opacity:.5;transition:opacity .2s,transform .15s;
+  border-radius:6px;flex-shrink:0;
+}
+.log-del:hover{opacity:1;transform:scale(1.1);background:rgba(244,63,94,.1);}
+.log-del:active{transform:scale(.95);}
 
 /* ─── MODALS ─── */
 .modal-overlay{
@@ -2754,6 +2762,52 @@ input[type=range].wslider::-moz-range-thumb{width:20px;height:20px;border-radius
   </div>
 </div>
 
+<!-- ═══════════ EDIT MEAL ITEM MODAL ═══════════ -->
+<div class="modal" id="edit-modal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div style="padding:0 20px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+      <div>
+        <div style="font-family:var(--fd);font-size:20px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;">Edit Item</div>
+        <div style="font-size:12px;color:var(--txt2);margin-top:2px;">Adjust the macros if the AI was off</div>
+      </div>
+      <button onclick="closeEditModal()" style="background:none;border:none;color:var(--txt3);font-size:24px;cursor:pointer;line-height:1;">×</button>
+    </div>
+    <div style="padding:18px 20px 8px;overflow-y:auto;max-height:65dvh;">
+      <label style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--txt2);letter-spacing:.5px;">Name</label>
+      <input class="inp" type="text" id="edit-name" placeholder="e.g. chicken breast" style="margin-top:6px;margin-bottom:14px;">
+
+      <label style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--txt2);letter-spacing:.5px;">Portion (grams)</label>
+      <input class="inp" type="number" id="edit-grams" min="0" max="2000" step="5" style="margin-top:6px;margin-bottom:14px;">
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px;">
+        <div>
+          <label style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--txt2);letter-spacing:.5px;">Calories (kcal)</label>
+          <input class="inp" type="number" id="edit-calories" min="0" max="5000" style="margin-top:6px;">
+        </div>
+        <div>
+          <label style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--txt2);letter-spacing:.5px;">Protein (g)</label>
+          <input class="inp" type="number" id="edit-protein" min="0" max="500" style="margin-top:6px;">
+        </div>
+        <div>
+          <label style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--txt2);letter-spacing:.5px;">Carbs (g)</label>
+          <input class="inp" type="number" id="edit-carbs" min="0" max="500" style="margin-top:6px;">
+        </div>
+        <div>
+          <label style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--txt2);letter-spacing:.5px;">Fat (g)</label>
+          <input class="inp" type="number" id="edit-fat" min="0" max="500" style="margin-top:6px;">
+        </div>
+      </div>
+    </div>
+    <div style="padding:14px 20px 20px;display:flex;gap:8px;border-top:1px solid var(--border);margin-top:8px;">
+      <button onclick="deleteItem()" style="flex:1;padding:13px;background:rgba(244,63,94,.1);border:1px solid rgba(244,63,94,.3);color:#f43f5e;border-radius:var(--rm);font-family:var(--f);font-weight:700;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;">
+        🗑️ Delete
+      </button>
+      <button class="btn" onclick="saveEdit()" style="flex:2;">Save changes ✓</button>
+    </div>
+  </div>
+</div>
+
 <div class="nav app-nav" id="nav1">
   <button class="nb on" id="nb-home" onclick="goS('s-home')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75"/></svg>Home<div class="nb-ind"></div></button>
   <button class="nb" id="nb-nutrition" onclick="goS('s-diet')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z"/></svg>Nutrition<div class="nb-ind"></div></button>
@@ -2782,6 +2836,13 @@ var scanSt = {
   current: null,
   stepTimer: null
 };
+// Restore consumed + logged from previous sessions
+try {
+  var savedConsumed = localStorage.getItem('pp_scan_consumed');
+  if (savedConsumed) scanSt.consumed = JSON.parse(savedConsumed);
+  var savedLogged = localStorage.getItem('pp_scan_logged');
+  if (savedLogged) scanSt.logged = JSON.parse(savedLogged);
+} catch(e) {}
 var editIdx = -1;
 
 // ══ CLUBS ══
@@ -6097,8 +6158,19 @@ function logMeal() {
   scanSt.consumed.fat += s.totalFat || 0;
   var items = s.items || [];
   var mn = items.length > 0 ? items.slice(0,2).map(function(i) { return i.name; }).join(' + ') : 'Meal';
-  scanSt.logged.push({time:ts, name:mn, calories:Math.round(s.totalCalories||0)});
-  updateProgBars(); renderLoggedMeals(); resetScan();
+  // Store FULL macros for delete-undo
+  scanSt.logged.push({
+    time: ts,
+    name: mn,
+    calories: Math.round(s.totalCalories||0),
+    protein: Math.round(s.totalProtein||0),
+    carbs: Math.round(s.totalCarbs||0),
+    fat: Math.round(s.totalFat||0)
+  });
+  saveScanState();
+  updateProgBars();
+  renderLoggedMeals();
+  resetScan();
 }
 
 function resetScan() {
@@ -6112,20 +6184,33 @@ function resetScan() {
 function renderLoggedMeals() {
   var sec = document.getElementById('meals-logged');
   var list = document.getElementById('meals-log-list');
-  if (!sec || !list || !scanSt.logged.length) return;
+  if (!sec || !list) return;
+  if (!scanSt.logged.length) { sec.style.display = 'none'; return; }
   sec.style.display = 'block';
-  list.innerHTML = scanSt.logged.map(function(m) {
-    return '<div class="log-r"><div class="log-t">' + m.time + '</div><div class="log-n">' + X(m.name) + '</div><div class="log-c">' + m.calories + ' kcal</div></div>';
+  list.innerHTML = scanSt.logged.map(function(m, idx) {
+    return '<div class="log-r">'
+      + '<div class="log-t">' + m.time + '</div>'
+      + '<div class="log-n">' + X(m.name) + '</div>'
+      + '<div class="log-c">' + m.calories + ' kcal</div>'
+      + '<button class="log-del" onclick="deleteLoggedMeal(' + idx + ')" title="Remove this meal">🗑️</button>'
+      + '</div>';
   }).join('');
 }
+
+function updateLoggedList() { renderLoggedMeals(); }
 
 function openEdit(idx) {
   if (!scanSt.current) return;
   editIdx = idx;
   var items = scanSt.current.scan.items || [];
   if (!items[idx]) return;
-  document.getElementById('edit-name').value = items[idx].name;
-  document.getElementById('edit-grams').value = items[idx].grams;
+  var item = items[idx];
+  document.getElementById('edit-name').value = item.name;
+  document.getElementById('edit-grams').value = item.grams;
+  document.getElementById('edit-calories').value = item.calories;
+  document.getElementById('edit-protein').value = item.protein;
+  document.getElementById('edit-carbs').value = item.carbs;
+  document.getElementById('edit-fat').value = item.fat;
   document.getElementById('edit-modal').classList.add('open');
 }
 
@@ -6133,21 +6218,70 @@ function saveEdit() {
   if (!scanSt.current || editIdx < 0) return;
   var items = scanSt.current.scan.items;
   if (!items[editIdx]) return;
-  var nn = document.getElementById('edit-name').value;
-  var ng = parseInt(document.getElementById('edit-grams').value) || items[editIdx].grams;
-  var ratio = ng / (items[editIdx].grams || 1);
-  items[editIdx].name = nn; items[editIdx].grams = ng;
-  items[editIdx].calories = Math.round(items[editIdx].calories * ratio);
-  items[editIdx].carbs = Math.round(items[editIdx].carbs * ratio);
-  items[editIdx].protein = Math.round(items[editIdx].protein * ratio);
-  items[editIdx].fat = Math.round(items[editIdx].fat * ratio);
-  items[editIdx].confidence = 0.95;
-  var total = items.reduce(function(a, i) {
-    return {totalCalories:a.totalCalories+i.calories,totalCarbs:a.totalCarbs+i.carbs,totalProtein:a.totalProtein+i.protein,totalFat:a.totalFat+i.fat};
-  }, {totalCalories:0,totalCarbs:0,totalProtein:0,totalFat:0});
-  Object.assign(scanSt.current.scan, total);
+  items[editIdx].name = document.getElementById('edit-name').value || items[editIdx].name;
+  items[editIdx].grams = parseInt(document.getElementById('edit-grams').value) || items[editIdx].grams;
+  items[editIdx].calories = parseInt(document.getElementById('edit-calories').value) || 0;
+  items[editIdx].protein = parseInt(document.getElementById('edit-protein').value) || 0;
+  items[editIdx].carbs = parseInt(document.getElementById('edit-carbs').value) || 0;
+  items[editIdx].fat = parseInt(document.getElementById('edit-fat').value) || 0;
+  items[editIdx].confidence = 1.0; // user-edited = max confidence
+  recalcScanTotals();
   showScanResults(scanSt.current, scanSt.current.imageUrl);
+  closeEditModal();
+}
+
+function deleteItem() {
+  if (!scanSt.current || editIdx < 0) return;
+  if (!confirm('Remove this item from the meal?')) return;
+  var items = scanSt.current.scan.items;
+  if (!items[editIdx]) return;
+  items.splice(editIdx, 1);
+  recalcScanTotals();
+  showScanResults(scanSt.current, scanSt.current.imageUrl);
+  closeEditModal();
+}
+
+function closeEditModal() {
   document.getElementById('edit-modal').classList.remove('open');
+  editIdx = -1;
+}
+
+function recalcScanTotals() {
+  if (!scanSt.current || !scanSt.current.scan) return;
+  var items = scanSt.current.scan.items || [];
+  var total = items.reduce(function(a, i) {
+    return {
+      totalCalories: a.totalCalories + (i.calories || 0),
+      totalCarbs: a.totalCarbs + (i.carbs || 0),
+      totalProtein: a.totalProtein + (i.protein || 0),
+      totalFat: a.totalFat + (i.fat || 0)
+    };
+  }, {totalCalories:0, totalCarbs:0, totalProtein:0, totalFat:0});
+  Object.assign(scanSt.current.scan, total);
+}
+
+function deleteLoggedMeal(idx) {
+  if (!confirm('Delete this logged meal?')) return;
+  var meal = scanSt.logged[idx];
+  if (!meal) return;
+  // Subtract from consumed totals
+  scanSt.consumed.kcal = Math.max(0, scanSt.consumed.kcal - (meal.calories || 0));
+  scanSt.consumed.carb = Math.max(0, scanSt.consumed.carb - (meal.carbs || 0));
+  scanSt.consumed.prot = Math.max(0, scanSt.consumed.prot - (meal.protein || 0));
+  scanSt.consumed.fat = Math.max(0, scanSt.consumed.fat - (meal.fat || 0));
+  // Remove from log
+  scanSt.logged.splice(idx, 1);
+  // Save and refresh
+  saveScanState();
+  updateLoggedList();
+  updateProgBars();
+}
+
+function saveScanState() {
+  try {
+    localStorage.setItem('pp_scan_consumed', JSON.stringify(scanSt.consumed));
+    localStorage.setItem('pp_scan_logged', JSON.stringify(scanSt.logged));
+  } catch(e) {}
 }
 
 // ══ UTILS ══
