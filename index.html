@@ -1580,6 +1580,36 @@ input[type=range].wslider::-moz-range-thumb{width:20px;height:20px;border-radius
 .chat-input{flex:1;padding:11px 13px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rm);color:var(--txt);font-family:var(--f);font-size:14px;outline:none;}
 .chat-input:focus{border-color:var(--accent);}
 .chat-send{width:40px;height:40px;border-radius:10px;background:var(--accent);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+
+/* Voice input microphone button */
+.mic-btn{
+  width:40px;height:40px;border-radius:10px;
+  background:var(--bg2);border:1px solid var(--border);
+  color:var(--txt2);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:all .2s;
+}
+.mic-btn:hover{background:var(--border);color:var(--txt);}
+.mic-btn.recording{
+  background:#ff3b30;color:#fff;border-color:#ff3b30;
+  animation:micPulse 1.2s infinite;
+}
+@keyframes micPulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(255,59,48,.5);}
+  50%{box-shadow:0 0 0 8px rgba(255,59,48,0);}
+}
+.voice-status{
+  position:fixed;bottom:120px;left:50%;transform:translateX(-50%);
+  background:rgba(0,0,0,.85);color:#fff;padding:10px 16px;
+  border-radius:20px;font-size:13px;font-weight:600;
+  z-index:1000;display:none;align-items:center;gap:8px;
+  backdrop-filter:blur(10px);
+}
+.voice-status.show{display:flex;}
+.voice-status .dot{
+  width:8px;height:8px;border-radius:50%;background:#ff3b30;
+  animation:micPulse 1s infinite;
+}
 .chat-typing{font-size:11px;color:var(--txt3);padding:6px 16px;font-style:italic;}
 
 /* Macro / nutrition */
@@ -2488,6 +2518,9 @@ input[type=range].wslider::-moz-range-thumb{width:20px;height:20px;border-radius
 </div>
 <div class="chat-bar">
   <textarea class="chat-inp" id="chat-inp" placeholder="Ask your coach..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg();}"></textarea>
+  <button class="mic-btn" id="mic-btn" onclick="toggleVoiceInput()" title="Voice input">
+    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z"/></svg>
+  </button>
   <button class="send-btn" id="send-btn" onclick="sendMsg()">
     <svg width="16" height="16" fill="none" stroke="#000" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.269 20.876L5.999 12zm0 0h7.5"/></svg>
   </button>
@@ -5654,6 +5687,143 @@ function removeTyping() { var t = document.getElementById('typing'); if (t) t.re
 function qSend(btn) {
   document.getElementById('chat-inp').value = btn.textContent;
   sendMsg();
+}
+
+// ══ VOICE INPUT (Speech-to-Text) ══
+var voiceRecognition = null;
+var voiceIsRecording = false;
+var voiceTimeoutId = null;
+
+function getVoiceLang() {
+  // Map app language to Web Speech API locale
+  var langMap = {
+    'en': 'en-US', 'nl': 'nl-NL', 'fr': 'fr-FR', 'es': 'es-ES',
+    'de': 'de-DE', 'it': 'it-IT', 'pt': 'pt-PT', 'pl': 'pl-PL'
+  };
+  var appLang = (P && P.lang) || 'en';
+  return langMap[appLang] || 'en-US';
+}
+
+function showVoiceStatus(text) {
+  var el = document.getElementById('voice-status');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'voice-status';
+    el.className = 'voice-status';
+    document.body.appendChild(el);
+  }
+  el.innerHTML = '<span class="dot"></span> ' + text;
+  el.classList.add('show');
+}
+
+function hideVoiceStatus() {
+  var el = document.getElementById('voice-status');
+  if (el) el.classList.remove('show');
+}
+
+function toggleVoiceInput() {
+  // Check browser support
+  var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    alert('Voice input is not supported on this browser. Try Chrome, Edge, or Safari.');
+    return;
+  }
+
+  if (voiceIsRecording) {
+    // Stop recording
+    if (voiceRecognition) voiceRecognition.stop();
+    return;
+  }
+
+  // Start recording
+  voiceRecognition = new SpeechRecognition();
+  voiceRecognition.lang = getVoiceLang();
+  voiceRecognition.interimResults = true;
+  voiceRecognition.continuous = true;
+  voiceRecognition.maxAlternatives = 1;
+
+  var finalTranscript = '';
+  var lastSpeechTime = Date.now();
+
+  voiceRecognition.onstart = function() {
+    voiceIsRecording = true;
+    var btn = document.getElementById('mic-btn');
+    if (btn) btn.classList.add('recording');
+    showVoiceStatus('Listening... speak now');
+    // Clear input field
+    var inp = document.getElementById('chat-inp');
+    if (inp) inp.value = '';
+  };
+
+  voiceRecognition.onresult = function(event) {
+    var interim = '';
+    finalTranscript = '';
+    for (var i = 0; i < event.results.length; i++) {
+      var transcript = event.results[i][0].transcript;
+      if (event.results[i].isFinal) {
+        finalTranscript += transcript + ' ';
+      } else {
+        interim += transcript;
+      }
+    }
+    var inp = document.getElementById('chat-inp');
+    if (inp) {
+      inp.value = (finalTranscript + interim).trim();
+      // Auto-resize textarea
+      inp.style.height = 'auto';
+      inp.style.height = Math.min(inp.scrollHeight, 120) + 'px';
+    }
+    lastSpeechTime = Date.now();
+
+    // Auto-stop after 2 seconds of silence
+    if (voiceTimeoutId) clearTimeout(voiceTimeoutId);
+    voiceTimeoutId = setTimeout(function() {
+      if (voiceIsRecording && voiceRecognition) {
+        voiceRecognition.stop();
+      }
+    }, 2000);
+  };
+
+  voiceRecognition.onerror = function(event) {
+    console.error('Voice recognition error:', event.error);
+    voiceIsRecording = false;
+    var btn = document.getElementById('mic-btn');
+    if (btn) btn.classList.remove('recording');
+    hideVoiceStatus();
+    if (event.error === 'not-allowed' || event.error === 'permission-denied') {
+      alert('Microphone access denied. Please allow microphone permission in your browser settings.');
+    } else if (event.error === 'no-speech') {
+      // Silent — user didn't speak
+    } else if (event.error !== 'aborted') {
+      alert('Voice input error: ' + event.error);
+    }
+  };
+
+  voiceRecognition.onend = function() {
+    voiceIsRecording = false;
+    var btn = document.getElementById('mic-btn');
+    if (btn) btn.classList.remove('recording');
+    hideVoiceStatus();
+    if (voiceTimeoutId) {
+      clearTimeout(voiceTimeoutId);
+      voiceTimeoutId = null;
+    }
+    // Auto-send if there's text and recording stopped from auto-timeout
+    var inp = document.getElementById('chat-inp');
+    if (inp && inp.value.trim().length > 2) {
+      // Slight delay so user sees the final text
+      setTimeout(function() {
+        if (inp.value.trim().length > 2) sendMsg();
+      }, 300);
+    }
+  };
+
+  try {
+    voiceRecognition.start();
+  } catch (e) {
+    console.error('Failed to start voice recognition:', e);
+    voiceIsRecording = false;
+  }
 }
 
 async function sendMsg() {
