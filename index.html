@@ -1087,7 +1087,9 @@ input[type=range].wslider::-moz-range-thumb{width:20px;height:20px;border-radius
 .scan-fb.alert{background:var(--red-dim);border:0.5px solid rgba(244,63,94,.2);color:var(--red);}
 .scan-actions{display:flex;gap:8px;padding:10px 18px 4px;}
 .meals-log{margin:8px 18px 0;}
-.log-r{display:flex;align-items:center;gap:9px;padding:9px 0;border-bottom:0.5px solid var(--border);}
+.log-r{display:flex;align-items:center;gap:9px;padding:9px 0;border-bottom:0.5px solid var(--border);cursor:pointer;transition:opacity .15s;border-radius:6px;}
+.log-r:hover{opacity:.7;}
+.log-r:active{transform:scale(.99);}
 .log-r:last-child{border-bottom:none;}
 .log-t{font-family:var(--fm);font-size:10px;color:var(--txt3);width:36px;flex-shrink:0;}
 .log-n{font-size:12px;font-weight:600;flex:1;}
@@ -2769,7 +2771,7 @@ input[type=range].wslider::-moz-range-thumb{width:20px;height:20px;border-radius
     <div style="padding:0 20px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
       <div>
         <div style="font-family:var(--fd);font-size:20px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;">Edit Item</div>
-        <div style="font-size:12px;color:var(--txt2);margin-top:2px;">Adjust the macros if the AI was off</div>
+        <div style="font-size:12px;color:var(--txt2);margin-top:2px;">Change the grams — macros auto-update</div>
       </div>
       <button onclick="closeEditModal()" style="background:none;border:none;color:var(--txt3);font-size:24px;cursor:pointer;line-height:1;">×</button>
     </div>
@@ -2777,9 +2779,11 @@ input[type=range].wslider::-moz-range-thumb{width:20px;height:20px;border-radius
       <label style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--txt2);letter-spacing:.5px;">Name</label>
       <input class="inp" type="text" id="edit-name" placeholder="e.g. chicken breast" style="margin-top:6px;margin-bottom:14px;">
 
-      <label style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--txt2);letter-spacing:.5px;">Portion (grams)</label>
-      <input class="inp" type="number" id="edit-grams" min="0" max="2000" step="5" style="margin-top:6px;margin-bottom:14px;">
+      <label style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--accent);letter-spacing:.5px;">Portion (grams) — main control</label>
+      <input class="inp" type="number" id="edit-grams" min="0" max="2000" step="5" style="margin-top:6px;margin-bottom:6px;border:1.5px solid rgba(214,255,86,.3);">
+      <div style="font-size:11px;color:var(--txt3);margin-bottom:14px;line-height:1.5;">💡 Just weigh your food and update the grams — calories and macros scale automatically.</div>
 
+      <div style="font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--txt3);margin-bottom:8px;">Manual override (only if AI is wrong)</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px;">
         <div>
           <label style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--txt2);letter-spacing:.5px;">Calories (kcal)</label>
@@ -2804,6 +2808,50 @@ input[type=range].wslider::-moz-range-thumb{width:20px;height:20px;border-radius
         🗑️ Delete
       </button>
       <button class="btn" onclick="saveEdit()" style="flex:2;">Save changes ✓</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ MEAL DETAIL MODAL (view logged meal) ═══════════ -->
+<div class="modal" id="meal-detail-modal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div style="padding:0 20px 14px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:10px;">
+      <div style="flex:1;min-width:0;">
+        <div id="mdm-name" style="font-family:var(--fd);font-size:20px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;line-height:1.2;">Meal</div>
+        <div id="mdm-time" style="font-size:12px;color:var(--txt2);margin-top:4px;">Logged at —</div>
+      </div>
+      <button onclick="closeMealDetail()" style="background:none;border:none;color:var(--txt3);font-size:24px;cursor:pointer;line-height:1;flex-shrink:0;">×</button>
+    </div>
+    <div style="padding:18px 20px 8px;overflow-y:auto;max-height:65dvh;">
+      <!-- Macro summary cards -->
+      <div style="display:grid;grid-template-columns:repeat(4, 1fr);gap:8px;margin-bottom:18px;">
+        <div style="padding:12px 8px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--rm);text-align:center;">
+          <div id="mdm-kcal" style="font-family:var(--fd);font-size:18px;font-weight:700;color:var(--accent);">0 kcal</div>
+          <div style="font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--txt3);margin-top:4px;">Total</div>
+        </div>
+        <div style="padding:12px 8px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--rm);text-align:center;">
+          <div id="mdm-prot" style="font-family:var(--fd);font-size:18px;font-weight:700;">0g</div>
+          <div style="font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--txt3);margin-top:4px;">Protein</div>
+        </div>
+        <div style="padding:12px 8px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--rm);text-align:center;">
+          <div id="mdm-carb" style="font-family:var(--fd);font-size:18px;font-weight:700;">0g</div>
+          <div style="font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--txt3);margin-top:4px;">Carbs</div>
+        </div>
+        <div style="padding:12px 8px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--rm);text-align:center;">
+          <div id="mdm-fat" style="font-family:var(--fd);font-size:18px;font-weight:700;">0g</div>
+          <div style="font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--txt3);margin-top:4px;">Fat</div>
+        </div>
+      </div>
+
+      <!-- Ingredients breakdown -->
+      <div id="mdm-breakdown"></div>
+    </div>
+    <div style="padding:14px 20px 20px;display:flex;gap:8px;border-top:1px solid var(--border);margin-top:8px;">
+      <button onclick="deleteLoggedFromDetail()" style="flex:1;padding:13px;background:rgba(244,63,94,.1);border:1px solid rgba(244,63,94,.3);color:#f43f5e;border-radius:var(--rm);font-family:var(--f);font-weight:700;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;">
+        🗑️ Delete meal
+      </button>
+      <button class="btn" onclick="closeMealDetail()" style="flex:1;">Close</button>
     </div>
   </div>
 </div>
@@ -2844,6 +2892,10 @@ try {
   if (savedLogged) scanSt.logged = JSON.parse(savedLogged);
 } catch(e) {}
 var editIdx = -1;
+var viewLoggedIdx = -1;
+var editOriginalPer100g = {calories:0, protein:0, carbs:0, fat:0};
+var editLastGrams = 0;
+var editMacrosManuallyChanged = false;
 
 // ══ CLUBS ══
 var CLUBS = [
@@ -6158,14 +6210,24 @@ function logMeal() {
   scanSt.consumed.fat += s.totalFat || 0;
   var items = s.items || [];
   var mn = items.length > 0 ? items.slice(0,2).map(function(i) { return i.name; }).join(' + ') : 'Meal';
-  // Store FULL macros for delete-undo
+  // Store FULL macros + items for detail view + delete-undo
   scanSt.logged.push({
     time: ts,
     name: mn,
     calories: Math.round(s.totalCalories||0),
     protein: Math.round(s.totalProtein||0),
     carbs: Math.round(s.totalCarbs||0),
-    fat: Math.round(s.totalFat||0)
+    fat: Math.round(s.totalFat||0),
+    items: items.map(function(it) {
+      return {
+        name: it.name,
+        grams: Math.round(it.grams || 0),
+        calories: Math.round(it.calories || 0),
+        protein: Math.round(it.protein || 0),
+        carbs: Math.round(it.carbs || 0),
+        fat: Math.round(it.fat || 0)
+      };
+    })
   });
   saveScanState();
   updateProgBars();
@@ -6188,16 +6250,63 @@ function renderLoggedMeals() {
   if (!scanSt.logged.length) { sec.style.display = 'none'; return; }
   sec.style.display = 'block';
   list.innerHTML = scanSt.logged.map(function(m, idx) {
-    return '<div class="log-r">'
+    return '<div class="log-r" onclick="viewLoggedMeal(' + idx + ')">'
       + '<div class="log-t">' + m.time + '</div>'
       + '<div class="log-n">' + X(m.name) + '</div>'
       + '<div class="log-c">' + m.calories + ' kcal</div>'
-      + '<button class="log-del" onclick="deleteLoggedMeal(' + idx + ')" title="Remove this meal">🗑️</button>'
+      + '<button class="log-del" onclick="event.stopPropagation();deleteLoggedMeal(' + idx + ')" title="Remove this meal">🗑️</button>'
       + '</div>';
   }).join('');
 }
 
 function updateLoggedList() { renderLoggedMeals(); }
+
+function viewLoggedMeal(idx) {
+  var m = scanSt.logged[idx];
+  if (!m) return;
+  var el = document.getElementById('meal-detail-modal');
+  if (!el) return;
+  document.getElementById('mdm-name').textContent = m.name;
+  document.getElementById('mdm-time').textContent = 'Logged at ' + m.time;
+  document.getElementById('mdm-kcal').textContent = (m.calories || 0) + ' kcal';
+  document.getElementById('mdm-prot').textContent = (m.protein || 0) + 'g';
+  document.getElementById('mdm-carb').textContent = (m.carbs || 0) + 'g';
+  document.getElementById('mdm-fat').textContent = (m.fat || 0) + 'g';
+
+  // Show breakdown if items were stored
+  var brk = document.getElementById('mdm-breakdown');
+  if (brk) {
+    if (m.items && m.items.length) {
+      brk.style.display = 'block';
+      brk.innerHTML = '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--txt3);margin-bottom:10px;">Ingredients</div>' +
+        m.items.map(function(it) {
+          return '<div style="display:flex;justify-content:space-between;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--border);">'
+            + '<div><div style="font-size:13px;font-weight:600;">' + X(it.name) + '</div><div style="font-size:11px;color:var(--txt3);margin-top:2px;">' + (it.grams || 0) + 'g · ' + (it.protein || 0) + 'g P · ' + (it.carbs || 0) + 'g C · ' + (it.fat || 0) + 'g F</div></div>'
+            + '<div style="font-size:13px;font-weight:700;color:var(--accent);">' + (it.calories || 0) + ' kcal</div>'
+            + '</div>';
+        }).join('');
+    } else {
+      brk.style.display = 'none';
+    }
+  }
+
+  // Store current idx for delete-from-detail
+  viewLoggedIdx = idx;
+  el.classList.add('open');
+}
+
+function closeMealDetail() {
+  var el = document.getElementById('meal-detail-modal');
+  if (el) el.classList.remove('open');
+  viewLoggedIdx = -1;
+}
+
+function deleteLoggedFromDetail() {
+  if (viewLoggedIdx < 0) return;
+  var idx = viewLoggedIdx;
+  closeMealDetail();
+  deleteLoggedMeal(idx);
+}
 
 function openEdit(idx) {
   if (!scanSt.current) return;
@@ -6205,6 +6314,17 @@ function openEdit(idx) {
   var items = scanSt.current.scan.items || [];
   if (!items[idx]) return;
   var item = items[idx];
+  // Store original per-100g ratios so we can rescale automatically
+  var g = item.grams || 100;
+  editOriginalPer100g = {
+    calories: (item.calories || 0) / g * 100,
+    protein: (item.protein || 0) / g * 100,
+    carbs: (item.carbs || 0) / g * 100,
+    fat: (item.fat || 0) / g * 100
+  };
+  editLastGrams = g;
+  editMacrosManuallyChanged = false;
+
   document.getElementById('edit-name').value = item.name;
   document.getElementById('edit-grams').value = item.grams;
   document.getElementById('edit-calories').value = item.calories;
@@ -6212,6 +6332,30 @@ function openEdit(idx) {
   document.getElementById('edit-carbs').value = item.carbs;
   document.getElementById('edit-fat').value = item.fat;
   document.getElementById('edit-modal').classList.add('open');
+
+  // Attach listeners for auto-scale on grams change
+  var gramsInput = document.getElementById('edit-grams');
+  if (gramsInput) {
+    gramsInput.oninput = onEditGramsChange;
+  }
+  // Track if user manually edits macros (then we don't auto-scale anymore)
+  ['edit-calories','edit-protein','edit-carbs','edit-fat'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.oninput = function() { editMacrosManuallyChanged = true; };
+  });
+}
+
+function onEditGramsChange() {
+  // Auto-scale macros based on new grams (unless user manually edited them)
+  if (editMacrosManuallyChanged) return;
+  var newGrams = parseFloat(document.getElementById('edit-grams').value);
+  if (isNaN(newGrams) || newGrams <= 0) return;
+  var factor = newGrams / 100;
+  document.getElementById('edit-calories').value = Math.round(editOriginalPer100g.calories * factor);
+  document.getElementById('edit-protein').value = Math.round(editOriginalPer100g.protein * factor);
+  document.getElementById('edit-carbs').value = Math.round(editOriginalPer100g.carbs * factor);
+  document.getElementById('edit-fat').value = Math.round(editOriginalPer100g.fat * factor);
+  editLastGrams = newGrams;
 }
 
 function saveEdit() {
