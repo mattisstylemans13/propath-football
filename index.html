@@ -936,8 +936,123 @@ select.inp{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.
 .int-btn{flex:1;padding:9px 4px;border:0.5px solid var(--border2);border-radius:var(--r);background:var(--bg3);color:var(--txt2);font-family:var(--f);font-size:11px;font-weight:700;cursor:pointer;text-align:center;transition:all .15s;text-transform:uppercase;letter-spacing:.4px;}
 .int-btn.on{background:var(--accent);color:#000;border-color:var(--accent);}
 .tt-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
-.tt-btn{padding:12px 10px;border:0.5px solid var(--border2);border-radius:var(--r);background:var(--bg3);font-family:var(--f);font-size:12px;font-weight:700;cursor:pointer;text-align:left;transition:all .15s;display:flex;align-items:center;gap:8px;color:var(--txt2);}
-.tt-btn.on{border-width:1px;}
+.tt-btn{padding:12px 10px;border:0.5px solid var(--border2);border-radius:var(--r);background:var(--bg3);font-family:var(--f);font-size:12px;font-weight:700;cursor:pointer;text-align:left;transition:all .15s;display:flex;align-items:center;gap:8px;color:var(--txt2);position:relative;}
+.tt-btn:hover{background:var(--bg4);border-color:var(--border);}
+.tt-btn:active{transform:scale(.97);}
+.tt-btn.on{
+  border:1.5px solid var(--accent);
+  background:rgba(214,255,86,.06);
+  color:var(--txt);
+  box-shadow:inset 0 0 0 1px var(--accent), 0 0 0 3px rgba(214,255,86,.08);
+}
+.tt-btn.on::after{
+  content:'✓';
+  position:absolute;
+  top:50%;right:10px;
+  transform:translateY(-50%);
+  color:var(--accent);
+  font-size:14px;
+  font-weight:900;
+}
+.tt-btn.on .tt-dot{
+  box-shadow:0 0 0 3px rgba(255,255,255,.08);
+}
+
+/* Session status grid - professional, no emojis */
+.status-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:6px;
+  margin-bottom:14px;
+}
+.status-btn{
+  display:flex;align-items:center;gap:9px;
+  padding:11px 12px;
+  background:var(--bg3);
+  border:0.5px solid var(--border2);
+  border-radius:var(--r);
+  color:var(--txt2);
+  font-family:var(--f);
+  font-size:13px;
+  font-weight:600;
+  cursor:pointer;
+  transition:all .15s;
+  text-align:left;
+}
+.status-btn:hover{background:var(--bg4);}
+.status-btn:active{transform:scale(.97);}
+.status-btn.on{
+  border:1.5px solid var(--accent);
+  background:rgba(214,255,86,.06);
+  color:var(--txt);
+}
+.status-dot{
+  width:9px;height:9px;border-radius:50%;flex-shrink:0;
+}
+.status-dot-planned{background:#7aa5ff;}
+.status-dot-completed{background:#22c55e;}
+.status-dot-missed{background:#f43f5e;}
+.status-dot-cancelled{background:#f59e0b;}
+.status-btn.on .status-dot{
+  box-shadow:0 0 0 3px rgba(214,255,86,.15);
+}
+
+/* Post session reflection - feel buttons */
+.feel-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:6px;
+  margin-top:6px;
+  margin-bottom:6px;
+}
+.feel-btn{
+  display:flex;flex-direction:column;align-items:flex-start;
+  padding:11px 12px;
+  background:var(--bg3);
+  border:0.5px solid var(--border2);
+  border-radius:var(--r);
+  font-family:var(--f);
+  cursor:pointer;
+  transition:all .15s;
+  text-align:left;
+  gap:2px;
+}
+.feel-btn:hover{background:var(--bg4);}
+.feel-btn:active{transform:scale(.97);}
+.feel-btn.on{
+  border:1.5px solid var(--accent);
+  background:rgba(214,255,86,.06);
+}
+.feel-label{
+  font-size:13px;font-weight:700;color:var(--txt);
+  letter-spacing:.2px;
+}
+.feel-sub{
+  font-size:10px;color:var(--txt3);
+  font-weight:500;
+}
+.feel-btn.on .feel-label{color:var(--accent);}
+
+/* Day picker — multiple sessions on same day */
+.day-pick-row{
+  display:flex;align-items:center;gap:11px;
+  padding:12px;
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:var(--rm);
+  cursor:pointer;
+  transition:all .15s;
+  font-family:var(--f);
+  width:100%;
+  text-align:left;
+}
+.day-pick-row:hover{background:var(--bg3);border-color:var(--border2);}
+.day-pick-row:active{transform:scale(.98);}
+.day-pick-ico{
+  width:36px;height:36px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;flex-shrink:0;
+}
 .tt-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
 
 /* ─── WELLNESS TRACKING ─── */
@@ -1620,6 +1735,23 @@ input[type=range].wslider::-moz-range-thumb{width:20px;height:20px;border-radius
   width:8px;height:8px;border-radius:50%;background:#ff3b30;
   animation:micPulse 1s infinite;
 }
+
+/* Toast notification */
+.toast{
+  position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:rgba(0,0,0,.92);color:#fff;padding:12px 18px;
+  border-radius:12px;font-size:13px;font-weight:600;
+  z-index:10000;opacity:0;pointer-events:none;
+  transition:opacity .25s,transform .25s;
+  backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,.1);
+  max-width:90%;text-align:center;
+  box-shadow:0 8px 32px rgba(0,0,0,.4);
+}
+.toast.show{
+  opacity:1;transform:translateX(-50%) translateY(0);
+  pointer-events:auto;
+}
 .chat-typing{font-size:11px;color:var(--txt3);padding:6px 16px;font-style:italic;}
 
 /* Macro / nutrition */
@@ -2105,9 +2237,14 @@ input[type=range].wslider::-moz-range-thumb{width:20px;height:20px;border-radius
 
   <div style="padding:14px 18px 28px;">
     <div style="font-size:10px;font-weight:700;color:var(--txt3);letter-spacing:.8px;text-transform:uppercase;margin-bottom:8px;">Settings</div>
+
+    <button onclick="openProfileEdit()" style="width:100%;padding:14px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--rm);color:var(--txt);font-family:var(--f);font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px;">
+      Edit my profile
+    </button>
+    <div style="font-size:10px;color:var(--txt3);text-align:center;margin-top:-4px;margin-bottom:14px;line-height:1.5;">Update weight, height, age or club. Macros recalculate automatically.</div>
+
     <button onclick="resetProfile()" style="width:100%;padding:14px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--rm);color:var(--txt);font-family:var(--f);font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
-      <span style="font-size:16px;">🔄</span>
-      <span>Reset profile &amp; restart onboarding</span>
+      Reset profile and restart onboarding
     </button>
     <div style="font-size:10px;color:var(--txt3);text-align:center;margin-top:6px;line-height:1.5;">Clears all your data and starts fresh from step 1.</div>
   </div>
@@ -2311,7 +2448,7 @@ input[type=range].wslider::-moz-range-thumb{width:20px;height:20px;border-radius
     </div>
     <div style="padding:0 18px 14px;display:none;" id="dna-retake-cta-k">
       <div style="display:flex;gap:8px;flex-wrap:wrap;">
-        <button class="btn ghost" onclick="openProfileImprove()" style="flex:1;font-size:12px;padding:11px;">🔄 Retake assessment</button>
+        <button class="btn ghost" onclick="openProfileImprove()" style="flex:1;font-size:12px;padding:11px;">Retake assessment</button>
         <button class="btn ghost" onclick="goS('s-coach')" style="flex:1;font-size:12px;padding:11px;">💬 Ask AI coach</button>
       </div>
     </div>
@@ -2583,7 +2720,7 @@ input[type=range].wslider::-moz-range-thumb{width:20px;height:20px;border-radius
   <div class="scan-or">or</div>
   <div style="padding:0 18px 12px;">
     <button class="btn ghost" onclick="document.getElementById('scan-camera').click()" style="font-size:13px;padding:12px;">
-      📸 Take photo with camera
+      Take photo with camera
     </button>
     <input type="file" id="scan-camera" accept="image/*" capture="environment" style="display:none;" onchange="handleScan(event)">
   </div>
@@ -2663,31 +2800,71 @@ input[type=range].wslider::-moz-range-thumb{width:20px;height:20px;border-radius
       <button class="int-btn" onclick="selInt(this,'Max')">Max</button>
     </div>
     <label class="lbl" style="margin-top:0;">Session status</label>
-    <div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;" id="session-status-row">
-      <button class="int-btn on" id="status-planned" onclick="selSessionStatus(this,'planned')">📅 Planned</button>
-      <button class="int-btn" id="status-completed" onclick="selSessionStatus(this,'completed')">✅ Done</button>
-      <button class="int-btn" id="status-missed" onclick="selSessionStatus(this,'missed')">❌ Missed</button>
-      <button class="int-btn" id="status-cancelled" onclick="selSessionStatus(this,'cancelled')">🚫 Cancelled</button>
+    <div class="status-grid" id="session-status-row">
+      <button class="status-btn on" id="status-planned" onclick="selSessionStatus(this,'planned')">
+        <div class="status-dot status-dot-planned"></div>
+        <span>Planned</span>
+      </button>
+      <button class="status-btn" id="status-completed" onclick="selSessionStatus(this,'completed')">
+        <div class="status-dot status-dot-completed"></div>
+        <span>Completed</span>
+      </button>
+      <button class="status-btn" id="status-missed" onclick="selSessionStatus(this,'missed')">
+        <div class="status-dot status-dot-missed"></div>
+        <span>Missed</span>
+      </button>
+      <button class="status-btn" id="status-cancelled" onclick="selSessionStatus(this,'cancelled')">
+        <div class="status-dot status-dot-cancelled"></div>
+        <span>Cancelled</span>
+      </button>
     </div>
     <div id="missed-reason-wrap" style="display:none;margin-bottom:12px;">
-      <label class="lbl" style="margin-top:0;">Reason (optional)</label>
+      <label class="lbl" style="margin-top:0;">Reason</label>
       <select class="inp" id="missed-reason">
-        <option value="">Select reason...</option>
-        <option value="school">📚 School / homework</option>
-        <option value="injury">🩹 Injury</option>
-        <option value="illness">🤒 Illness</option>
-        <option value="travel">✈️ Travel</option>
-        <option value="family">👪 Family</option>
-        <option value="fatigue">😴 Fatigue</option>
-        <option value="coach_cancelled">👨‍🏫 Coach cancelled</option>
-        <option value="weather">⛈️ Weather</option>
-        <option value="transport">🚌 No transport</option>
-        <option value="other">💬 Other</option>
+        <option value="">Select a reason</option>
+        <option value="school">School or homework</option>
+        <option value="injury">Injury</option>
+        <option value="illness">Illness</option>
+        <option value="travel">Travel</option>
+        <option value="family">Family</option>
+        <option value="fatigue">Fatigue</option>
+        <option value="coach_cancelled">Coach cancelled</option>
+        <option value="weather">Weather</option>
+        <option value="transport">No transport</option>
+        <option value="other">Other</option>
       </select>
-      <div style="font-size:10px;color:var(--green);font-weight:600;margin-top:5px;padding:6px 9px;background:rgba(34,197,94,.07);border-radius:6px;">💚 One missed session does not define your progress. Life happens.</div>
+      <div style="font-size:11px;color:var(--green);font-weight:500;margin-top:6px;padding:8px 10px;background:rgba(34,197,94,.08);border-radius:6px;line-height:1.5;">One missed session does not define your progress. Life happens.</div>
     </div>
+
+    <!-- ═══ POST-SESSION REFLECTION ═══ shown when status = completed -->
+    <div id="session-reflection-wrap" style="display:none;margin-bottom:14px;padding-top:6px;border-top:1px solid var(--border);">
+      <label class="lbl" style="margin-top:14px;">How did the session feel?</label>
+      <div class="feel-grid">
+        <button class="feel-btn" onclick="selFeel(this,'great')">
+          <div class="feel-label">Sharp</div>
+          <div class="feel-sub">Best version of yourself</div>
+        </button>
+        <button class="feel-btn" onclick="selFeel(this,'good')">
+          <div class="feel-label">Solid</div>
+          <div class="feel-sub">Focused and consistent</div>
+        </button>
+        <button class="feel-btn" onclick="selFeel(this,'average')">
+          <div class="feel-label">Average</div>
+          <div class="feel-sub">Got through it</div>
+        </button>
+        <button class="feel-btn" onclick="selFeel(this,'flat')">
+          <div class="feel-label">Flat</div>
+          <div class="feel-sub">Heavy legs, low energy</div>
+        </button>
+      </div>
+
+      <label class="lbl" style="margin-top:14px;">Short reflection</label>
+      <textarea class="inp" id="session-reflection-note" placeholder="What worked, what to improve, key moment from the session." rows="2" style="resize:none;min-height:60px;"></textarea>
+      <div style="font-size:10px;color:var(--txt3);margin-top:4px;line-height:1.5;">Optional. A few words now is worth more than nothing later. You can review every session.</div>
+    </div>
+
     <label class="lbl" style="margin-top:0;">Notes</label>
-    <input class="inp" id="cal-notes" placeholder="Focus on crossing, sprints..." style="margin-bottom:16px;">
+    <input class="inp" id="cal-notes" placeholder="Focus on crossing, sprints, individual work" style="margin-bottom:16px;">
     <button class="btn" id="cal-save-btn" onclick="saveCal()">Save session</button>
     <button class="btn danger" id="cal-delete-btn" style="display:none;margin-top:8px;" onclick="deleteSession()">Delete session</button>
   </div>
@@ -2781,7 +2958,7 @@ input[type=range].wslider::-moz-range-thumb{width:20px;height:20px;border-radius
 
       <label style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--accent);letter-spacing:.5px;">Portion (grams) — main control</label>
       <input class="inp" type="number" id="edit-grams" min="0" max="2000" step="5" style="margin-top:6px;margin-bottom:6px;border:1.5px solid rgba(214,255,86,.3);">
-      <div style="font-size:11px;color:var(--txt3);margin-bottom:14px;line-height:1.5;">💡 Just weigh your food and update the grams — calories and macros scale automatically.</div>
+      <div style="font-size:11px;color:var(--txt3);margin-bottom:14px;line-height:1.5;">Just weigh your food and update the grams. Calories and macros scale automatically.</div>
 
       <div style="font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--txt3);margin-bottom:8px;">Manual override (only if AI is wrong)</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px;">
@@ -2805,7 +2982,7 @@ input[type=range].wslider::-moz-range-thumb{width:20px;height:20px;border-radius
     </div>
     <div style="padding:14px 20px 20px;display:flex;gap:8px;border-top:1px solid var(--border);margin-top:8px;">
       <button onclick="deleteItem()" style="flex:1;padding:13px;background:rgba(244,63,94,.1);border:1px solid rgba(244,63,94,.3);color:#f43f5e;border-radius:var(--rm);font-family:var(--f);font-weight:700;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;">
-        🗑️ Delete
+        Delete
       </button>
       <button class="btn" onclick="saveEdit()" style="flex:2;">Save changes ✓</button>
     </div>
@@ -2849,9 +3026,115 @@ input[type=range].wslider::-moz-range-thumb{width:20px;height:20px;border-radius
     </div>
     <div style="padding:14px 20px 20px;display:flex;gap:8px;border-top:1px solid var(--border);margin-top:8px;">
       <button onclick="deleteLoggedFromDetail()" style="flex:1;padding:13px;background:rgba(244,63,94,.1);border:1px solid rgba(244,63,94,.3);color:#f43f5e;border-radius:var(--rm);font-family:var(--f);font-weight:700;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;">
-        🗑️ Delete meal
+        Delete meal
       </button>
       <button class="btn" onclick="closeMealDetail()" style="flex:1;">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ EDIT PROFILE MODAL ═══════════ -->
+<div class="modal" id="profile-edit-modal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div style="padding:0 20px 14px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:10px;">
+      <div>
+        <div style="font-family:var(--fd);font-size:20px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;">Edit profile</div>
+        <div style="font-size:12px;color:var(--txt2);margin-top:2px;">Macros will recalculate automatically</div>
+      </div>
+      <button onclick="closeProfileEdit()" style="background:none;border:none;color:var(--txt3);font-size:24px;cursor:pointer;line-height:1;">×</button>
+    </div>
+    <div style="padding:18px 20px 8px;overflow-y:auto;max-height:65dvh;">
+
+      <label style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--txt2);letter-spacing:.5px;">Name</label>
+      <input class="inp" type="text" id="pe-name" style="margin-top:6px;margin-bottom:14px;">
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+        <div>
+          <label style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--accent);letter-spacing:.5px;">Weight (kg)</label>
+          <input class="inp" type="number" id="pe-weight" min="30" max="200" step="0.1" style="margin-top:6px;border:1.5px solid rgba(214,255,86,.3);">
+        </div>
+        <div>
+          <label style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--accent);letter-spacing:.5px;">Height (cm)</label>
+          <input class="inp" type="number" id="pe-height" min="100" max="230" step="1" style="margin-top:6px;border:1.5px solid rgba(214,255,86,.3);">
+        </div>
+        <div>
+          <label style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--txt2);letter-spacing:.5px;">Age</label>
+          <input class="inp" type="number" id="pe-age" min="6" max="60" step="1" style="margin-top:6px;">
+        </div>
+        <div>
+          <label style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--txt2);letter-spacing:.5px;">Gender</label>
+          <select class="inp" id="pe-gender" style="margin-top:6px;">
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+      </div>
+
+      <label style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--txt2);letter-spacing:.5px;">Position</label>
+      <select class="inp" id="pe-position" style="margin-top:6px;margin-bottom:14px;">
+        <option value="Goalkeeper">Goalkeeper</option>
+        <option value="Defender">Defender</option>
+        <option value="Midfielder">Midfielder</option>
+        <option value="Striker">Striker</option>
+      </select>
+
+      <label style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--txt2);letter-spacing:.5px;">Dream club</label>
+      <input class="inp" type="text" id="pe-club" placeholder="e.g. Real Madrid" style="margin-top:6px;margin-bottom:8px;">
+
+      <div style="font-size:11px;color:var(--txt3);line-height:1.5;padding:8px 0;border-top:1px solid var(--border);margin-top:14px;">
+        Changing weight or height will automatically recalculate your daily calorie and macro targets across the whole app.
+      </div>
+    </div>
+    <div style="padding:14px 20px 20px;display:flex;gap:8px;border-top:1px solid var(--border);margin-top:8px;">
+      <button onclick="closeProfileEdit()" class="btn ghost" style="flex:1;">Cancel</button>
+      <button class="btn" onclick="saveProfileEdit()" style="flex:2;">Save changes ✓</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ ADD TO CALENDAR PROMPT ═══════════ -->
+<div class="modal" id="cal-prompt-modal">
+  <div class="modal-sheet" style="max-height:auto;">
+    <div class="modal-handle"></div>
+    <div style="padding:0 20px 14px;border-bottom:1px solid var(--border);">
+      <div style="font-family:var(--fd);font-size:20px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;">Add to calendar?</div>
+      <div style="font-size:12px;color:var(--txt2);margin-top:4px;">Track your training day in the calendar</div>
+    </div>
+    <div style="padding:20px;">
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--rm);padding:16px;text-align:center;margin-bottom:14px;">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--txt3);margin-bottom:4px;">Today</div>
+        <div id="cal-prompt-label" style="font-family:var(--fd);font-size:20px;font-weight:700;color:var(--accent);">—</div>
+      </div>
+      <input type="hidden" id="cal-prompt-type" value="">
+      <div style="font-size:12px;color:var(--txt2);line-height:1.6;text-align:center;">
+        Add this session to today's calendar so you can review it later in your training history.
+      </div>
+    </div>
+    <div style="padding:0 20px 20px;display:flex;gap:8px;">
+      <button onclick="closeCalPrompt()" class="btn ghost" style="flex:1;">Not now</button>
+      <button class="btn" onclick="addDayTypeToCalendar()" style="flex:2;">Add to calendar ✓</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ DAY PICKER MODAL (multiple sessions on same day) ═══════════ -->
+<div class="modal" id="day-picker-modal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div style="padding:0 20px 14px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:10px;">
+      <div>
+        <div style="font-family:var(--fd);font-size:18px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;">Sessions on</div>
+        <div id="day-picker-title" style="font-family:var(--fd);font-size:20px;font-weight:700;color:var(--accent);margin-top:2px;">—</div>
+        <div style="font-size:12px;color:var(--txt2);margin-top:4px;">Tap a session to edit it.</div>
+      </div>
+      <button onclick="closeDayPicker()" style="background:none;border:none;color:var(--txt3);font-size:24px;cursor:pointer;line-height:1;">×</button>
+    </div>
+    <input type="hidden" id="day-picker-date">
+    <div style="padding:14px 20px 8px;overflow-y:auto;max-height:55dvh;display:flex;flex-direction:column;gap:8px;" id="day-picker-list"></div>
+    <div style="padding:14px 20px 20px;border-top:1px solid var(--border);">
+      <button class="btn" onclick="addNewSessionForDay()" style="width:100%;">+ Add another session</button>
     </div>
   </div>
 </div>
@@ -2893,7 +3176,14 @@ try {
 } catch(e) {}
 var editIdx = -1;
 var viewLoggedIdx = -1;
+var calSessionStatus = 'planned';
+var calSessionFeel = '';
 var editOriginalPer100g = {calories:0, protein:0, carbs:0, fat:0};
+
+// Generate a short unique session ID (timestamp + random suffix)
+function genSessionId() {
+  return 'sess_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8);
+}
 var editLastGrams = 0;
 var editMacrosManuallyChanged = false;
 
@@ -4557,7 +4847,15 @@ function finish() {
 
 // ══ INIT ══
 function initApp() {
-  try { calSt.sessions = JSON.parse(localStorage.getItem('pp_sessions') || '[]'); } catch(e) {}
+  try {
+    calSt.sessions = JSON.parse(localStorage.getItem('pp_sessions') || '[]');
+    // Backwards-compat: assign unique IDs to legacy sessions that don't have one
+    var needsSave = false;
+    calSt.sessions.forEach(function(s) {
+      if (!s.id) { s.id = genSessionId(); needsSave = true; }
+    });
+    if (needsSave) localStorage.setItem('pp_sessions', JSON.stringify(calSt.sessions));
+  } catch(e) {}
   initWellness();
 
   var h = new Date().getHours();
@@ -5229,6 +5527,7 @@ function kSaveReflection() {
   } else {
     // Create a reflection-only calendar entry
     calSt.sessions.push({
+      id: genSessionId(),
       date: today,
       type: 'match',
       duration: 90,
@@ -5338,15 +5637,82 @@ function calMove(dir) {
   renderCalendar();
 }
 
-function calDayClick(ds) {
-  var existing = calSt.sessions.find(function(s) { return s.date === ds; });
-  // Always open modal — for new sessions AND to edit existing ones
-  openCalModal(ds, existing);
+function calDayClick(ds, sessionId) {
+  // If a specific session ID is passed (from upcoming list), open that exact one
+  if (sessionId) {
+    var specific = calSt.sessions.find(function(s) { return s.id === sessionId; });
+    if (specific) { openCalModal(ds, specific); return; }
+  }
+
+  // Otherwise: how many sessions on this date?
+  var sessionsToday = calSt.sessions.filter(function(s) { return s.date === ds; });
+
+  if (sessionsToday.length === 0) {
+    // No sessions, create new
+    openCalModal(ds, null);
+  } else if (sessionsToday.length === 1) {
+    // Only one, edit it directly
+    openCalModal(ds, sessionsToday[0]);
+  } else {
+    // Multiple sessions: show picker
+    showDayPicker(ds, sessionsToday);
+  }
+}
+
+function showDayPicker(ds, sessions) {
+  var el = document.getElementById('day-picker-modal');
+  if (!el) return;
+  var dp = ds.split('-');
+  var d = new Date(+dp[0], +dp[1]-1, +dp[2]);
+  var dns = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  var mns = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('day-picker-title').textContent = dns[d.getDay()] + ' ' + d.getDate() + ' ' + mns[d.getMonth()];
+  document.getElementById('day-picker-date').value = ds;
+
+  var statusMap = {
+    planned: {label:'Planned', color:'#7aa5ff'},
+    completed: {label:'Completed', color:'#22c55e'},
+    missed: {label:'Missed', color:'#f43f5e'},
+    cancelled: {label:'Cancelled', color:'#f59e0b'}
+  };
+
+  var list = document.getElementById('day-picker-list');
+  list.innerHTML = sessions.map(function(s) {
+    var tt = TT[s.type] || TT.technical;
+    var st = statusMap[s.status] || statusMap.planned;
+    return '<button class="day-pick-row" onclick="pickSessionFromDay(\'' + s.id + '\')">'
+      + '<div class="day-pick-ico" style="background:' + tt.badge + ';">' + tt.e + '</div>'
+      + '<div style="flex:1;min-width:0;text-align:left;">'
+      + '<div style="font-size:13px;font-weight:700;color:var(--txt);">' + tt.l + ' training</div>'
+      + '<div style="font-size:11px;color:var(--txt3);margin-top:2px;">' + s.time + ' . ' + s.duration + ' min</div>'
+      + '</div>'
+      + '<div style="font-size:9px;font-weight:700;padding:3px 8px;border-radius:20px;background:rgba(' + (st.color === '#22c55e' ? '34,197,94' : st.color === '#f43f5e' ? '244,63,94' : st.color === '#f59e0b' ? '245,158,11' : '122,165,255') + ',.12);color:' + st.color + ';flex-shrink:0;">' + st.label + '</div>'
+      + '</button>';
+  }).join('');
+
+  el.classList.add('open');
+}
+
+function closeDayPicker() {
+  document.getElementById('day-picker-modal').classList.remove('open');
+}
+
+function pickSessionFromDay(sessionId) {
+  var session = calSt.sessions.find(function(s) { return s.id === sessionId; });
+  closeDayPicker();
+  if (session) openCalModal(session.date, session);
+}
+
+function addNewSessionForDay() {
+  var ds = document.getElementById('day-picker-date').value;
+  closeDayPicker();
+  openCalModal(ds, null);
 }
 
 function openCalModal(ds, existing) {
   var isEdit = !!existing;
   calSt.editDate = isEdit ? existing.date : null;
+  calSt.editSessionId = isEdit ? existing.id : null;
 
   // Title
   var titleEl = document.getElementById('cal-modal-title');
@@ -5358,6 +5724,12 @@ function openCalModal(ds, existing) {
 
   // Prefill date
   document.getElementById('cal-date').value = ds || (new Date().toISOString().split('T')[0]);
+
+  // Reset all reflection fields first
+  document.querySelectorAll('.feel-btn').forEach(function(b) { b.classList.remove('on'); });
+  document.getElementById('session-reflection-note').value = '';
+  calSessionFeel = '';
+  document.getElementById('session-reflection-wrap').style.display = 'none';
 
   if (isEdit) {
     // Prefill all fields with existing data
@@ -5378,6 +5750,32 @@ function openCalModal(ds, existing) {
       if (b.getAttribute('onclick') && b.getAttribute('onclick').includes("'" + existing.intensity + "'")) b.classList.add('on');
     });
     calSt.selInt = existing.intensity || 'Medium';
+
+    // Highlight session status
+    var sessStatus = existing.status || 'planned';
+    document.querySelectorAll('#session-status-row .status-btn').forEach(function(b) { b.classList.remove('on'); });
+    var statusBtn = document.getElementById('status-' + sessStatus);
+    if (statusBtn) statusBtn.classList.add('on');
+    calSessionStatus = sessStatus;
+
+    // Show reflection if completed + load existing reflection
+    if (sessStatus === 'completed') {
+      document.getElementById('session-reflection-wrap').style.display = 'block';
+      if (existing.feel) {
+        var feelBtn = document.querySelector('.feel-btn[onclick*="\'' + existing.feel + '\'"]');
+        if (feelBtn) { feelBtn.classList.add('on'); calSessionFeel = existing.feel; }
+      }
+      if (existing.reflectionNote) {
+        document.getElementById('session-reflection-note').value = existing.reflectionNote;
+      }
+    }
+
+    // Show missed reason if applicable
+    var reasonWrap = document.getElementById('missed-reason-wrap');
+    if (reasonWrap) {
+      reasonWrap.style.display = (sessStatus === 'missed' || sessStatus === 'cancelled') ? 'block' : 'none';
+      if (existing.reason) document.getElementById('missed-reason').value = existing.reason;
+    }
   } else {
     // Reset for new session
     document.getElementById('cal-dur').value = 60;
@@ -5388,18 +5786,52 @@ function openCalModal(ds, existing) {
     document.querySelector('.int-btn[onclick*="Medium"]').classList.add('on');
     calSt.selType = 'match';
     calSt.selInt = 'Medium';
+
+    // Reset status to planned
+    document.querySelectorAll('#session-status-row .status-btn').forEach(function(b) { b.classList.remove('on'); });
+    var plannedBtn = document.getElementById('status-planned');
+    if (plannedBtn) plannedBtn.classList.add('on');
+    calSessionStatus = 'planned';
+    document.getElementById('missed-reason-wrap').style.display = 'none';
   }
   document.getElementById('cal-modal').classList.add('open');
 }
 
-function closeCalModal() { document.getElementById('cal-modal').classList.remove('open'); calSt.editDate = null; }
+function closeCalModal() {
+  document.getElementById('cal-modal').classList.remove('open');
+  calSt.editDate = null;
+  calSt.editSessionId = null;
+}
 
 function deleteSession() {
-  if (!calSt.editDate) return;
-  calSt.sessions = calSt.sessions.filter(function(s) { return s.date !== calSt.editDate; });
+  // Try delete by ID first (new sessions)
+  if (calSt.editSessionId) {
+    if (!confirm('Delete this session? This cannot be undone.')) return;
+    calSt.sessions = calSt.sessions.filter(function(s) { return s.id !== calSt.editSessionId; });
+  } else if (calSt.editDate) {
+    // Fallback: legacy session without ID. Delete the first session on that date matching current form values.
+    if (!confirm('Delete this session? This cannot be undone.')) return;
+    var dur = parseInt(document.getElementById('cal-dur').value) || 60;
+    var time = document.getElementById('cal-time').value || '16:00';
+    var type = calSt.selType;
+    var matchIdx = calSt.sessions.findIndex(function(s) {
+      return s.date === calSt.editDate && s.type === type && s.time === time && s.duration === dur;
+    });
+    if (matchIdx === -1) {
+      // Last resort: delete first session on that date
+      matchIdx = calSt.sessions.findIndex(function(s) { return s.date === calSt.editDate; });
+    }
+    if (matchIdx !== -1) calSt.sessions.splice(matchIdx, 1);
+  } else {
+    showToast('No session selected to delete.');
+    return;
+  }
+
   localStorage.setItem('pp_sessions', JSON.stringify(calSt.sessions));
   closeCalModal();
   renderCalendar(); renderUpcomingSessions();
+  var hss = document.getElementById('h-sessions'); if (hss) hss.textContent = calSt.sessions.length;
+  showToast('Session deleted.');
 }
 
 function selTT(btn, type) {
@@ -5424,31 +5856,84 @@ function saveCal() {
   var reasonEl = document.getElementById('missed-reason');
   if (reasonEl && (status === 'missed' || status === 'cancelled')) reason = reasonEl.value;
 
-  calSt.sessions = calSt.sessions.filter(function(s) { return s.date !== date; });
-  calSt.sessions.push({
-    date:date, type:calSt.selType, duration:dur, time:time,
-    intensity:calSt.selInt, notes:notes,
-    status:status, reason:reason,
-    saved:Date.now()
+  // Pull reflection data if completed
+  var feel = '';
+  var reflectionNote = '';
+  if (status === 'completed') {
+    feel = calSessionFeel || '';
+    var noteEl = document.getElementById('session-reflection-note');
+    reflectionNote = noteEl ? (noteEl.value || '').trim() : '';
+  }
+
+  // If editing an existing session, update it in place by ID
+  // Otherwise, push a new session with a new unique ID
+  var existingId = calSt.editSessionId;
+  if (existingId) {
+    var existingIdx = calSt.sessions.findIndex(function(s) { return s.id === existingId; });
+    if (existingIdx !== -1) {
+      // Update in place, preserving id
+      calSt.sessions[existingIdx] = {
+        id: existingId,
+        date: date,
+        type: calSt.selType,
+        duration: dur,
+        time: time,
+        intensity: calSt.selInt,
+        notes: notes,
+        status: status,
+        reason: reason,
+        feel: feel,
+        reflectionNote: reflectionNote,
+        saved: Date.now()
+      };
+    }
+  } else {
+    // New session
+    calSt.sessions.push({
+      id: genSessionId(),
+      date: date,
+      type: calSt.selType,
+      duration: dur,
+      time: time,
+      intensity: calSt.selInt,
+      notes: notes,
+      status: status,
+      reason: reason,
+      feel: feel,
+      reflectionNote: reflectionNote,
+      saved: Date.now()
+    });
+  }
+
+  calSt.sessions.sort(function(a,b) {
+    if (a.date !== b.date) return a.date.localeCompare(b.date);
+    return (a.time || '').localeCompare(b.time || '');
   });
-  calSt.sessions.sort(function(a,b) { return a.date.localeCompare(b.date); });
   localStorage.setItem('pp_sessions', JSON.stringify(calSt.sessions));
   closeCalModal();
   renderCalendar(); renderUpcomingSessions();
   scheduleSessionNotif(date, time, calSt.selType);
   var hss = document.getElementById('h-sessions'); if (hss) hss.textContent = calSt.sessions.length;
   var hs = document.getElementById('h-streak'); if (hs) hs.textContent = calSt.sessions.length;
-  // Reset status
+  // Reset state
   calSessionStatus = 'planned';
-  document.querySelectorAll('#session-status-row .int-btn').forEach(function(b){b.classList.remove('on');});
+  calSessionFeel = '';
+  document.querySelectorAll('#session-status-row .status-btn').forEach(function(b){b.classList.remove('on');});
   var pb = document.getElementById('status-planned'); if (pb) pb.classList.add('on');
+
+  // Confirmation toast
+  if (status === 'completed') {
+    showToast('Session marked complete.' + (feel ? ' ' + feel.charAt(0).toUpperCase() + feel.slice(1) + ' day.' : ''));
+  } else {
+    showToast('Session saved.');
+  }
 }
 
 function renderUpcomingSessions() {
   var today = new Date().toISOString().split('T')[0];
   var up = calSt.sessions.filter(function(s) { return s.date >= today; }).slice(0, 8);
   var el = document.getElementById('upcoming-sessions'); if (!el) return;
-  if (!up.length) { el.innerHTML = '<div style="padding:20px 18px;text-align:center;color:var(--txt3);font-size:12px;font-weight:600;">No upcoming sessions. Add your first one!</div>'; return; }
+  if (!up.length) { el.innerHTML = '<div style="padding:20px 18px;text-align:center;color:var(--txt3);font-size:12px;font-weight:600;">No upcoming sessions. Add your first one.</div>'; return; }
   var dns = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
   var mns = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   el.innerHTML = up.map(function(s) {
@@ -5457,24 +5942,29 @@ function renderUpcomingSessions() {
     var d2 = new Date(+dp[0], +dp[1]-1, +dp[2]);
     var dl = dns[d2.getDay()] + ' ' + d2.getDate() + ' ' + mns[d2.getMonth()];
     var statusMap = {
-      planned:{label:'Planned',color:'var(--txt3)',bg:'var(--bg4)'},
-      completed:{label:'✅ Done',color:'var(--green)',bg:'rgba(34,197,94,.1)'},
-      missed:{label:'❌ Missed',color:'var(--red)',bg:'rgba(244,63,94,.1)'},
-      cancelled:{label:'🚫 Cancelled',color:'var(--amber)',bg:'rgba(245,158,11,.1)'},
+      planned:{label:'Planned',color:'var(--txt2)',bg:'var(--bg4)'},
+      completed:{label:'Completed',color:'#22c55e',bg:'rgba(34,197,94,.1)'},
+      missed:{label:'Missed',color:'#f43f5e',bg:'rgba(244,63,94,.1)'},
+      cancelled:{label:'Cancelled',color:'#f59e0b',bg:'rgba(245,158,11,.1)'},
       rest:{label:'Rest',color:'var(--txt3)',bg:'var(--bg4)'},
-      recovery:{label:'Recovery',color:'var(--amber)',bg:'rgba(245,158,11,.1)'}
+      recovery:{label:'Recovery',color:'#f59e0b',bg:'rgba(245,158,11,.1)'}
     };
     var st = statusMap[s.status] || statusMap.planned;
     var reasonMsg = (s.status==='missed'||s.status==='cancelled') && s.reason
-      ? '<div style="font-size:10px;color:var(--green);margin-top:2px;font-weight:600;">💚 '+(s.reason==='injury'?'Rest and recover first.':s.reason==='illness'?'Get well — progress continues.':'One missed session does not define you.')+'</div>' : '';
-    return '<div class="session-row" onclick="calDayClick(\'' + s.date + '\')">'
+      ? '<div style="font-size:10px;color:#22c55e;margin-top:3px;font-weight:500;">' + (s.reason==='injury'?'Rest and recover first.':s.reason==='illness'?'Get well. Progress continues.':'One missed session does not define you.') + '</div>'
+      : '';
+    var feelMap = {great:'Sharp', good:'Solid', average:'Average', flat:'Flat'};
+    var reflMsg = (s.status === 'completed' && s.feel)
+      ? '<div style="font-size:10px;color:var(--accent);margin-top:3px;font-weight:600;letter-spacing:.3px;">' + feelMap[s.feel] + (s.reflectionNote ? ' . ' + X(s.reflectionNote.length > 50 ? s.reflectionNote.slice(0,50) + '…' : s.reflectionNote) : '') + '</div>'
+      : '';
+    return '<div class="session-row" onclick="calDayClick(\'' + s.date + '\',\'' + s.id + '\')">'
       + '<div class="s-ico" style="background:' + tt3.badge + ';">' + tt3.e + '</div>'
-      + '<div style="flex:1;"><div class="s-name">' + tt3.l + ' training</div>'
-      + '<div class="s-meta">' + dl + ' · ' + s.time + ' · ' + s.duration + 'min' + (s.notes?' · '+X(s.notes):'') + '</div>'
-      + reasonMsg + '</div>'
-      + '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">'
-      + '<div style="font-size:9px;font-weight:700;padding:2px 8px;border-radius:20px;background:'+st.bg+';color:'+st.color+';">'+st.label+'</div>'
-      + '<div style="font-size:9px;color:var(--txt3);font-weight:700;">tap to edit</div>'
+      + '<div style="flex:1;min-width:0;"><div class="s-name">' + tt3.l + ' training</div>'
+      + '<div class="s-meta">' + dl + ' . ' + s.time + ' . ' + s.duration + ' min' + (s.notes?' . '+X(s.notes):'') + '</div>'
+      + reasonMsg + reflMsg + '</div>'
+      + '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;">'
+      + '<div style="font-size:9px;font-weight:700;padding:3px 9px;border-radius:20px;background:'+st.bg+';color:'+st.color+';letter-spacing:.3px;">'+st.label+'</div>'
+      + '<div style="font-size:9px;color:var(--txt3);font-weight:600;">tap to edit</div>'
       + '</div></div>';
   }).join('');
 }
@@ -5691,14 +6181,14 @@ async function requestNotifications() {
     return;
   }
   if (Notification.permission === 'granted') {
-    if (status) status.textContent = '✅ Notifications already enabled!';
+    if (status) status.textContent = 'Notifications already enabled.';
     if (btn) { btn.textContent = 'Notifications active ✓'; btn.style.opacity = '.6'; btn.style.pointerEvents = 'none'; }
     scheduleWellnessNotif();
     return;
   }
   var perm = await Notification.requestPermission();
   if (perm === 'granted') {
-    if (status) status.textContent = '✅ Notifications enabled! You\'ll be reminded before sessions.';
+    if (status) status.textContent = 'Notifications enabled. You will be reminded before sessions.';
     if (btn) { btn.textContent = 'Notifications active ✓'; btn.style.opacity = '.6'; btn.style.pointerEvents = 'none'; }
     new Notification('ProPath Football 🔥', {body: 'Notifications enabled. We\'ll keep you consistent!', icon: '/icons/icon-192.png'});
     scheduleWellnessNotif();
@@ -5998,11 +6488,101 @@ async function sendMsg() {
 // ══ SCAN ══
 function setScanDay(btn, type) {
   document.querySelectorAll('.day-sel-btn').forEach(function(b) { b.classList.remove('on'); }); btn.classList.add('on');
+  var previousType = scanSt.dayType;
   scanSt.dayType = type;
   var labels = {match:'Match day',prematch:'Pre-match',strength:'Strength',cardio:'Cardio',technical:'Technical',recovery:'Recovery',rest:'Rest day',team:'Team training'};
   var lb = document.getElementById('scan-day-badge'); if (lb) lb.textContent = labels[type] || type;
   var tl = document.getElementById('tgt-type-label'); if (tl) tl.textContent = labels[type] || type;
   updateScanTargets();
+
+  // Prompt to add to calendar — only if type changed and not 'rest'
+  if (type !== previousType && type !== 'rest') {
+    promptAddToCalendar(type, labels[type] || type);
+  }
+}
+
+function promptAddToCalendar(type, label) {
+  // Use same date format as calendar: YYYY-MM-DD
+  var today = new Date();
+  var todayStr = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0') + '-' + String(today.getDate()).padStart(2,'0');
+
+  // Map scanner type to calendar type for duplicate check
+  var typeMap = { prematch: 'technical' };
+  var calType = typeMap[type] || type;
+
+  // Check if there's already a session for today of this type
+  var existing = (calSt.sessions || []).find(function(s) {
+    return s.date === todayStr && s.type === calType;
+  });
+  if (existing) {
+    showToast('ℹ️ ' + (label || type) + ' already in today\'s calendar');
+    return;
+  }
+
+  // Show prompt modal
+  document.getElementById('cal-prompt-label').textContent = label;
+  document.getElementById('cal-prompt-type').value = type;
+  document.getElementById('cal-prompt-modal').classList.add('open');
+}
+
+function addDayTypeToCalendar() {
+  var type = document.getElementById('cal-prompt-type').value;
+
+  // Map scanner-only types to calendar TT types
+  var typeMap = { prematch: 'technical' };
+  var calType = typeMap[type] || type;
+
+  var labels = {match:'Match',prematch:'Pre-match prep',strength:'Strength training',cardio:'Cardio',technical:'Technical training',recovery:'Recovery',team:'Team training'};
+  var durations = {match:90, prematch:60, strength:60, cardio:45, technical:75, recovery:30, team:90};
+  var intensities = {match:'High', prematch:'Medium', strength:'High', cardio:'Medium', technical:'Medium', recovery:'Low', team:'Medium'};
+
+  var today = new Date();
+  var ds = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0') + '-' + String(today.getDate()).padStart(2,'0');
+  var timeStr = today.getHours().toString().padStart(2,'0') + ':' + today.getMinutes().toString().padStart(2,'0');
+
+  if (!calSt.sessions) calSt.sessions = [];
+  var newSession = {
+    id: genSessionId(),
+    date: ds,
+    type: calType,
+    duration: durations[type] || 60,
+    time: timeStr,
+    intensity: intensities[type] || 'Medium',
+    notes: type === 'prematch' ? 'Pre-match preparation' : 'Added from Meal Scanner',
+    status: 'planned',
+    saved: Date.now()
+  };
+  calSt.sessions.push(newSession);
+  calSt.sessions.sort(function(a,b) { return a.date.localeCompare(b.date); });
+  try { localStorage.setItem('pp_sessions', JSON.stringify(calSt.sessions)); } catch(e) {}
+
+  // Re-render calendar AND upcoming sessions list using the actual function names
+  if (typeof renderCalendar === 'function') renderCalendar();
+  if (typeof renderUpcomingSessions === 'function') renderUpcomingSessions();
+  // Recalculate session stats on home if applicable
+  if (typeof updateSessionStats === 'function') updateSessionStats();
+
+  closeCalPrompt();
+
+  // Toast notification with link to calendar
+  showToast((labels[type] || type) + ' added to your calendar.');
+}
+
+function closeCalPrompt() {
+  document.getElementById('cal-prompt-modal').classList.remove('open');
+}
+
+function showToast(msg) {
+  var t = document.getElementById('toast-notification');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'toast-notification';
+    t.className = 'toast';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function() { t.classList.remove('show'); }, 2500);
 }
 
 function updateScanTargets() {
@@ -6182,11 +6762,11 @@ function showScanResults(data, imageUrl) {
     return '<div class="sri"><div class="sri-dot ' + cc + '"></div>'
       + '<div style="flex:1;"><div class="sri-name">' + X(item.name) + '</div><div class="sri-g">~' + item.grams + 'g · ' + item.carbs + 'g C · ' + item.protein + 'g P · ' + item.fat + 'g F</div></div>'
       + '<div class="sri-cal">' + item.calories + ' kcal</div>'
-      + '<div class="sri-edit" onclick="openEdit(' + idx + ')">✏️</div></div>';
+      + '<div class="sri-edit" onclick="openEdit(' + idx + ')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div></div>';
   }).join('');
   var lo = items.filter(function(i) { return i.confidence < 0.6; }).length;
   var conf = document.getElementById('scan-conf');
-  if (conf) conf.textContent = lo > 0 ? '⚠️ ' + lo + ' item(s) uncertain — tap ✏️ to correct.' : '✅ All ingredients recognised with high confidence.';
+  if (conf) conf.textContent = lo > 0 ? lo + ' item(s) uncertain. Tap an item to correct it.' : 'All ingredients recognised with high confidence.';
   var s = data.scan || {};
   function E(id) { return document.getElementById(id); }
   if (E('r-kcal')) E('r-kcal').textContent = Math.round(s.totalCalories || 0);
@@ -6254,7 +6834,7 @@ function renderLoggedMeals() {
       + '<div class="log-t">' + m.time + '</div>'
       + '<div class="log-n">' + X(m.name) + '</div>'
       + '<div class="log-c">' + m.calories + ' kcal</div>'
-      + '<button class="log-del" onclick="event.stopPropagation();deleteLoggedMeal(' + idx + ')" title="Remove this meal">🗑️</button>'
+      + '<button class="log-del" onclick="event.stopPropagation();deleteLoggedMeal(' + idx + ')" title="Remove this meal"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>'
       + '</div>';
   }).join('');
 }
@@ -6996,11 +7576,20 @@ function searchStories(query) {
 }
 
 function selSessionStatus(btn, status) {
-  document.querySelectorAll('#session-status-row .int-btn').forEach(function(b) { b.classList.remove('on'); });
+  document.querySelectorAll('#session-status-row .status-btn').forEach(function(b) { b.classList.remove('on'); });
   btn.classList.add('on');
   calSessionStatus = status;
   var reasonWrap = document.getElementById('missed-reason-wrap');
   if (reasonWrap) reasonWrap.style.display = (status === 'missed' || status === 'cancelled') ? 'block' : 'none';
+  // Show reflection section only when session is completed
+  var reflWrap = document.getElementById('session-reflection-wrap');
+  if (reflWrap) reflWrap.style.display = (status === 'completed') ? 'block' : 'none';
+}
+
+function selFeel(btn, feel) {
+  document.querySelectorAll('.feel-btn').forEach(function(b) { b.classList.remove('on'); });
+  btn.classList.add('on');
+  calSessionFeel = feel;
 }
 
 // ══ ESTIMATED DNA ENGINE ══
@@ -7343,6 +7932,61 @@ function resetProfile() {
   if (!confirm('Reset all your data and restart onboarding?\n\nThis will clear:\n• Your profile (name, position, club)\n• DNA assessment results\n• Training sessions\n• Goals & wellness logs\n\nYou will start fresh from step 1.')) return;
   localStorage.clear();
   location.reload();
+}
+
+// ── PROFILE EDIT MODAL ──
+function openProfileEdit() {
+  document.getElementById('pe-name').value = P.name || '';
+  document.getElementById('pe-weight').value = P.weight || 70;
+  document.getElementById('pe-height').value = P.height || 175;
+  document.getElementById('pe-age').value = P.age || 18;
+  document.getElementById('pe-gender').value = P.gender || 'male';
+  document.getElementById('pe-position').value = P.position || 'Midfielder';
+  document.getElementById('pe-club').value = P.dreamClub || P.club || '';
+  document.getElementById('profile-edit-modal').classList.add('open');
+}
+
+function closeProfileEdit() {
+  document.getElementById('profile-edit-modal').classList.remove('open');
+}
+
+function saveProfileEdit() {
+  var newName = (document.getElementById('pe-name').value || '').trim();
+  var newWeight = parseFloat(document.getElementById('pe-weight').value);
+  var newHeight = parseFloat(document.getElementById('pe-height').value);
+  var newAge = parseInt(document.getElementById('pe-age').value);
+  var newGender = document.getElementById('pe-gender').value;
+  var newPosition = document.getElementById('pe-position').value;
+  var newClub = (document.getElementById('pe-club').value || '').trim();
+
+  // Validation
+  if (!newName) { alert('Please enter your name.'); return; }
+  if (!newWeight || newWeight < 30 || newWeight > 200) { alert('Weight must be between 30-200 kg.'); return; }
+  if (!newHeight || newHeight < 100 || newHeight > 230) { alert('Height must be between 100-230 cm.'); return; }
+  if (!newAge || newAge < 6 || newAge > 60) { alert('Age must be between 6-60.'); return; }
+
+  // Update profile
+  P.name = newName;
+  P.weight = newWeight;
+  P.height = newHeight;
+  P.age = newAge;
+  P.gender = newGender;
+  P.position = newPosition;
+  P.dreamClub = newClub;
+  if (newClub) P.club = newClub;
+
+  // Save
+  try { localStorage.setItem('pp_p', JSON.stringify(P)); } catch(e) {}
+
+  // Recalculate scanner targets if scanner active
+  if (typeof updateScanTargets === 'function') updateScanTargets();
+
+  // Update home screen + nutrition if these functions exist
+  if (typeof initApp === 'function') initApp();
+  if (typeof renderNutritionAnalysis === 'function') renderNutritionAnalysis();
+
+  closeProfileEdit();
+  showToast('Profile updated. Macros recalculated.');
 }
 
 // ══ BOOT ══
